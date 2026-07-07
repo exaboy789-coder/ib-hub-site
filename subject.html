@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<script>
+  (function(){
+    var stored = localStorage.getItem('ib-hub-theme');
+    var theme = stored || 'light';
+    document.documentElement.setAttribute('data-theme', theme);
+  })();
+</script>
+<title>Subject — IB Subjects Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="theme.css">
+<style>
+  .term-panel,.rcard,.search-box,.topbar,.level-toggle,.toast{transition:background-color .25s ease, border-color .25s ease, box-shadow .25s ease;}
+  html{scroll-behavior:smooth; background-color:var(--bg); min-height:100%;}
+  body{
+    margin:0;
+    min-height:100vh;
+    background-color:var(--bg);
+    color:var(--ink);
+    font-family:'IBM Plex Sans', sans-serif;
+    line-height:1.6;
+  }
+  .wrap{max-width:1000px;margin:0 auto;padding:0 24px;}
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace; font-size:12px; letter-spacing:0.08em;
+    text-transform:uppercase; color:var(--accent); font-weight:500;
+  }
+  h1,h2{font-family:'Space Grotesk', sans-serif; font-weight:700; margin:0; color:var(--ink);}
+
+  /* ---- top bar (shared) ---- */
+  .topbar{border-bottom:1px solid var(--rule); background:rgba(var(--panel-rgb),0.88); backdrop-filter:blur(8px); position:sticky; top:0; z-index:10;}
+  .topbar-inner{max-width:1000px;margin:0 auto;padding:16px 24px;display:flex;justify-content:space-between;align-items:center;gap:20px;}
+  .logo{font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:18px; white-space:nowrap; letter-spacing:0.01em;}
+  .logo span{color:var(--cyan);}
+  .topbar-title{font-family:'IBM Plex Sans', sans-serif; font-size:13px; color:var(--ink-soft); font-weight:500; flex:1; text-align:center;}
+  .topbar-actions{display:flex; align-items:center; gap:14px;}
+  .search-box{display:flex; align-items:center; gap:8px; border:1.5px solid var(--rule); background:var(--panel); border-radius:999px; padding:9px 16px; transition:border-color .2s ease, box-shadow .2s ease;}
+  .search-box:focus-within{border-color:var(--cyan); box-shadow:0 0 0 4px rgba(var(--cyan-rgb),0.12);}
+  .search-box svg{width:15px;height:15px;flex-shrink:0;color:var(--ink-soft);}
+  .search-box input{border:none; outline:none; background:transparent; font-family:'IBM Plex Sans',sans-serif; font-size:14px; color:var(--ink); width:130px;}
+  .search-box input::placeholder{color:#9CA3AF;}
+  .topbar nav a{font-size:13px; text-decoration:none; color:var(--ink); font-weight:600; border:1.5px solid var(--rule); border-radius:999px; padding:9px 18px; transition:all .2s ease; background:var(--panel);}
+  .topbar nav a:hover{border-color:var(--cyan); color:var(--cyan); box-shadow:0 0 0 4px rgba(var(--cyan-rgb),0.1);}
+
+  /* ---- friendly card (was glitch terminal panel) ---- */
+  .term-panel{position:relative; border:1px solid var(--rule); background:var(--panel); border-radius:20px; box-shadow:0 2px 10px rgba(20,20,30,0.04);}
+
+  /* ---- breadcrumb ---- */
+  .crumbbar{margin:32px 0 0; padding:14px 22px; display:flex; align-items:center; justify-content:space-between; border-radius:999px;}
+  .crumb{font-family:'IBM Plex Sans',sans-serif; font-size:14px; font-weight:500; color:var(--ink-soft); text-decoration:none; display:flex; align-items:center; gap:10px;}
+  .crumb b{color:var(--ink); font-weight:700;}
+  .crumb:hover{color:var(--accent);}
+  .copy-btn{
+    border:1.5px solid var(--rule); background:none; color:var(--ink-soft); width:32px; height:32px; border-radius:999px;
+    display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all .2s ease;
+  }
+  .copy-btn:hover{border-color:var(--accent); color:var(--accent); box-shadow:0 0 0 4px rgba(var(--accent-rgb),0.12);}
+  .copy-btn svg{width:14px;height:14px;}
+
+  /* ---- subject hero panel ---- */
+  .subject-hero{margin:18px 0 0; padding:36px 32px;}
+  .subject-hero-row{display:flex; align-items:center; gap:20px; flex-wrap:wrap;}
+  .subject-glyph{
+    width:64px; height:64px; flex-shrink:0; display:flex; align-items:center; justify-content:center;
+    font-family:'IBM Plex Mono', monospace; font-size:19px; font-weight:600;
+    border-radius:18px; color:var(--accent);
+    background:rgba(var(--accent-rgb),0.12);
+  }
+  .subject-hero h1{
+    font-size:30px; line-height:1.2; color:var(--ink);
+  }
+  .subject-hero .tagline{font-family:'IBM Plex Sans',sans-serif; font-size:14px; color:var(--ink-soft); margin-top:8px;}
+  .level-tags{display:flex; gap:8px; margin-top:14px; flex-wrap:wrap; align-items:center;}
+  .level-tags span.tag-pill{
+    font-family:'IBM Plex Sans', sans-serif; font-size:11.5px; font-weight:600;
+    padding:5px 12px; color:var(--ink-soft); background:var(--bg-soft); border-radius:999px;
+  }
+  .toggle-row{display:flex; gap:10px; flex-wrap:wrap;}
+  .level-toggle{
+    display:inline-flex; background:var(--bg-soft); border-radius:999px; margin-top:16px; padding:4px; gap:2px;
+  }
+  .level-toggle.hidden{display:none;}
+  .level-btn{
+    font-family:'IBM Plex Sans', sans-serif; font-size:13px; font-weight:600;
+    padding:9px 22px; text-decoration:none; color:var(--ink-soft); border-radius:999px; transition:all .2s ease;
+  }
+  .level-btn:hover{color:var(--ink);}
+  .level-btn.active{
+    color:#fff; background:var(--accent);
+    box-shadow:0 4px 12px rgba(var(--accent-rgb),0.35);
+  }
+
+  /* ---- resources ---- */
+  section{padding:52px 0;}
+  .section-head{text-align:center; margin-bottom:32px;}
+  .section-head h2{font-size:24px;}
+
+  .resource-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px;}
+  .rcard{
+    position:relative; padding:26px 22px 22px; text-decoration:none; color:var(--ink);
+    display:flex; flex-direction:column; gap:14px; transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  }
+  .rcard:hover{transform:translateY(-4px); border-color:var(--accent); box-shadow:0 14px 28px rgba(var(--accent-rgb),0.18);}
+  .rcard .ricon{font-size:24px;}
+  .rcard h3{font-family:'Space Grotesk',sans-serif; font-size:16px; font-weight:700; margin:0;}
+  .rcard .rarrow{
+    font-family:'IBM Plex Sans',sans-serif; font-size:14px; font-weight:700; color:var(--accent);
+    margin-top:auto; transition:transform .15s ease;
+  }
+  .rcard:hover .rarrow{transform:translateX(4px);}
+  .rcard .rhead{display:flex; align-items:flex-start; justify-content:space-between; gap:10px;}
+  .soon-badge{
+    font-family:'IBM Plex Sans',sans-serif; font-size:10.5px; font-weight:600;
+    color:var(--ink-soft); background:var(--bg-soft); border-radius:999px; padding:4px 10px; white-space:nowrap;
+  }
+  .live-badge{
+    font-family:'IBM Plex Sans',sans-serif; font-size:10.5px; font-weight:700;
+    color:var(--accent); background:rgba(var(--accent-rgb),0.12); border-radius:999px; padding:4px 10px; white-space:nowrap;
+  }
+  .rcard.is-soon{cursor:default;}
+  .rcard.is-soon .rarrow{opacity:.4;}
+  .rcard.is-soon:hover .rarrow{transform:none;}
+  .rcard.is-soon:hover{box-shadow:0 8px 20px rgba(20,20,30,0.06);}
+
+  /* ---- toast ---- */
+  .toast{
+    position:fixed; left:50%; bottom:28px; transform:translateX(-50%) translateY(12px);
+    font-family:'IBM Plex Sans',sans-serif; font-size:13.5px; font-weight:500;
+    color:var(--ink); background:var(--panel); border:1px solid var(--rule); border-radius:999px;
+    padding:13px 22px; box-shadow:0 10px 30px rgba(20,20,30,0.18);
+    opacity:0; pointer-events:none; transition:opacity .2s ease, transform .2s ease; z-index:50;
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+  .toast b{color:var(--accent);}
+
+  footer{padding:36px 0 56px; font-size:13px; color:var(--ink-soft); font-family:'IBM Plex Sans',sans-serif; text-align:center;}
+  footer .heart{color:var(--coral);}
+
+  @media (max-width:760px){
+    .resource-grid{grid-template-columns:1fr 1fr;}
+  }
+  @media (max-width:520px){
+    .resource-grid{grid-template-columns:1fr;}
+    .topbar-title{display:none;}
+    .search-box input{width:90px;}
+    .subject-hero h1{font-size:24px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a href="index.html" class="logo">IB<span>::HUB</span></a>
+    <div class="topbar-title">IB Subjects Hub</div>
+    <div class="topbar-actions">
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" placeholder="Search subjects">
+      </div>
+      <nav><a href="#">Login</a></nav>
+      <div class="theme-switch-wrap">
+        <span class="theme-label" id="label-light">Light</span>
+        <button class="theme-switch" id="theme-toggle" type="button" aria-label="Toggle dark mode">
+          <span class="knob"></span><span class="switch-dot"></span>
+        </button>
+        <span class="theme-label" id="label-dark">Dark</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="crumbbar term-panel">
+    <a href="index.html#subjects" class="crumb">&larr; Subjects / <b id="crumb-name">Mathematics</b></a>
+    <button class="copy-btn" id="copy-link" title="Copy link" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="1"></rect><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"></path></svg>
+    </button>
+  </div>
+
+  <div class="subject-hero term-panel">
+    <div class="subject-hero-row">
+      <div class="subject-glyph" id="subject-glyph">√x</div>
+      <div>
+        <h1 id="subject-title">Mathematics AA HL</h1>
+        <p class="tagline" id="subject-tagline">Everything for the IB syllabus</p>
+      </div>
+    </div>
+    <div class="level-tags" id="level-tags"></div>
+    <div class="toggle-row">
+      <div class="level-toggle" id="course-toggle"></div>
+      <div class="level-toggle" id="level-toggle"></div>
+    </div>
+  </div>
+
+  <section id="resources">
+    <div class="section-head">
+      <p class="eyebrow">What's inside</p>
+      <h2>Resources</h2>
+    </div>
+    <div class="resource-grid" id="resource-grid"></div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="wrap">Built for IB students, by IB students <span class="heart">♥</span> — free notes &amp; past papers for every DP subject</div>
+</footer>
+
+<div class="toast" id="toast"><b>Coming soon</b> — this resource isn't live yet</div>
+
+<script src="theme.js"></script>
+<script>
+  var subjects = {
+    maths:   { name:'Mathematics', glyph:'√x',  accent:'cyan',   extraTags:[],
+               hasCourse:true,
+               courseInfo:{ aa:'Analysis &amp; Approaches', ai:'Applications &amp; Interpretation' },
+               common:[['📋','Specification'],['📄','Past Papers'],['🎯','Question Bank','maths-question-bank.html']],
+               hlExtra:[['📘','Formula Booklet','maths-formula-booklet.html',false],['📗','Content Notes','maths-notes.html'],['🧩','HL Extension Topics']] },
+    physics: { name:'Physics',     glyph:'F=ma',accent:'violet', extraTags:[],
+               common:[['📋','Specification'],['📗','Content Notes'],['📄','Past Papers'],['🎯','Question Bank']],
+               hlExtra:[['📘','Data Booklet'],['🧩','HL Extension Topics']] },
+    chem:    { name:'Chemistry',   glyph:'H₂O', accent:'green',  extraTags:[],
+               common:[['📋','Specification'],['📗','Content Notes'],['📄','Past Papers'],['🎯','Question Bank']],
+               hlExtra:[['📘','Data Booklet'],['🧩','HL Extension Topics']] },
+    bio:     { name:'Biology',     glyph:'DNA', accent:'teal',   extraTags:[],
+               common:[['📋','Specification'],['📗','Content Notes'],['📄','Past Papers'],['🎯','Question Bank']],
+               hlExtra:[['🔤','Key Terms Glossary'],['🧩','HL Extension Topics']] },
+    econ:    { name:'Economics',   glyph:'£↗',  accent:'amber',  extraTags:[],
+               common:[['📋','Specification'],['📗','Content Notes'],['📄','Past Papers'],['🗂️','Case Studies']],
+               hlExtra:[['🔤','Key Terms Glossary'],['🧩','HL Extension Topics']] },
+    geo:     { name:'Geography',   glyph:'⊕',   accent:'coral',  extraTags:[],
+               common:[['📋','Specification'],['📗','Content Notes'],['📄','Past Papers'],['🗂️','Case Studies']],
+               hlExtra:[['🧭','IA Guide'],['🧩','HL Extension Topics']] },
+    cs:      { name:'Computer Science', glyph:'</>', accent:'pink', extraTags:[],
+               common:[['📋','Specification'],['📗','Content Notes'],['📄','Past Papers'],['🎯','Question Bank']],
+               hlExtra:[['🧭','IA Guide'],['🧩','HL Extension Topics']] }
+  };
+
+  var params = new URLSearchParams(window.location.search);
+  var key = params.get('s');
+  if(!subjects[key]) key = 'maths';
+  var s = subjects[key];
+
+  var level = (params.get('level') || 'hl').toLowerCase();
+  if(level !== 'hl' && level !== 'sl') level = 'hl';
+
+  var course = (params.get('course') || 'aa').toLowerCase();
+  if(course !== 'aa' && course !== 'ai') course = 'aa';
+
+  document.documentElement.style.setProperty('--accent', 'var(--' + s.accent + ')');
+  document.documentElement.style.setProperty('--accent-rgb', 'var(--' + s.accent + '-rgb)');
+
+  var fullTitle = s.name + (s.hasCourse ? ' ' + course.toUpperCase() : '') + ' ' + level.toUpperCase();
+  document.title = fullTitle + ' — IB Subjects Hub';
+  document.getElementById('crumb-name').textContent = s.name;
+  document.getElementById('subject-glyph').textContent = s.glyph;
+  document.getElementById('subject-title').textContent = fullTitle;
+
+  var levelDesc = (level === 'hl' ? 'Higher Level' : 'Standard Level') + ' — full syllabus coverage';
+  document.getElementById('subject-tagline').innerHTML = s.hasCourse
+    ? s.courseInfo[course] + ' &middot; ' + levelDesc
+    : levelDesc;
+
+  var tagHtml = '';
+  s.extraTags.forEach(function(t){ tagHtml += '<span class="tag-pill">' + t + '</span>'; });
+  document.getElementById('level-tags').innerHTML = tagHtml;
+
+  var levelToggle = document.getElementById('level-toggle');
+  ['hl','sl'].forEach(function(lv){
+    var a = document.createElement('a');
+    a.href = '?s=' + key + (s.hasCourse ? '&course=' + course : '') + '&level=' + lv;
+    a.className = 'level-btn' + (lv === level ? ' active' : '');
+    a.textContent = lv.toUpperCase();
+    levelToggle.appendChild(a);
+  });
+
+  var courseToggle = document.getElementById('course-toggle');
+  if(s.hasCourse){
+    ['aa','ai'].forEach(function(c){
+      var a = document.createElement('a');
+      a.href = '?s=' + key + '&course=' + c + '&level=' + level;
+      a.className = 'level-btn' + (c === course ? ' active' : '');
+      a.textContent = c.toUpperCase();
+      courseToggle.appendChild(a);
+    });
+  } else {
+    courseToggle.classList.add('hidden');
+  }
+
+  var resourceList = s.common.concat(level === 'hl' ? s.hlExtra : []);
+  if(s.hasCourse && course !== 'aa'){
+    resourceList = resourceList.map(function(r){
+      if(r[1] === 'Formula Booklet' || r[1] === 'Content Notes' || r[1] === 'Question Bank') return [r[0], r[1]]; // strip link/newTab for non-AA courses
+      return r;
+    });
+  }
+
+  var grid = document.getElementById('resource-grid');
+  var html = '';
+  resourceList.forEach(function(r){
+    var hasLink = !!r[2];
+    var newTab = !!r[3];
+    html += '<a href="' + (hasLink ? r[2] : '#') + '"' + (newTab ? ' target="_blank" rel="noopener"' : '') + ' class="rcard term-panel' + (hasLink ? '' : ' is-soon') + '" data-name="' + r[1] + '">' +
+              '<div class="rhead"><span class="ricon">' + r[0] + '</span><span class="' + (hasLink ? 'live-badge' : 'soon-badge') + '">' + (hasLink ? (newTab ? 'PDF ↗' : 'Live') : 'Coming soon') + '</span></div>' +
+              '<h3>' + r[1] + '</h3>' +
+              '<span class="rarrow">&rarr;</span>' +
+            '</a>';
+  });
+  grid.innerHTML = html;
+
+  var toast = document.getElementById('toast');
+  var toastTimer;
+  grid.querySelectorAll('.rcard.is-soon').forEach(function(card){
+    card.addEventListener('click', function(e){
+      e.preventDefault();
+      toast.innerHTML = '<b>' + card.getAttribute('data-name') + '</b> is coming soon';
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function(){ toast.classList.remove('show'); }, 2200);
+    });
+  });
+
+  document.getElementById('copy-link').addEventListener('click', function(){
+    navigator.clipboard && navigator.clipboard.writeText(window.location.href);
+  });
+</script>
+
+</body>
+</html>

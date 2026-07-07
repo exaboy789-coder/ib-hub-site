@@ -1,0 +1,64 @@
+/* ---- shared design tokens & theme-switch control ---- */
+/* used by index.html, subject.html, maths-formula-booklet.html, maths-notes.html, maths-question-bank.html */
+:root{
+  --bg:#FBF8F2;
+  --bg-soft:#F3EDE0;
+  --panel-soft:#F3EDE0;
+  --panel:#FFFFFF;
+  --ink:#23262B;
+  --ink-soft:#6B7280;
+  --rule:#EAE3D3;
+  --cyan:#0EA5C4;       --cyan-rgb:14,165,196;
+  --violet:#7C5CFC;     --violet-rgb:124,92,252;
+  --green:#16A34A;      --green-rgb:22,163,74;
+  --teal:#0D9488;       --teal-rgb:13,148,136;
+  --amber:#D97706;      --amber-rgb:217,119,6;
+  --coral:#EA580C;      --coral-rgb:234,88,12;
+  --pink:#DB2777;       --pink-rgb:219,39,119;
+  --panel-rgb:255,255,255;
+  --accent:var(--cyan); --accent-rgb:var(--cyan-rgb);
+}
+html[data-theme="dark"]{
+  --panel-rgb:28,31,41;
+  --bg:#13151C;
+  --bg-soft:#1B1E28;
+  --panel-soft:#1B1E28;
+  --panel:#1C1F29;
+  --ink:#F0F1F5;
+  --ink-soft:#9AA1B2;
+  --rule:#2C303C;
+  --cyan:#06B6D4;       --cyan-rgb:6,182,212;
+  --violet:#8B5CF6;     --violet-rgb:139,92,246;
+  --green:#22C55E;      --green-rgb:34,197,94;
+  --teal:#14B8A6;       --teal-rgb:20,184,166;
+  --amber:#F59E0B;      --amber-rgb:245,158,11;
+  --coral:#F97316;      --coral-rgb:249,115,22;
+  --pink:#EC4899;       --pink-rgb:236,72,153;
+}
+
+*{box-sizing:border-box;}
+a{color:inherit;}
+body{transition:background-color .25s ease, color .25s ease;}
+
+.theme-switch-wrap{display:flex; align-items:center; gap:10px; user-select:none;}
+.theme-label{
+  font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:13px;
+  color:var(--ink-soft); cursor:pointer; transition:color .2s ease;
+}
+.theme-label.active{color:var(--ink);}
+.theme-switch{
+  width:52px; height:28px; border-radius:999px; position:relative; border:none; cursor:pointer; padding:0;
+  background:linear-gradient(135deg, var(--cyan), var(--violet)); transition:box-shadow .2s ease; flex-shrink:0;
+}
+.theme-switch:hover{box-shadow:0 0 0 4px rgba(var(--cyan-rgb),0.15);}
+.theme-switch .knob{
+  position:absolute; top:3px; left:3px; width:22px; height:22px; border-radius:50%;
+  background:#fff; box-shadow:0 2px 6px rgba(20,20,30,0.25);
+  transition:transform .3s cubic-bezier(.4,0,.2,1);
+}
+.theme-switch.is-dark .knob{transform:translateX(24px);}
+.theme-switch .switch-dot{
+  position:absolute; top:5px; right:7px; width:5px; height:5px; border-radius:50%;
+  background:rgba(255,255,255,0.85); transition:left .3s ease, right .3s ease;
+}
+.theme-switch.is-dark .switch-dot{right:auto; left:7px;}

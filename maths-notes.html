@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<script>
+  (function(){
+    var stored = localStorage.getItem('ib-hub-theme');
+    var theme = stored || 'light';
+    document.documentElement.setAttribute('data-theme', theme);
+  })();
+</script>
+<title>Revision Notes — Mathematics AA HL — IB Subjects Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="theme.css">
+<style>
+  .term-panel,.note-card,.search-box,.topbar,.quicknav a{transition:background-color .25s ease, border-color .25s ease, box-shadow .25s ease;}
+  html{scroll-behavior:smooth; background-color:var(--bg); min-height:100%;}
+  body{
+    margin:0; min-height:100vh; background-color:var(--bg); color:var(--ink);
+    font-family:'IBM Plex Sans', sans-serif; line-height:1.55;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px;}
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace; font-size:12px; letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--accent); font-weight:500;
+  }
+  h1,h2,h3{font-family:'Space Grotesk', sans-serif; font-weight:600; margin:0; color:var(--ink);}
+
+  /* ---- top bar ---- */
+  .topbar{border-bottom:1px solid var(--rule); background:rgba(var(--panel-rgb),0.88); backdrop-filter:blur(8px); position:sticky; top:0; z-index:20;}
+  .topbar-inner{max-width:1080px;margin:0 auto;padding:16px 24px;display:flex;justify-content:space-between;align-items:center;gap:20px;}
+  .logo{font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:17px; white-space:nowrap; letter-spacing:0.02em;}
+  .logo span{color:var(--cyan);}
+  .topbar-title{font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--ink-soft); letter-spacing:0.1em; text-transform:uppercase; flex:1; text-align:center;}
+  .topbar-actions{display:flex; align-items:center; gap:14px;}
+  .search-box{display:flex; align-items:center; gap:8px; border:1.5px solid var(--rule); background:var(--panel); border-radius:999px; padding:9px 16px; transition:border-color .2s ease, box-shadow .2s ease;}
+  .search-box:focus-within{border-color:var(--cyan); box-shadow:0 0 0 4px rgba(var(--cyan-rgb),0.12);}
+  .search-box svg{width:14px;height:14px;flex-shrink:0;color:var(--ink-soft);}
+  .search-box input{border:none; outline:none; background:transparent; font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--ink); width:150px; caret-color:var(--cyan);}
+  .search-box input::placeholder{color:#566182;}
+  .topbar nav a{font-size:13px; text-decoration:none; color:var(--ink); font-weight:600; border:1.5px solid var(--rule); border-radius:999px; padding:9px 18px; transition:all .2s ease; background:var(--panel);}
+  .topbar nav a:hover{border-color:var(--cyan); color:var(--cyan); box-shadow:0 0 0 4px rgba(var(--cyan-rgb),0.1);}
+  .theme-switch{background:linear-gradient(135deg, var(--cyan), var(--pink));}
+
+  /* ---- friendly card ---- */
+  .term-panel{position:relative; border:1px solid var(--rule); background:var(--panel); border-radius:20px; box-shadow:0 2px 10px rgba(20,20,30,0.04);}
+
+  /* ---- breadcrumb ---- */
+  .crumbbar{margin:36px 0 0; padding:14px 20px; display:flex; align-items:center; justify-content:space-between;}
+  .crumb{font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--ink-soft); text-decoration:none; display:flex; align-items:center; gap:10px;}
+  .crumb b{color:var(--ink); font-weight:500;}
+  .crumb:hover{color:var(--accent);}
+  .copy-btn{
+    border:1.5px solid var(--rule); background:none; color:var(--ink-soft); width:32px; height:32px; border-radius:999px;
+    display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all .2s ease;
+  }
+  .copy-btn:hover{border-color:var(--accent); color:var(--accent); box-shadow:0 0 12px rgba(var(--accent-rgb),0.25);}
+  .copy-btn svg{width:14px;height:14px;}
+
+  /* ---- hero ---- */
+  .subject-hero{margin:18px 0 0; padding:34px 30px;}
+  .subject-hero-row{display:flex; align-items:center; gap:20px; flex-wrap:wrap;}
+  .subject-glyph{
+    width:64px; height:64px; flex-shrink:0; display:flex; align-items:center; justify-content:center;
+    font-family:'IBM Plex Mono', monospace; font-size:24px; font-weight:600;
+    border-radius:18px; color:var(--accent);
+    background:rgba(var(--accent-rgb),0.12);
+  }
+  .subject-hero h1{
+    font-size:28px; line-height:1.2; color:var(--ink);
+  }
+  .subject-hero .tagline{font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--ink-soft); margin-top:8px;}
+
+  /* ---- topic quick-nav ---- */
+  .quicknav{margin:18px 0 0; padding:14px 18px; display:flex; gap:8px; flex-wrap:wrap;}
+  .quicknav a{
+    font-family:'IBM Plex Sans',sans-serif; font-size:12.5px; font-weight:600;
+    color:var(--ink-soft); text-decoration:none; border:1.5px solid var(--rule); border-radius:999px; padding:8px 14px; transition:all .2s ease;
+  }
+  .quicknav a:hover{color:var(--accent); border-color:var(--accent); box-shadow:0 0 10px rgba(var(--accent-rgb),0.2);}
+
+  /* ---- filter ---- */
+  .filter-row{margin:30px 0 0; display:flex; align-items:center; gap:12px;}
+  .filter-row .search-box{flex:1;}
+  .filter-row .search-box input{width:100%;}
+  .filter-count{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--ink-soft); white-space:nowrap;}
+  .fold-btn{
+    font-family:'IBM Plex Mono',monospace; font-size:11.5px; font-weight:500; color:var(--ink-soft);
+    background:none; border:1.5px solid var(--rule); border-radius:999px; padding:8px 14px; cursor:pointer;
+    white-space:nowrap; transition:all .2s ease;
+  }
+  .fold-btn:hover{color:var(--accent); border-color:var(--accent);}
+
+  /* ---- topic sections ---- */
+  .topic-section{padding:46px 0 6px; scroll-margin-top:80px;}
+  .topic-section.is-empty{display:none;}
+  .topic-head{display:flex; align-items:center; gap:14px; margin-bottom:22px;}
+  .topic-head .topic-dot{width:10px; height:10px; border-radius:50%; background:var(--accent); box-shadow:0 0 10px rgba(var(--accent-rgb),0.6); flex-shrink:0;}
+  .topic-head h2{font-size:21px;}
+  .topic-head .topic-num{font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:600; color:var(--accent); padding:4px 10px; background:rgba(var(--accent-rgb),0.1); border-radius:999px;}
+  .topic-head .topic-rule{flex:1; height:1px; background:var(--rule);}
+
+  .subtopic-grid{display:flex; flex-direction:column; gap:12px;}
+  .subtopic-block{overflow:hidden;}
+  .subtopic-block.is-empty{display:none;}
+  .subtopic-label{display:flex; align-items:center; gap:12px; margin:0; padding:15px 18px; cursor:pointer; user-select:none;}
+  .subtopic-label:hover{background:rgba(var(--accent-rgb),0.05);}
+  .subtopic-arrow{width:13px; height:13px; flex-shrink:0; color:var(--ink-soft); transition:transform .2s ease, color .2s ease;}
+  .subtopic-label:hover .subtopic-arrow{color:var(--accent);}
+  .subtopic-num{font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:600; color:var(--accent); flex-shrink:0;}
+  .subtopic-title{font-family:'Space Grotesk',sans-serif; font-size:15px; font-weight:600; color:var(--ink); flex:1;}
+  .subtopic-count{
+    font-family:'IBM Plex Mono',monospace; font-size:10.5px; font-weight:600; color:var(--accent);
+    background:rgba(var(--accent-rgb),0.12); border-radius:999px; padding:3px 10px; flex-shrink:0;
+  }
+  .subtopic-block:not(.is-collapsed) .subtopic-arrow{transform:rotate(180deg);}
+
+  .subtopic-content{display:grid; grid-template-rows:0fr; transition:grid-template-rows .25s ease;}
+  .subtopic-block:not(.is-collapsed) .subtopic-content,
+  .subtopic-block.force-expand .subtopic-content{grid-template-rows:1fr;}
+  .subtopic-content-inner{overflow:hidden;}
+  .note-grid{display:flex; flex-wrap:wrap; gap:10px; padding:2px 18px 18px;}
+  .note-card{
+    display:flex; align-items:center; gap:8px; padding:9px 15px; border-radius:12px;
+    text-decoration:none; color:var(--ink); cursor:default; background:var(--panel-soft); border:1px solid transparent;
+  }
+  .note-card:hover{border-color:var(--accent); box-shadow:0 6px 14px rgba(var(--accent-rgb),0.15); transform:translateY(-1px);}
+  .note-card .note-num{font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; color:var(--accent); flex-shrink:0;}
+  .note-card .note-title{font-family:'IBM Plex Sans',sans-serif; font-size:13px; font-weight:500;}
+  .note-item.is-hidden{display:none;}
+
+  /* ---- rich interactive note: click a pill tab to open its own page ---- */
+  .note-tab{
+    font-family:inherit; -webkit-appearance:none; appearance:none; cursor:pointer;
+    transition:border-color .15s ease, box-shadow .15s ease, background-color .15s ease, transform .15s ease;
+  }
+  .note-tab:hover{transform:translateY(-1px); border-color:var(--accent);}
+
+  .note-panel{display:none;}
+  .note-panel.is-active{display:block;}
+
+  /* ---- dedicated note "page" (opens when a tab pill is clicked) ---- */
+  .note-page{display:none;}
+  .note-page.show{display:block; margin-top:28px;}
+  .note-page-back{
+    display:inline-flex; align-items:center; gap:8px; font-family:'IBM Plex Mono',monospace; font-size:13px;
+    color:var(--ink-soft); background:none; border:none; cursor:pointer; padding:0; margin-bottom:20px; transition:color .15s ease;
+  }
+  .note-page-back:hover{color:var(--accent);}
+  .note-page-back svg{width:14px; height:14px;}
+
+  .note-page-header{display:flex; align-items:center; gap:16px; margin-bottom:22px;}
+  .note-page-badge{
+    width:52px; height:52px; flex-shrink:0; border-radius:16px; display:flex; align-items:center; justify-content:center;
+    font-family:'IBM Plex Mono',monospace; font-size:15px; font-weight:700; color:var(--accent);
+    background:rgba(var(--accent-rgb),0.14);
+  }
+  .note-page-titles{display:flex; flex-direction:column; gap:4px;}
+  .note-page-eyebrow{font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--ink-soft); letter-spacing:0.04em;}
+  .note-page-title{font-size:24px;}
+
+
+  /* ---- visual note blocks (Revision-Village-style cards) ---- */
+  .np-intro{
+    display:flex; align-items:center; gap:18px; flex-wrap:wrap; padding:22px 24px; margin-bottom:20px;
+    background:var(--panel); border:1px solid var(--rule); border-radius:16px;
+  }
+  .np-intro-text{flex:1; min-width:200px; font-family:'IBM Plex Sans',sans-serif; font-size:14px; color:var(--ink); line-height:1.6; margin:0;}
+  .np-intro-formula{font-size:1.5em; flex-shrink:0; margin-left:auto;}
+
+  .np-icon-circle{
+    width:44px; height:44px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center;
+    background:rgba(var(--c-rgb),0.16); color:var(--c); font-family:'Space Grotesk',sans-serif; font-style:italic; font-weight:700; font-size:17px;
+  }
+  .np-icon-circle svg{width:20px; height:20px;}
+  .np-icon-circle-sm{width:32px; height:32px; font-size:14px;}
+  .np-icon-circle-sm svg{width:15px; height:15px;}
+
+  .np-card{padding:22px 24px 24px; margin-bottom:20px; background:var(--panel); border:1px solid var(--rule); border-radius:16px;}
+  .np-card-heading{font-size:15px; margin:0 0 16px; display:flex; align-items:center; gap:10px;}
+  .np-card-icon{
+    width:32px; height:32px; border-radius:9px; display:flex; align-items:center; justify-content:center; flex-shrink:0;
+    background:rgba(var(--c-rgb),0.16); color:var(--c);
+  }
+  .np-card-icon svg{width:15px; height:15px;}
+
+  .np-ingredients-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:14px;}
+  .np-ingredient{padding:16px 16px 18px; border-radius:14px; background:rgba(var(--c-rgb),0.06); border:1px solid rgba(var(--c-rgb),0.22);}
+  .np-ingredient-label{font-family:'Space Grotesk',sans-serif; font-size:13.5px; font-weight:600; color:var(--c); margin:10px 0 6px;}
+  .np-ingredient-formula{margin:0 0 4px; overflow-x:auto; padding-bottom:2px;}
+  .np-ingredient-desc{font-family:'IBM Plex Sans',sans-serif; font-size:12px; color:var(--ink-soft); margin:0;}
+
+  /* list variant: for entries with longer formulas, avoid an uneven trailing row */
+  .np-ingredients-grid.is-list{grid-template-columns:1fr; gap:10px;}
+  .np-ingredients-grid.is-list .np-ingredient{display:flex; align-items:center; gap:16px; padding:14px 18px;}
+  .np-ingredients-grid.is-list .np-ingredient-label{margin:0 0 4px;}
+  .np-ingredients-grid.is-list .np-ingredient-text{flex:1; min-width:0;}
+
+  .np-columns{display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:20px;}
+  .np-columns .np-card{margin-bottom:0;}
+
+  .np-subcard{padding:16px 18px 18px; border-radius:14px; background:rgba(var(--c-rgb),0.06); border:1px solid rgba(var(--c-rgb),0.22); margin-bottom:14px;}
+  .np-subcard:last-child{margin-bottom:0;}
+  .np-subcard-head{display:flex; align-items:center; gap:12px; margin-bottom:14px;}
+  .np-subcard-title{font-family:'Space Grotesk',sans-serif; font-size:14px; font-weight:600; color:var(--c); margin:0;}
+  .np-subcard-desc{font-family:'IBM Plex Sans',sans-serif; font-size:12px; color:var(--ink-soft); margin:2px 0 0;}
+
+  .np-example{
+    display:flex; align-items:center; justify-content:center; gap:14px; padding:14px 16px; margin-bottom:12px;
+    background:var(--panel-soft); border-radius:10px; font-size:15px; color:var(--ink); text-align:center;
+  }
+  .np-example-arrow{color:var(--ink-soft); font-size:1.1em; flex-shrink:0;}
+  .np-example .np-highlight .katex{color:var(--c);}
+
+  .np-mini-steps{display:flex; flex-direction:column; gap:8px;}
+  .np-mini-step{display:flex; align-items:baseline; gap:10px; font-family:'IBM Plex Sans',sans-serif; font-size:12.5px; color:var(--ink-soft);}
+  .np-mini-num{
+    width:18px; height:18px; border-radius:50%; background:rgba(var(--c-rgb),0.18); color:var(--c);
+    display:inline-flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-size:10px; font-weight:700; flex-shrink:0;
+  }
+
+  .np-steps{display:flex; flex-direction:column; gap:16px;}
+  .np-step{display:flex; gap:14px;}
+  .np-step-num{
+    width:28px; height:28px; border-radius:50%; background:var(--c); color:#fff; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:700;
+  }
+  .np-step-title{font-family:'Space Grotesk',sans-serif; font-size:13.5px; font-weight:600; color:var(--c); margin:0 0 4px;}
+  .np-step-desc{font-family:'IBM Plex Sans',sans-serif; font-size:12.5px; color:var(--ink-soft); margin:0 0 8px;}
+  .np-step-formula{padding:10px 14px; background:var(--panel-soft); border-radius:9px; font-size:13.5px; overflow-x:auto;}
+  .np-highlight{color:var(--c); font-weight:700;}
+  .np-highlight .katex{color:var(--c);}
+
+  .np-remember{
+    display:flex; align-items:center; gap:16px; padding:18px 22px; margin-bottom:20px;
+    background:rgba(var(--cyan-rgb),0.07); border:1px solid rgba(var(--cyan-rgb),0.25); border-radius:16px;
+  }
+  .np-remember .np-icon-circle{--c:var(--cyan); --c-rgb:var(--cyan-rgb);}
+  .np-remember-body{flex:1; min-width:160px;}
+  .np-remember-label{font-family:'Space Grotesk',sans-serif; font-size:13.5px; font-weight:700; color:var(--cyan); margin:0 0 4px;}
+  .np-remember-body p:last-child{font-family:'IBM Plex Sans',sans-serif; font-size:12.5px; color:var(--ink-soft); margin:0; line-height:1.55;}
+  .np-remember-deco{color:var(--cyan); opacity:.45; flex-shrink:0;}
+  .np-remember-deco svg{width:26px; height:26px;}
+
+  .np-practice{
+    display:flex; align-items:center; gap:16px; padding:18px 22px; flex-wrap:wrap;
+    background:rgba(var(--accent-rgb),0.07); border:1px solid rgba(var(--accent-rgb),0.25); border-radius:16px;
+  }
+  .np-practice .np-icon-circle{--c:var(--accent); --c-rgb:var(--accent-rgb);}
+  .np-practice-body{flex:1; min-width:180px;}
+  .np-practice-title{font-family:'Space Grotesk',sans-serif; font-size:13.5px; font-weight:700; color:var(--ink); margin:0 0 4px;}
+  .np-practice-body p:last-child{font-family:'IBM Plex Sans',sans-serif; font-size:12.5px; color:var(--ink-soft); margin:0;}
+  .np-practice-btn{
+    display:inline-flex; align-items:center; gap:8px; font-family:'IBM Plex Sans',sans-serif; font-size:13px; font-weight:600;
+    color:#fff; background:var(--accent); border-radius:11px; padding:11px 20px; text-decoration:none; flex-shrink:0;
+    transition:filter .2s ease;
+  }
+  .np-practice-btn:hover{filter:brightness(1.08);}
+  .np-practice-btn svg{width:14px; height:14px;}
+
+  @media (max-width:760px){
+    .np-columns{grid-template-columns:1fr;}
+    .np-intro{flex-direction:column; align-items:flex-start;}
+    .np-intro-formula{margin-left:0;}
+  }
+
+  section.intro{padding:52px 0 0;}
+
+  footer{padding:60px 0 56px; font-size:11px; color:var(--ink-soft); font-family:'IBM Plex Mono',monospace; text-align:center; letter-spacing:0.06em;}
+  footer .status-dot{display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--cyan); box-shadow:0 0 8px var(--cyan); margin-right:8px; animation:pulse 2s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:1;} 50%{opacity:0.35;}}
+
+  .no-results{display:none; text-align:center; padding:60px 0; font-family:'IBM Plex Mono',monospace; color:var(--ink-soft); font-size:13px;}
+  .no-results.show{display:block;}
+
+  @media (max-width:520px){
+    .topbar-title{display:none;}
+    .search-box input{width:90px;}
+    .subject-hero h1{font-size:22px;}
+    .filter-row .search-box input{width:auto;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    footer .status-dot{animation:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a href="index.html" class="logo">IB<span>::HUB</span></a>
+    <div class="topbar-title">IB Subjects Hub</div>
+    <div class="topbar-actions">
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" placeholder="search_">
+      </div>
+      <nav><a href="#">Login</a></nav>
+      <div class="theme-switch-wrap">
+        <span class="theme-label" id="label-light">Light</span>
+        <button class="theme-switch" id="theme-toggle" type="button" aria-label="Toggle dark mode">
+          <span class="knob"></span><span class="switch-dot"></span>
+        </button>
+        <span class="theme-label" id="label-dark">Dark</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="crumbbar term-panel">
+    <a href="subject.html?s=maths&course=aa" class="crumb">&larr; Mathematics / <b>Revision Notes</b></a>
+    <button class="copy-btn" id="copy-link" title="Copy link" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="1"></rect><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"></path></svg>
+    </button>
+  </div>
+
+  <div id="notes-outline">
+
+    <div class="subject-hero term-panel">
+      <div class="subject-hero-row">
+        <div class="subject-glyph">√x</div>
+        <div>
+          <h1>Mathematics: AA HL Revision Notes</h1>
+          <p class="tagline">Full syllabus outline, sorted by topic and sub-topic</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="quicknav term-panel" id="quicknav"></div>
+
+    <div class="filter-row">
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" id="topic-filter" placeholder="filter topics, e.g. 'vectors' or 'induction'_">
+      </div>
+      <button class="fold-btn" id="expand-all" type="button">Expand all</button>
+      <button class="fold-btn" id="collapse-all" type="button">Collapse all</button>
+      <span class="filter-count" id="filter-count"></span>
+    </div>
+
+    <div id="topics"></div>
+
+    <p class="no-results" id="no-results">No topics match that search — try a different term.</p>
+
+  </div>
+
+  <div class="note-page" id="note-page"></div>
+
+</div>
+
+<footer>
+  <div class="wrap"><span class="status-dot"></span>SYSTEM ONLINE — IB SUBJECTS HUB, NOTES &amp; PAST PAPERS FOR EVERY DP SUBJECT</div>
+</footer>
+
+<script src="theme.js"></script>
+<script>
+// ---------- topic data ----------
+// each topic: { id, num, label, subtopics:[ { num, title, subs:[...] } ] }
+var topics = [
+  { id:'topic1', num:'Topic 1', label:'Number &amp; Algebra', accent:'cyan', subtopics:[
+    { num:'1.1', title:'Number &amp; Algebra Tools', subs:[
+      { num:'1.1.1', title:'Standard Form',
+        blocks:[
+          { type:'intro', icon:'zap', color:'violet',
+            text:'Standard form is a way of writing numbers that makes them easier to read, compare and calculate with.',
+            formula:'a \\times 10^{n}'
+          },
+          { type:'ingredients', heading:'Key Ingredients', items:[
+            { iconText:'a', color:'cyan', label:'The Number (a)', formula:'1 \\le a < 10', desc:'(between 1 and 10)' },
+            { iconText:'n+', color:'green', label:'Positive Power (n > 0)', desc:'For large numbers' },
+            { iconText:'n−', color:'pink', label:'Negative Power (n < 0)', desc:'For small numbers' }
+          ]},
+          { type:'columns', items:[
+            { type:'cardgroup', heading:'Writing Numbers in Standard Form', cards:[
+              { icon:'arrowUpRight', color:'green', title:'Large Numbers', desc:'Move the decimal point to the right.',
+                example:{ from:'9\\,150\\,000', to:'9.15 \\times 10^{6}' },
+                miniSteps:['$a = 9.15$ (between 1 and 10)', '$n = 6$ (6 places to the right)']
+              },
+              { icon:'arrowDownLeft', color:'violet', title:'Small Numbers', desc:'Move the decimal point to the left.',
+                example:{ from:'0.000032', to:'3.2 \\times 10^{-5}' },
+                miniSteps:['$a = 3.2$ (between 1 and 10)', '$n = -5$ (5 places to the left)']
+              }
+            ]},
+            { type:'steps', heading:'Multiplying in Standard Form', icon:'calculator', color:'amber', steps:[
+              { title:'Multiply separately', desc:'Multiply the "a" parts and the "ten" parts.',
+                formula:'$(7\\times10^{2})\\times(6\\times10^{4}) = (7\\times6)\\times(10^{2}\\times10^{4})$' },
+              { title:'Combine powers of ten', desc:'Add the powers.',
+                formula:'$10^{2}\\times10^{4} = 10^{2+4} = 10^{6}$' },
+              { title:'Write in standard form', desc:'',
+                formula:'$42\\times10^{6} =$ <span class="np-highlight">$4.2\\times10^{7}$</span>' }
+            ]}
+          ]},
+          { type:'columns', items:[
+            { type:'steps', heading:'Dividing in Standard Form', icon:'calculator', color:'amber', steps:[
+              { title:'Divide separately', desc:'Divide the "a" parts and the "ten" parts.',
+                formula:'$(4\\times10^{-9})\\div(5\\times10^{-2}) = (4\\div5)\\times(10^{-9}\\div10^{-2})$' },
+              { title:'Combine powers of ten', desc:'Subtract the powers.',
+                formula:'$10^{-9}\\div10^{-2} = 10^{-9-(-2)} = 10^{-7}$' },
+              { title:'Write in standard form', desc:'',
+                formula:'$0.8\\times10^{-7} =$ <span class="np-highlight">$8\\times10^{-8}$</span>' }
+            ]},
+            { type:'cardgroup', heading:'Adding &amp; Subtracting', cards:[
+              { iconText:'+', color:'green', title:'Adding', desc:'Match the highest power of 10, then add the "a" parts.',
+                example:{ from:'(6\\times10^{30})+(9\\times10^{27})', to:'6.009 \\times 10^{30}' },
+                miniSteps:['$9\\times10^{27}$ is 1000&times; smaller: $0.009\\times10^{30}$', '$(6+0.009)\\times10^{30}$']
+              },
+              { iconText:'−', color:'pink', title:'Subtracting', desc:'Same idea — match the powers first, then subtract.',
+                example:{ from:'(7\\times10^{-15})-(4\\times10^{-17})', to:'6.96 \\times 10^{-15}' },
+                miniSteps:['$4\\times10^{-17}$ is 100&times; smaller: $0.04\\times10^{-15}$', '$(7-0.04)\\times10^{-15}$']
+              }
+            ]}
+          ]},
+          { type:'remember', text:'Keep $1 \\le a < 10$. If $a$ is not in this range after a calculation, adjust it and change $n$ accordingly!' },
+          { type:'practice', text:'Try a full past-paper style question on standard form.', href:'maths-question-bank.html#qcard-1' }
+        ]
+      },
+      { num:'1.1.2', title:'Laws of Indices',
+        blocks:[
+          { type:'intro', icon:'zap', color:'violet',
+            text:'Indices (exponents) follow a set of rules that let you simplify expressions involving powers without a calculator.',
+            formula:'a^{m}\\times a^{n} = a^{m+n}'
+          },
+          { type:'ingredients', heading:'Key Laws', items:[
+            { iconText:'×', color:'cyan', label:'Multiplying Powers', formula:'a^{m}\\times a^{n}=a^{m+n}', desc:'Add the powers' },
+            { iconText:'÷', color:'green', label:'Dividing Powers', formula:'\\dfrac{a^{m}}{a^{n}}=a^{m-n}', desc:'Subtract the powers' },
+            { iconText:'xⁿ', color:'pink', label:'Power of a Power', formula:'(a^{m})^{n}=a^{mn}', desc:'Multiply the powers' }
+          ]},
+          { type:'columns', items:[
+            { type:'cardgroup', heading:'Zero &amp; Negative Indices', cards:[
+              { iconText:'0', color:'cyan', title:'Zero Index', desc:'Anything (non-zero) to the power 0 is 1.',
+                example:{ from:'a^{0}', to:'1' } },
+              { iconText:'−', color:'pink', title:'Negative Index', desc:'A negative power means reciprocal.',
+                example:{ from:'2^{-3}', to:'\\dfrac{1}{8}' },
+                miniSteps:['$2^{-3}=\\dfrac{1}{2^{3}}$', 'which is $\\dfrac{1}{8}$']
+              }
+            ]},
+            { type:'steps', heading:'Fractional Indices', icon:'calculator', color:'amber', steps:[
+              { title:'Root, then power', desc:'A power of m/n means take the n-th root, then raise to the m.',
+                formula:'$a^{\\frac{m}{n}} = \\left(\\sqrt[n]{a}\\right)^{m}$' },
+              { title:'Take the root first', desc:'e.g. simplify $8^{\\frac{2}{3}}$ — take the cube root first',
+                formula:'$\\sqrt[3]{8} = 2$' },
+              { title:'Then apply the power', desc:'',
+                formula:'$2^{2} =$ <span class="np-highlight">$4$</span>' }
+            ]}
+          ]},
+          { type:'remember', text:'A negative index does <b>not</b> make the value negative — it flips to a reciprocal. And take the root <b>before</b> the power for fractional indices; it keeps the numbers small.' },
+          { type:'practice', text:'Try questions on simplifying expressions with indices.', href:'maths-question-bank.html' }
+        ]
+      },
+      { num:'1.1.3', title:'Partial Fractions',
+        blocks:[
+          { type:'intro', icon:'zap', color:'violet',
+            text:'Partial fractions reverse the process of adding fractions together — splitting one algebraic fraction into a sum of simpler ones.',
+            formula:'\\dfrac{f(x)}{(x-a)(x-b)} = \\dfrac{A}{x-a}+\\dfrac{B}{x-b}'
+          },
+          { type:'ingredients', heading:'Key Forms', layout:'list', items:[
+            { iconText:'1', color:'cyan', label:'Two Distinct Linear Factors',
+              formula:'\\dfrac{px+q}{(x-a)(x-b)} \\rightarrow \\dfrac{A}{x-a}+\\dfrac{B}{x-b}', desc:'$a \\ne b$ — one term per factor' },
+            { iconText:'2', color:'green', label:'One Repeated Linear Factor',
+              formula:'\\dfrac{px+q}{(x-a)^{2}} \\rightarrow \\dfrac{A}{x-a}+\\dfrac{B}{(x-a)^{2}}', desc:'The repeat needs two terms' },
+            { iconText:'3', color:'pink', label:'Three Distinct Linear Factors',
+              formula:'\\dfrac{px^{2}+qx+r}{(x-a)(x-b)(x-c)} \\rightarrow \\dfrac{A}{x-a}+\\dfrac{B}{x-b}+\\dfrac{C}{x-c}', desc:'One term per factor' },
+            { iconText:'4', color:'violet', label:'Repeated + Distinct Factor',
+              formula:'\\dfrac{px^{2}+qx+r}{(x-a)^{2}(x-b)} \\rightarrow \\dfrac{A}{x-a}+\\dfrac{B}{(x-a)^{2}}+\\dfrac{C}{x-b}', desc:'The repeated factor gets two terms' },
+            { iconText:'5', color:'teal', label:'Linear + Irreducible Quadratic',
+              formula:'\\dfrac{px^{2}+qx+r}{(x-a)(x^{2}+bx+c)} \\rightarrow \\dfrac{A}{x-a}+\\dfrac{Bx+C}{x^{2}+bx+c}', desc:'$x^{2}+bx+c$ can’t be factorised further' }
+          ]},
+          { type:'columns', items:[
+            { type:'steps', heading:'Distinct Linear Factors', icon:'calculator', color:'amber', steps:[
+              { title:'Set up the identity', desc:'e.g. express $\\dfrac{5x+33}{(x-3)(x+5)}$ as partial fractions',
+                formula:'$5x+33=A(x+5)+B(x-3)$' },
+              { title:'Substitute the roots', desc:'Let $x=3$, then $x=-5$',
+                formula:'$48=8A \\Rightarrow A=6, \\qquad 8=-8B \\Rightarrow B=-1$' },
+              { title:'Write the result', desc:'',
+                formula:'<span class="np-highlight">$\\dfrac{6}{x-3}-\\dfrac{1}{x+5}$</span>' }
+            ]},
+            { type:'steps', heading:'Repeated Linear Factor', icon:'calculator', color:'amber', steps:[
+              { title:'Set up the identity', desc:'e.g. express $\\dfrac{23-4x}{(x+1)(x-2)^{2}}$ as partial fractions',
+                formula:'$23-4x=A(x-2)^{2}+B(x+1)(x-2)+C(x+1)$' },
+              { title:'Substitute the roots', desc:'Let $x=-1$, then $x=2$',
+                formula:'$27=9A \\Rightarrow A=3, \\qquad 15=3C \\Rightarrow C=5$' },
+              { title:'Compare coefficients', desc:'Match the $x^{2}$ terms to find the last unknown',
+                formula:'$0=A+B \\Rightarrow$ <span class="np-highlight">$B=-3$</span>' }
+            ]}
+          ]},
+          { type:'remember', text:'For a repeated factor like $(x-b)^{2}$, you need <b>both</b> $\\frac{B}{x-b}$ and $\\frac{C}{(x-b)^2}$ — using only one term for it is the single most common error.' },
+          { type:'practice', text:'Try a full past-paper style question on partial fractions with a repeated factor.', href:'maths-question-bank.html#qcard-2' }
+        ]
+      }
+    ] },
+    { num:'1.2', title:'Exponentials &amp; Logs', subs:['1.2.1 Introduction to Logarithms','1.2.2 Laws of Logarithms','1.2.3 Solving Exponential Equations'] },
+    { num:'1.3', title:'Sequences &amp; Series', subs:['1.3.1 Language of Sequences &amp; Series','1.3.2 Arithmetic Sequences &amp; Series','1.3.3 Geometric Sequences &amp; Series','1.3.4 Applications of Sequences &amp; Series','1.3.5 Compound Interest &amp; Depreciation'] },
+    { num:'1.4', title:'Simple Proof &amp; Reasoning', subs:['1.4.1 Proof'] },
+    { num:'1.5', title:'Further Proof &amp; Reasoning', subs:['1.5.1 Proof by Induction','1.5.2 Proof by Contradiction'] },
+    { num:'1.6', title:'Binomial Theorem', subs:['1.6.1 Binomial Theorem','1.6.2 Extension of The Binomial Theorem'] },
+    { num:'1.7', title:'Permutations &amp; Combinations', subs:['1.7.1 Counting Principles','1.7.2 Permutations &amp; Combinations'] },
+    { num:'1.8', title:'Complex Numbers', subs:['1.8.1 Intro to Complex Numbers','1.8.2 Modulus &amp; Argument','1.8.3 Introduction to Argand Diagrams'] },
+    { num:'1.9', title:'Further Complex Numbers', subs:['1.9.1 Geometry of Complex Numbers','1.9.2 Forms of Complex Numbers','1.9.3 Complex Roots of Polynomials',"1.9.4 De Moivre's Theorem",'1.9.5 Roots of Complex Numbers'] },
+    { num:'1.10', title:'Systems of Linear Equations', subs:['1.10.1 Systems of Linear Equations','1.10.2 Algebraic Solutions'] }
+  ]},
+  { id:'topic2', num:'Topic 2', label:'Functions', accent:'violet', subtopics:[
+    { num:'2.1', title:'Linear Functions &amp; Graphs', subs:['2.1.1 Equations of a Straight Line'] },
+    { num:'2.2', title:'Quadratic Functions &amp; Graphs', subs:['2.2.1 Quadratic Functions','2.2.2 Factorising &amp; Completing the Square','2.2.3 Solving Quadratics','2.2.4 Quadratic Inequalities','2.2.5 Discriminants'] },
+    { num:'2.3', title:'Functions Tools', subs:['2.3.1 Language of Functions','2.3.2 Composite &amp; Inverse Functions','2.3.3 Symmetry of Functions','2.3.4 Graphing Functions'] },
+    { num:'2.4', title:'Other Functions &amp; Graphs', subs:['2.4.1 Exponential &amp; Logarithmic Functions','2.4.2 Solving Equations','2.4.3 Modelling with Functions'] },
+    { num:'2.5', title:'Reciprocal &amp; Rational Functions', subs:['2.5.1 Reciprocal &amp; Rational Functions'] },
+    { num:'2.6', title:'Transformations of Graphs', subs:['2.6.1 Translations of Graphs','2.6.2 Reflections of Graphs','2.6.3 Stretches of Graphs','2.6.4 Composite Transformations of Graphs'] },
+    { num:'2.7', title:'Polynomial Functions', subs:['2.7.1 Factor &amp; Remainder Theorem','2.7.2 Polynomial Division','2.7.3 Polynomial Functions','2.7.4 Roots of Polynomials'] },
+    { num:'2.8', title:'Inequalities', subs:['2.8.1 Solving Inequalities Graphically','2.8.2 Polynomial Inequalities'] },
+    { num:'2.9', title:'Further Functions &amp; Graphs', subs:['2.9.1 Modulus Functions','2.9.2 Modulus Transformations','2.9.3 Modulus Equations &amp; Inequalities','2.9.4 Reciprocal &amp; Square Transformations'] }
+  ]},
+  { id:'topic3', num:'Topic 3', label:'Geometry &amp; Trigonometry', accent:'green', subtopics:[
+    { num:'3.1', title:'Geometry Tools', subs:['3.1.1 Coordinate Geometry','3.1.2 Radian Measure','3.1.3 Arcs &amp; Sectors'] },
+    { num:'3.2', title:'Geometry of 3D Shapes', subs:['3.2.1 3D Coordinate Geometry','3.2.2 Volume &amp; Surface Area'] },
+    { num:'3.3', title:'Trigonometry Tools', subs:['3.3.1 Pythagoras &amp; Right-Angled Trigonometry','3.3.2 Non Right-Angled Trigonometry','3.3.3 Applications of Trigonometry &amp; Pythagoras'] },
+    { num:'3.4', title:'Trigonometry', subs:['3.4.1 The Unit Circle','3.4.2 Exact Values'] },
+    { num:'3.5', title:'Trigonometric Functions &amp; Graphs', subs:['3.5.1 Graphs of Trigonometric Functions','3.5.2 Transformations of Trigonometric Functions','3.5.3 Modelling with Trigonometric Functions'] },
+    { num:'3.6', title:'Trigonometric Equations &amp; Identities', subs:['3.6.1 Simple Identities','3.6.2 Compound Angle Formulae','3.6.3 Double Angle Formulae','3.6.4 Relationship Between Trigonometric Ratios','3.6.5 Linear Trigonometric Equations','3.6.6 Quadratic Trigonometric Equations'] },
+    { num:'3.7', title:'Inverse &amp; Reciprocal Trig Functions', subs:['3.7.1 Reciprocal Trig Functions','3.7.2 Inverse Trig Functions'] },
+    { num:'3.8', title:'Further Trigonometry', subs:['3.8.1 Trigonometric Proof','3.8.2 Strategy for Trigonometric Equations'] },
+    { num:'3.9', title:'Vector Properties', subs:['3.9.1 Introduction to Vectors','3.9.2 Position &amp; Displacement Vectors','3.9.3 Magnitude of a Vector','3.9.4 The Scalar Product','3.9.5 The Vector Product','3.9.6 Geometric Proof with Vectors'] },
+    { num:'3.10', title:'Vector Equations of Lines', subs:['3.10.1 Vector Equations of Lines','3.10.2 Applications to Kinematics','3.10.3 Pairs of Lines in 3D','3.10.4 Shortest Distances with Lines'] },
+    { num:'3.11', title:'Vector Planes', subs:['3.11.1 Vector Equations of Planes','3.11.2 Intersections of Lines &amp; Planes','3.11.3 Angles Between Lines &amp; Planes','3.11.4 Shortest Distances with Planes'] }
+  ]},
+  { id:'topic4', num:'Topic 4', label:'Statistics &amp; Probability', accent:'teal', subtopics:[
+    { num:'4.1', title:'Statistics Tools', subs:['4.1.1 Sampling &amp; Data Collection','4.1.2 Statistical Measures','4.1.3 Frequency Tables','4.1.4 Linear Transformations of Data','4.1.5 Outliers','4.1.6 Univariate Data','4.1.7 Interpreting Data'] },
+    { num:'4.2', title:'Correlation &amp; Regression', subs:['4.2.1 Bivariate Data','4.2.2 Correlation &amp; Regression'] },
+    { num:'4.3', title:'Probability', subs:['4.3.1 Probability &amp; Types of Events','4.3.2 Conditional Probability',"4.3.3 Bayes' Theorem",'4.3.4 Sample Space Diagrams'] },
+    { num:'4.4', title:'Probability Distributions', subs:['4.4.1 Discrete Probability Distributions','4.4.2 Mean &amp; Variance'] },
+    { num:'4.5', title:'Binomial Distribution', subs:['4.5.1 The Binomial Distribution','4.5.2 Calculating Binomial Probabilities'] },
+    { num:'4.6', title:'Normal Distribution', subs:['4.6.1 The Normal Distribution','4.6.2 Calculations with Normal Distribution','4.6.3 Standardisation of Normal Variables'] },
+    { num:'4.7', title:'Further Probability Distributions', subs:['4.7.1 Probability Density Function'] }
+  ]},
+  { id:'topic5', num:'Topic 5', label:'Calculus', accent:'coral', subtopics:[
+    { num:'5.1', title:'Differentiation', subs:['5.1.1 Introduction to Differentiation','5.1.2 Applications of Differentiation'] },
+    { num:'5.2', title:'Further Differentiation', subs:['5.2.1 Differentiating Special Functions','5.2.2 Techniques of Differentiation','5.2.3 Higher Order Derivatives','5.2.4 Further Applications of Differentiation','5.2.5 Concavity &amp; Points of Inflection','5.2.6 Derivatives &amp; Graphs'] },
+    { num:'5.3', title:'Integration', subs:['5.3.1 Introduction to Integration','5.3.2 Applications of Integration'] },
+    { num:'5.4', title:'Further Integration', subs:['5.4.1 Integrating Special Functions','5.4.2 Techniques of Integration','5.4.3 Definite Integrals','5.4.4 Further Applications of Integration'] },
+    { num:'5.5', title:'Optimisation', subs:['5.5.1 Modelling with Differentiation'] },
+    { num:'5.6', title:'Kinematics', subs:['5.6.1 Kinematics Tools','5.6.2 Calculus for Kinematics'] },
+    { num:'5.7', title:'Basic Limits &amp; Continuity', subs:['5.7.1 Basic Limits &amp; Continuity'] },
+    { num:'5.8', title:'Advanced Differentiation', subs:['5.8.1 First Principles Differentiation','5.8.2 Applications of Chain Rule','5.8.3 Implicit Differentiation','5.8.4 Differentiating Further Functions'] },
+    { num:'5.9', title:'Advanced Integration', subs:['5.9.1 Integrating Further Functions','5.9.2 Further Techniques of Integration','5.9.3 Integrating with Partial Fractions','5.9.4 Advanced Applications of Integration','5.9.5 Modelling with Volumes of Revolution'] },
+    { num:'5.10', title:'Differential Equations', subs:['5.10.1 Numerical Solutions to Differential Equations','5.10.2 Analytical Solutions to Differential Equations','5.10.3 Modelling with Differential Equations'] },
+    { num:'5.11', title:'MacLaurin Series', subs:['5.11.1 Maclaurin Series','5.11.2 Maclaurin Series from Differential Equations'] },
+    { num:'5.12', title:"Further Limits (inc l'Hôpital's Rule)", subs:['5.12.1 Further Limits'] }
+  ]}
+];
+
+// ---------- build the page ----------
+var topicsEl = document.getElementById('topics');
+var quicknav = document.getElementById('quicknav');
+var totalAll = 0;
+var qnHtml = '';
+var notesByNum = {};
+
+topics.forEach(function(topic){
+  qnHtml += '<a href="#' + topic.id + '">' + topic.num + ' — ' + topic.label + '</a>';
+
+  var section = document.createElement('div');
+  section.className = 'topic-section';
+  section.id = topic.id;
+  section.style.setProperty('--accent', 'var(--' + topic.accent + ')');
+  section.style.setProperty('--accent-rgb', 'var(--' + topic.accent + '-rgb)');
+
+  var bodyHtml = '<div class="topic-head"><span class="topic-dot"></span><span class="topic-num">' + topic.num + '</span><h2>' + topic.label + '</h2><span class="topic-rule"></span></div>' +
+    '<div class="subtopic-grid">';
+
+  topic.subtopics.forEach(function(st){
+    bodyHtml += '<div class="subtopic-block is-collapsed term-panel" data-search="' + escapeAttr((st.num + ' ' + st.title).toLowerCase()) + '">' +
+      '<p class="subtopic-label">' +
+        '<svg class="subtopic-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"></path></svg>' +
+        '<span class="subtopic-num">' + st.num + '</span><span class="subtopic-title">' + st.title + '</span>' +
+        '<span class="subtopic-count">' + st.subs.length + '</span>' +
+      '</p>' +
+      '<div class="subtopic-content"><div class="subtopic-content-inner">';
+
+    var isRich = typeof st.subs[0] === 'object';
+    if(isRich){
+      bodyHtml += '<div class="note-grid">' + st.subs.map(function(s){
+        var searchText = stripTags([s.num, s.title].join(' ')).toLowerCase();
+        totalAll++;
+        notesByNum[s.num] = { sub:s, topic:topic, subtopic:st };
+        return '<button class="note-card note-item note-tab" data-note="' + s.num + '" data-search="' + escapeAttr(searchText) + '" type="button">' +
+          '<span class="note-num">' + s.num + '</span><span class="note-title">' + s.title + '</span></button>';
+      }).join('') + '</div>';
+    } else {
+      bodyHtml += '<div class="note-grid">' + st.subs.map(function(s){
+        totalAll++;
+        var m = s.match(/^(\S+)\s+(.+)$/);
+        var num = m ? m[1] : '';
+        var title = m ? m[2] : s;
+        return '<span class="note-card note-item" data-search="' + escapeAttr(s.toLowerCase()) + '">' +
+          '<span class="note-num">' + num + '</span><span class="note-title">' + title + '</span></span>';
+      }).join('') + '</div>';
+    }
+
+    bodyHtml += '</div></div></div>';
+  });
+  bodyHtml += '</div>';
+
+  section.innerHTML = bodyHtml;
+  topicsEl.appendChild(section);
+});
+
+quicknav.innerHTML = qnHtml;
+
+function escapeAttr(s){ return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;'); }
+function stripTags(html){ return html.replace(/<[^>]*>/g, '').replace(/\$/g, ''); }
+
+// ---------- icon library (feather-style, matches the rest of the site) ----------
+var ICONS = {
+  zap: '<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>',
+  arrowUpRight: '<line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline>',
+  arrowDownLeft: '<line x1="17" y1="7" x2="7" y2="17"></line><polyline points="17 17 7 17 7 7"></polyline>',
+  arrowRight: '<line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline>',
+  calculator: '<rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="8" y1="10" x2="8" y2="10.01"></line><line x1="12" y1="10" x2="12" y2="10.01"></line><line x1="16" y1="10" x2="16" y2="10.01"></line><line x1="8" y1="14" x2="8" y2="14.01"></line><line x1="12" y1="14" x2="12" y2="14.01"></line><line x1="16" y1="14" x2="16" y2="14.01"></line>',
+  star: '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>',
+  bulb: '<path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M12 2a7 7 0 0 0-4 12.5c.5.5 1 1.5 1 2.5h6c0-1 .5-2 1-2.5A7 7 0 0 0 12 2z"></path>',
+  rocket: '<path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"></path><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"></path>'
+};
+function svgIcon(name){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' + (ICONS[name] || '') + '</svg>'; }
+function colorVars(c){ return ' style="--c:var(--' + c + ');--c-rgb:var(--' + c + '-rgb);"'; }
+function iconBadge(item, sizeClass){
+  var inner = item.iconText ? '<span>' + item.iconText + '</span>' : svgIcon(item.icon);
+  return '<div class="np-icon-circle' + (sizeClass ? ' ' + sizeClass : '') + '"' + colorVars(item.color) + '>' + inner + '</div>';
+}
+
+// ---------- visual note blocks (Revision-Village-style cards) ----------
+function renderBlocks(blocks){ return blocks.map(renderBlock).join(''); }
+function renderBlock(b){
+  if(b.type === 'intro') return renderIntro(b);
+  if(b.type === 'ingredients') return renderIngredients(b);
+  if(b.type === 'columns') return '<div class="np-columns">' + b.items.map(renderColumn).join('') + '</div>';
+  if(b.type === 'remember') return renderRemember(b);
+  if(b.type === 'practice') return renderPractice(b);
+  return '';
+}
+function renderColumn(col){
+  if(col.type === 'cardgroup') return renderCardGroup(col);
+  if(col.type === 'steps') return renderSteps(col);
+  return '';
+}
+function renderIntro(b){
+  return '<div class="np-intro">' + iconBadge(b) +
+    '<p class="np-intro-text">' + b.text + '</p>' +
+    '<div class="np-intro-formula">$' + b.formula + '$</div>' +
+  '</div>';
+}
+function renderIngredients(b){
+  var isList = b.layout === 'list';
+  return '<div class="np-card"><h3 class="np-card-heading">' + b.heading + '</h3>' +
+    '<div class="np-ingredients-grid' + (isList ? ' is-list' : '') + '">' + b.items.map(function(it){
+      return '<div class="np-ingredient"' + colorVars(it.color) + '>' +
+        iconBadge(it, 'np-icon-circle-sm') +
+        '<div class="np-ingredient-text">' +
+          '<p class="np-ingredient-label">' + it.label + '</p>' +
+          (it.formula ? '<p class="np-ingredient-formula">$' + it.formula + '$</p>' : '') +
+          (it.desc ? '<p class="np-ingredient-desc">' + it.desc + '</p>' : '') +
+        '</div>' +
+      '</div>';
+    }).join('') + '</div>' +
+  '</div>';
+}
+function renderCardGroup(col){
+  return '<div class="np-card"><h3 class="np-card-heading">' + col.heading + '</h3>' +
+    col.cards.map(function(c){
+      return '<div class="np-subcard"' + colorVars(c.color) + '>' +
+        '<div class="np-subcard-head">' + iconBadge(c) +
+          '<div><p class="np-subcard-title">' + c.title + '</p><p class="np-subcard-desc">' + c.desc + '</p></div>' +
+        '</div>' +
+        (c.example ?
+          '<div class="np-example"><span>$' + c.example.from + '$</span>' +
+          '<span class="np-example-arrow">&rarr;</span>' +
+          '<span class="np-highlight">$' + c.example.to + '$</span></div>' : '') +
+        (c.miniSteps && c.miniSteps.length ?
+          '<div class="np-mini-steps">' + c.miniSteps.map(function(s, i){
+            return '<div class="np-mini-step"><span class="np-mini-num"' + colorVars(c.color) + '>' + (i + 1) + '</span><span>' + s + '</span></div>';
+          }).join('') + '</div>' : '') +
+      '</div>';
+    }).join('') +
+  '</div>';
+}
+function renderSteps(col){
+  return '<div class="np-card">' +
+    '<h3 class="np-card-heading">' + (col.icon ? '<span class="np-card-icon"' + colorVars(col.color) + '>' + svgIcon(col.icon) + '</span>' : '') + col.heading + '</h3>' +
+    '<div class="np-steps">' + col.steps.map(function(s, i){
+      return '<div class="np-step">' +
+        '<span class="np-step-num"' + colorVars(col.color) + '>' + (i + 1) + '</span>' +
+        '<div class="np-step-body">' +
+          '<p class="np-step-title"' + colorVars(col.color) + '>' + s.title + '</p>' +
+          (s.desc ? '<p class="np-step-desc">' + s.desc + '</p>' : '') +
+          '<div class="np-step-formula"' + colorVars(col.color) + '>' + s.formula + '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('') + '</div>' +
+  '</div>';
+}
+function renderRemember(b){
+  return '<div class="np-remember">' +
+    '<div class="np-icon-circle">' + svgIcon('star') + '</div>' +
+    '<div class="np-remember-body"><p class="np-remember-label">Remember</p><p>' + b.text + '</p></div>' +
+    '<div class="np-remember-deco">' + svgIcon('bulb') + '</div>' +
+  '</div>';
+}
+function renderPractice(b){
+  return '<div class="np-practice">' +
+    '<div class="np-icon-circle">' + svgIcon('rocket') + '</div>' +
+    '<div class="np-practice-body"><p class="np-practice-title">Practice makes progress!</p><p>' + b.text + '</p></div>' +
+    '<a class="np-practice-btn" href="' + b.href + '">Let’s Practice ' + svgIcon('arrowRight') + '</a>' +
+  '</div>';
+}
+
+// ---------- collapse / expand ----------
+document.querySelectorAll('.subtopic-label').forEach(function(label){
+  label.addEventListener('click', function(){
+    label.closest('.subtopic-block').classList.toggle('is-collapsed');
+  });
+});
+document.getElementById('expand-all').addEventListener('click', function(){
+  document.querySelectorAll('.subtopic-block').forEach(function(b){ b.classList.remove('is-collapsed'); });
+});
+document.getElementById('collapse-all').addEventListener('click', function(){
+  document.querySelectorAll('.subtopic-block').forEach(function(b){ b.classList.add('is-collapsed'); });
+});
+
+// ---------- rich note: click a tab pill to open its own page ----------
+document.querySelectorAll('.note-tab').forEach(function(tab){
+  tab.addEventListener('click', function(){
+    location.hash = 'note=' + tab.getAttribute('data-note');
+  });
+});
+
+var notesOutline = document.getElementById('notes-outline');
+var notePage = document.getElementById('note-page');
+
+function showNotePage(num){
+  var entry = notesByNum[num];
+  if(!entry) return;
+  notePage.style.setProperty('--accent', 'var(--' + entry.topic.accent + ')');
+  notePage.style.setProperty('--accent-rgb', 'var(--' + entry.topic.accent + '-rgb)');
+  notePage.innerHTML =
+    '<button class="note-page-back" id="note-page-back" type="button">' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg>' +
+      'Back to ' + entry.topic.label.replace(/&amp;/g, '&') + '' +
+    '</button>' +
+    '<div class="note-page-header">' +
+      '<span class="note-page-badge">' + entry.sub.num + '</span>' +
+      '<div class="note-page-titles">' +
+        '<span class="note-page-eyebrow">' + entry.topic.num + ' &middot; ' + entry.subtopic.title + '</span>' +
+        '<h2 class="note-page-title">' + entry.sub.title + '</h2>' +
+      '</div>' +
+    '</div>' +
+    '<div class="note-page-body">' + renderBlocks(entry.sub.blocks) + '</div>';
+
+  notesOutline.style.display = 'none';
+  notePage.classList.add('show');
+  window.scrollTo(0, 0);
+
+  document.getElementById('note-page-back').addEventListener('click', function(){ location.hash = ''; });
+  if(window.renderMathInElement){
+    renderMathInElement(notePage, {
+      delimiters: [{left:'$$', right:'$$', display:true}, {left:'$', right:'$', display:false}],
+      throwOnError:false
+    });
+  }
+}
+function showNotesOutline(){
+  notePage.classList.remove('show');
+  notePage.innerHTML = '';
+  notesOutline.style.display = '';
+}
+function syncFromHash(){
+  var match = location.hash.match(/^#note=([\d.]+)$/);
+  if(match && notesByNum[match[1]]) showNotePage(match[1]);
+  else showNotesOutline();
+}
+window.addEventListener('hashchange', syncFromHash);
+document.addEventListener('DOMContentLoaded', function(){
+  if(window.renderMathInElement){
+    renderMathInElement(document.getElementById('topics'), {
+      delimiters: [{left:'$$', right:'$$', display:true}, {left:'$', right:'$', display:false}],
+      throwOnError:false
+    });
+  }
+  // run after KaTeX has loaded, so a direct link to a note page renders its math correctly
+  syncFromHash();
+});
+
+// ---------- live filter ----------
+var filterInput = document.getElementById('topic-filter');
+var filterCount = document.getElementById('filter-count');
+var noResults = document.getElementById('no-results');
+
+function applyFilter(){
+  var q = filterInput.value.trim().toLowerCase();
+  var visibleCount = 0;
+  topics.forEach(function(topic){
+    var section = document.getElementById(topic.id);
+    var anyVisibleInSection = false;
+    section.querySelectorAll('.subtopic-block').forEach(function(block){
+      var anyVisibleInBlock = false;
+      block.querySelectorAll('.note-item').forEach(function(card){
+        var matches = !q || card.getAttribute('data-search').indexOf(q) !== -1 || block.getAttribute('data-search').indexOf(q) !== -1;
+        card.classList.toggle('is-hidden', !matches);
+        if(matches){ visibleCount++; anyVisibleInBlock = true; }
+      });
+      block.classList.toggle('is-empty', !anyVisibleInBlock);
+      block.classList.toggle('force-expand', !!q && anyVisibleInBlock);
+      if(anyVisibleInBlock) anyVisibleInSection = true;
+    });
+    section.classList.toggle('is-empty', !anyVisibleInSection);
+  });
+  filterCount.textContent = q ? (visibleCount + ' match' + (visibleCount === 1 ? '' : 'es')) : (totalAll + ' sub-topics');
+  noResults.classList.toggle('show', q && visibleCount === 0);
+}
+filterInput.addEventListener('input', applyFilter);
+
+applyFilter();
+
+document.getElementById('copy-link').addEventListener('click', function(){
+  navigator.clipboard && navigator.clipboard.writeText(window.location.href);
+});
+</script>
+
+</body>
+</html>

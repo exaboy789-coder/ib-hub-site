@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<script>
+  (function(){
+    var stored = localStorage.getItem('ib-hub-theme');
+    var theme = stored || 'light';
+    document.documentElement.setAttribute('data-theme', theme);
+  })();
+</script>
+<title>Question Bank — Mathematics AA — IB Subjects Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="theme.css">
+<style>
+  .term-panel,.search-box,.topbar,.quicknav a{transition:background-color .25s ease, border-color .25s ease, box-shadow .25s ease;}
+  html{scroll-behavior:smooth; background-color:var(--bg); min-height:100%;}
+  body{
+    margin:0; min-height:100vh; background-color:var(--bg); color:var(--ink);
+    font-family:'IBM Plex Sans', sans-serif; line-height:1.55;
+  }
+  .wrap{max-width:1320px;margin:0 auto;padding:0 24px;}
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace; font-size:12px; letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--accent); font-weight:500;
+  }
+  h1,h2,h3{font-family:'Space Grotesk', sans-serif; font-weight:600; margin:0; color:var(--ink);}
+
+  /* ---- top bar ---- */
+  .topbar{border-bottom:1px solid var(--rule); background:rgba(var(--panel-rgb),0.88); backdrop-filter:blur(8px); position:sticky; top:0; z-index:20;}
+  .topbar-inner{max-width:1320px;margin:0 auto;padding:16px 24px;display:flex;justify-content:space-between;align-items:center;gap:20px;}
+  .logo{font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:17px; white-space:nowrap; letter-spacing:0.02em;}
+  .logo span{color:var(--cyan);}
+  .topbar-title{font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--ink-soft); letter-spacing:0.1em; text-transform:uppercase; flex:1; text-align:center;}
+  .topbar-actions{display:flex; align-items:center; gap:14px;}
+  .search-box{display:flex; align-items:center; gap:8px; border:1.5px solid var(--rule); background:var(--panel); border-radius:999px; padding:9px 16px; transition:border-color .2s ease, box-shadow .2s ease;}
+  .search-box:focus-within{border-color:var(--cyan); box-shadow:0 0 0 4px rgba(var(--cyan-rgb),0.12);}
+  .search-box svg{width:14px;height:14px;flex-shrink:0;color:var(--ink-soft);}
+  .search-box input{border:none; outline:none; background:transparent; font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--ink); width:150px; caret-color:var(--cyan);}
+  .search-box input::placeholder{color:#566182;}
+  .topbar nav a{font-size:13px; text-decoration:none; color:var(--ink); font-weight:600; border:1.5px solid var(--rule); border-radius:999px; padding:9px 18px; transition:all .2s ease; background:var(--panel);}
+  .topbar nav a:hover{border-color:var(--cyan); color:var(--cyan); box-shadow:0 0 0 4px rgba(var(--cyan-rgb),0.1);}
+  .theme-switch{background:linear-gradient(135deg, var(--cyan), var(--pink));}
+
+  /* ---- friendly card ---- */
+  .term-panel{position:relative; border:1px solid var(--rule); background:var(--panel); border-radius:20px; box-shadow:0 2px 10px rgba(20,20,30,0.04);}
+
+  /* ---- breadcrumb ---- */
+  .crumbbar{margin:36px 0 0; padding:14px 20px; display:flex; align-items:center; justify-content:space-between;}
+  .crumb{font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--ink-soft); text-decoration:none; display:flex; align-items:center; gap:10px;}
+  .crumb b{color:var(--ink); font-weight:500;}
+  .crumb:hover{color:var(--accent);}
+  .copy-btn{
+    border:1.5px solid var(--rule); background:none; color:var(--ink-soft); width:32px; height:32px; border-radius:999px;
+    display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all .2s ease;
+  }
+  .copy-btn:hover{border-color:var(--accent); color:var(--accent); box-shadow:0 0 12px rgba(var(--accent-rgb),0.25);}
+  .copy-btn svg{width:14px;height:14px;}
+
+  /* ---- hero ---- */
+  .subject-hero{margin:18px 0 0; padding:34px 30px;}
+  .subject-hero-row{display:flex; align-items:center; gap:20px; flex-wrap:wrap;}
+  .subject-glyph{
+    width:64px; height:64px; flex-shrink:0; display:flex; align-items:center; justify-content:center;
+    font-family:'IBM Plex Mono', monospace; font-size:24px; font-weight:600;
+    border-radius:18px; color:var(--accent);
+    background:rgba(var(--accent-rgb),0.12);
+  }
+  .subject-hero h1{
+    font-size:28px; line-height:1.2; color:var(--ink);
+  }
+  .subject-hero .tagline{font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--ink-soft); margin-top:8px;}
+
+  /* ---- topic navigation sidebar ---- */
+  .qb-layout{display:flex; align-items:flex-start; gap:24px; margin-top:28px;}
+  .qb-main{flex:1; min-width:0;}
+
+  .side-nav{width:260px; flex-shrink:0; position:sticky; top:88px; padding:0; overflow:hidden;}
+
+  .side-nav-head{padding:18px 18px 16px; border-bottom:1px solid var(--rule);}
+  .side-nav-eyebrow{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.12em; text-transform:uppercase;
+    color:var(--cyan); font-weight:500;
+  }
+  .side-nav-title{font-size:17px; margin-top:2px;}
+
+  .side-nav-progress{display:flex; align-items:center; gap:12px; margin-top:14px;}
+  .progress-ring{
+    --pct:0; width:44px; height:44px; border-radius:50%; flex-shrink:0;
+    background:conic-gradient(var(--cyan) calc(var(--pct) * 1%), var(--rule) 0);
+    display:flex; align-items:center; justify-content:center; transition:background .4s ease;
+  }
+  .progress-ring-inner{
+    width:35px; height:35px; border-radius:50%; background:var(--panel);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'IBM Plex Mono',monospace; font-size:9.5px; font-weight:700; color:var(--ink);
+  }
+  .side-nav-progress-text{display:flex; flex-direction:column; gap:1px;}
+  .side-nav-progress-text span#progress-count{font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:700; color:var(--ink);}
+  .side-nav-progress-label{font-family:'IBM Plex Sans',sans-serif; font-size:10.5px; color:var(--ink-soft);}
+
+  .topic-row{border-bottom:1px solid var(--rule);}
+  .topic-row:last-child{border-bottom:none;}
+  .topic-btn{
+    width:100%; display:flex; align-items:center; gap:10px; padding:13px 16px; background:none; border:none;
+    cursor:pointer; text-align:left; transition:background-color .15s ease;
+  }
+  .topic-btn:hover{background:rgba(var(--accent-rgb),0.06);}
+  .topic-glyph{
+    width:28px; height:28px; flex-shrink:0; border-radius:9px; display:flex; align-items:center; justify-content:center;
+    font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:700; color:var(--accent);
+    background:rgba(var(--accent-rgb),0.14);
+  }
+  .topic-info{flex:1; min-width:0; display:flex; flex-direction:column; gap:2px;}
+  .topic-name{font-family:'Space Grotesk',sans-serif; font-size:13px; font-weight:600; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .topic-count{font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--accent);}
+  .topic-arrow{width:12px; height:12px; flex-shrink:0; color:var(--ink-soft); transition:transform .2s ease;}
+  .topic-row.is-open .topic-arrow{transform:rotate(180deg);}
+
+  .topic-body{display:grid; grid-template-rows:0fr; transition:grid-template-rows .22s ease;}
+  .topic-row.is-open .topic-body{grid-template-rows:1fr;}
+  .topic-body > *{overflow:hidden;}
+
+  .q-link{
+    display:flex; align-items:center; gap:9px; padding:9px 16px 9px 22px; text-decoration:none;
+    font-family:'IBM Plex Sans',sans-serif; font-size:12px; color:var(--ink-soft); transition:all .15s ease;
+  }
+  .q-link:hover{color:var(--accent); background:rgba(var(--accent-rgb),0.08);}
+  .q-link-dot{width:6px; height:6px; border-radius:50%; background:var(--accent); flex-shrink:0;}
+  .q-link.is-soon{color:var(--ink-soft); opacity:.55; cursor:default; font-style:italic;}
+  .q-link.is-soon:hover{background:none; color:var(--ink-soft);}
+
+  @keyframes qflash{
+    0%, 100%{box-shadow:0 2px 10px rgba(20,20,30,0.04);}
+    30%{box-shadow:0 0 0 4px rgba(var(--accent-rgb),0.35), 0 2px 10px rgba(20,20,30,0.04);}
+  }
+  .qcard.is-flashed{animation:qflash 1s ease;}
+
+  @media (max-width:900px){
+    .qb-layout{flex-direction:column;}
+    .side-nav{width:100%; position:static; top:auto;}
+  }
+
+  /* ---- question list ---- */
+  .qlist{margin:0; display:flex; flex-direction:column; gap:20px;}
+
+  /* ---- question card (compact profile) ---- */
+  .qcard{padding:0; position:relative;}
+  .qcard-accent{height:3px; width:100%; background:linear-gradient(90deg, var(--accent), var(--pink)); border-radius:20px 20px 0 0;}
+
+  .qcard-header{display:flex; align-items:flex-start; justify-content:space-between; gap:12px; padding:14px 18px 10px; flex-wrap:wrap;}
+  .qid-badge{
+    width:40px; height:40px; flex-shrink:0; border-radius:12px; display:flex; align-items:center; justify-content:center;
+    font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:700; color:var(--accent);
+    background:rgba(var(--accent-rgb),0.14);
+  }
+  .qtitle-group{display:flex; align-items:center; gap:11px;}
+  .qtitle-text{display:flex; flex-direction:column; gap:2px;}
+  .qtitle-text h2{font-size:15.5px;}
+  .qtitle-text .qtopic{font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--ink-soft); letter-spacing:0.03em;}
+
+  .qtools{display:flex; align-items:center; gap:8px; flex-shrink:0;}
+  .qtool-btn{
+    width:36px; height:36px; border-radius:50%; border:1.5px solid var(--rule); background:var(--panel);
+    color:var(--ink-soft); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all .2s ease; flex-shrink:0;
+  }
+  .qtool-btn svg{width:17px;height:17px;}
+  .qtool-btn:hover{border-color:var(--accent); color:var(--accent);}
+  .qtool-btn.is-active{background:var(--accent); border-color:var(--accent); color:#fff;}
+
+  .qchips{display:flex; align-items:center; gap:12px; flex-wrap:wrap; padding:0 18px 12px;}
+  .chip-calc{
+    display:flex; align-items:center; gap:6px; font-family:'IBM Plex Mono',monospace; font-size:10px; font-weight:700;
+    letter-spacing:0.04em; text-transform:uppercase; color:var(--accent); background:rgba(var(--accent-rgb),0.12);
+    border-radius:999px; padding:5px 12px 5px 8px;
+  }
+  .chip-calc svg{width:11px;height:11px;}
+  .chip-calc.no-calc{color:var(--ink-soft); background:var(--bg-soft);}
+  .chip-marks{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--ink-soft);}
+  .chip-diff{display:flex; align-items:center; gap:7px;}
+  .chip-diff-label{font-family:'IBM Plex Sans',sans-serif; font-size:11.5px; font-weight:600;}
+  .diff-track{width:50px; height:5px; border-radius:999px; background:var(--rule); overflow:hidden;}
+  .diff-fill{height:100%; border-radius:999px;}
+  .chip-diff.level-easy .chip-diff-label,.chip-diff.level-easy .diff-fill{color:var(--green); background:var(--green);}
+  .chip-diff.level-medium .chip-diff-label,.chip-diff.level-medium .diff-fill{color:var(--amber); background:var(--amber);}
+  .chip-diff.level-hard .chip-diff-label,.chip-diff.level-hard .diff-fill{color:var(--coral); background:var(--coral);}
+
+  .qcard-rule{border:none; border-top:1px solid var(--rule); margin:0;}
+
+  .qcard-body{display:flex; align-items:stretch;}
+  .qmain{flex:1; min-width:0; padding:16px 18px 18px;}
+  .qdock{
+    width:66px; flex-shrink:0; border-left:1px solid var(--rule); padding:14px 0;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px;
+  }
+  .dock-btn{
+    width:44px; height:44px; border-radius:13px; border:none; background:none; color:var(--ink-soft);
+    display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all .2s ease; position:relative;
+  }
+  .dock-btn svg{width:19px;height:19px;}
+  .dock-btn:hover{color:var(--accent); background:rgba(var(--accent-rgb),0.1);}
+  .dock-btn.is-active{color:var(--accent); background:rgba(var(--accent-rgb),0.14);}
+  .dock-btn.is-soon{color:var(--ink-soft); opacity:.5;}
+  .dock-label{font-family:'IBM Plex Mono',monospace; font-size:8.5px; letter-spacing:0.02em; text-transform:uppercase; color:var(--ink-soft); margin-top:-10px;}
+  .dock-divider{width:28px; height:1px; background:var(--rule);}
+
+  .qstem{font-family:'IBM Plex Sans',sans-serif; font-size:14.5px; color:var(--ink); margin:0 0 12px; line-height:1.7;}
+  .qparts{display:flex; flex-direction:column; gap:8px;}
+  .qpart-row{display:flex; align-items:baseline; gap:8px;}
+  .qpart-label{font-family:'IBM Plex Sans',sans-serif; font-size:13.5px; font-weight:600; color:var(--ink); flex-shrink:0;}
+  .qpart-text{font-family:'IBM Plex Sans',sans-serif; font-size:14.5px; color:var(--ink); flex:1; line-height:1.65;}
+  .qpart-marks{font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--ink-soft); flex-shrink:0;}
+  .qbody .katex{font-size:1.02em;}
+
+  .qinput{margin:14px 0 4px; position:relative;}
+  .qinput-label{
+    display:block; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.07em;
+    text-transform:uppercase; color:var(--ink-soft); margin:0 0 8px;
+  }
+  .qinput-row{display:flex; gap:8px; flex-wrap:wrap;}
+  .answer-field{
+    flex:1; min-width:150px; font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--ink);
+    background:var(--bg-soft); border:1.5px solid var(--rule); border-radius:11px; padding:9px 14px;
+    outline:none; transition:border-color .2s ease, box-shadow .2s ease;
+  }
+  .answer-field:focus{border-color:var(--accent); box-shadow:0 0 0 4px rgba(var(--accent-rgb),0.12);}
+  .submit-btn{
+    font-family:'IBM Plex Sans',sans-serif; font-size:12.5px; font-weight:600; color:#fff;
+    background:var(--accent); border:none; border-radius:11px; padding:9px 18px; cursor:pointer;
+    transition:filter .2s ease;
+  }
+  .submit-btn:hover{filter:brightness(1.08);}
+  .qfeedback{font-family:'IBM Plex Sans',sans-serif; font-size:12.5px; font-weight:600; margin:10px 0 0; min-height:16px;}
+  .qfeedback.is-correct{color:var(--green);}
+  .qfeedback.is-wrong{color:var(--coral);}
+  .qfeedback.is-warning{color:var(--amber);}
+
+  .qinput-row.multi{align-items:center;}
+  .qanswer-slot{display:flex; align-items:center; gap:6px;}
+  .slot-label{font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:600; color:var(--ink-soft);}
+  .answer-field.small{flex:none; width:64px; text-align:center;}
+
+  /* ---- inline mark scheme reveal (for questions without a sourced PDF) ---- */
+  .ms-panel{margin-top:16px; padding-top:14px; border-top:1px dashed var(--rule); display:none;}
+  .ms-panel.show{display:block;}
+  .ms-panel-label{
+    font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.09em; text-transform:uppercase;
+    color:var(--green); margin:0 0 8px;
+  }
+  .ms-panel p{font-family:'IBM Plex Sans',sans-serif; font-size:13.5px; color:var(--ink-soft); margin:0 0 6px; line-height:1.6;}
+
+  /* ---- on-screen math keypad (floating pop-up) ---- */
+  .mathpad{
+    display:none; grid-template-columns:repeat(8,1fr); gap:6px;
+    position:absolute; top:calc(100% + 10px); left:0; right:0; z-index:30;
+    padding:12px; background:var(--panel); border:1px solid var(--rule); border-radius:14px;
+    box-shadow:0 16px 36px rgba(20,20,30,0.22); max-height:70vh; overflow-y:auto;
+  }
+  .mathpad.show{display:grid;}
+  .mathpad-btn{
+    font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:600; color:var(--ink);
+    background:var(--bg-soft); border:1px solid var(--rule); border-radius:9px; padding:9px 0; cursor:pointer;
+    transition:all .15s ease;
+  }
+  .mathpad-btn:hover{border-color:var(--accent); color:var(--accent);}
+  .mathpad-btn.func{color:var(--accent);}
+  .mathpad-btn.clear{color:var(--coral);}
+  .mathpad-btn sup{font-size:0.75em;}
+
+  /* ---- whiteboard (pop-up modal) ---- */
+  .wb-modal-backdrop{
+    display:none; position:fixed; inset:0; z-index:200; background:rgba(10,10,14,0.6);
+    align-items:center; justify-content:center; padding:20px;
+  }
+  .wb-modal-backdrop.show{display:flex;}
+  .wb-modal{
+    width:96vw; max-width:1280px; height:94vh; padding:18px 20px 20px;
+    display:flex; flex-direction:column;
+  }
+  .wb-modal-head{display:flex; align-items:flex-start; justify-content:space-between; gap:14px; margin-bottom:10px; flex-shrink:0;}
+  .wb-modal-eyebrow{
+    display:block; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.09em;
+    text-transform:uppercase; color:var(--accent); margin-bottom:4px;
+  }
+  .wb-modal-title{font-size:18px;}
+  .wb-modal-hint{display:block; font-family:'IBM Plex Sans',sans-serif; font-size:11.5px; color:var(--ink-soft); margin-top:3px;}
+  .wb-close-btn{
+    width:34px; height:34px; border-radius:50%; border:1.5px solid var(--rule); background:var(--panel);
+    color:var(--ink-soft); display:flex; align-items:center; justify-content:center; cursor:pointer;
+    transition:all .2s ease; flex-shrink:0;
+  }
+  .wb-close-btn svg{width:15px;height:15px;}
+  .wb-close-btn:hover{border-color:var(--coral); color:var(--coral);}
+
+  .wb-modal-question{
+    flex-shrink:0; max-height:130px; overflow-y:auto;
+    padding:12px 16px; margin-bottom:12px; background:var(--bg-soft); border:1px solid var(--rule); border-radius:12px;
+    font-family:'IBM Plex Sans',sans-serif; font-size:13.5px; color:var(--ink); line-height:1.6;
+  }
+  .wb-modal-question .qpart-row{display:flex; align-items:baseline; gap:8px; margin-top:6px;}
+  .wb-modal-question .qpart-label{font-weight:600; flex-shrink:0;}
+  .wb-modal-question .qpart-marks{font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--ink-soft); flex-shrink:0;}
+
+  .wb-toolbar{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:10px; flex-shrink:0;}
+  .wb-swatches{display:flex; gap:6px;}
+  .wb-swatch{width:22px; height:22px; border-radius:50%; border:2px solid transparent; cursor:pointer; padding:0;}
+  .wb-swatch.is-active{border-color:var(--ink);}
+  .wb-sizes{display:flex; gap:6px;}
+  .wb-size-btn{
+    width:30px; height:30px; border-radius:8px; border:1.5px solid var(--rule); background:var(--panel);
+    cursor:pointer; display:flex; align-items:center; justify-content:center; transition:border-color .2s ease;
+  }
+  .wb-size-btn .dot{border-radius:50%; background:var(--ink);}
+  .wb-size-btn.is-active{border-color:var(--accent);}
+  .wb-tool-btn{
+    font-family:'IBM Plex Sans',sans-serif; font-size:12px; font-weight:600; color:var(--ink);
+    background:var(--bg-soft); border:1.5px solid var(--rule); border-radius:8px; padding:7px 12px;
+    cursor:pointer; transition:all .2s ease;
+  }
+  .wb-tool-btn:hover{border-color:var(--accent); color:var(--accent);}
+  .wb-tool-btn.is-active{background:var(--accent); border-color:var(--accent); color:#fff;}
+
+  .wb-canvas-wrap{
+    flex:1; min-height:0; overflow:auto; border:1.5px solid var(--rule); border-radius:14px; background:#fff;
+  }
+  .wb-canvas-wrap canvas{display:block; touch-action:none; cursor:crosshair;}
+
+  .wb-actions{display:flex; justify-content:flex-end; margin-top:12px; flex-shrink:0;}
+  .wb-submit-btn{
+    font-family:'IBM Plex Sans',sans-serif; font-size:12.5px; font-weight:600; color:#fff;
+    background:var(--accent); border:none; border-radius:11px; padding:10px 20px; cursor:pointer;
+    transition:filter .2s ease;
+  }
+  .wb-submit-btn:hover{filter:brightness(1.08);}
+
+  /* ---- fullscreen focus mode ---- */
+  .fs-backdrop{position:fixed; inset:0; background:rgba(10,10,14,0.55); z-index:99; display:none;}
+  .fs-backdrop.show{display:block;}
+  .qcard.is-fullscreen{
+    position:fixed; inset:24px; z-index:100; overflow-y:auto; box-shadow:0 30px 70px rgba(0,0,0,0.35);
+  }
+
+  .soon-note{
+    margin:10px 0 0; padding:16px 20px; text-align:center; font-family:'IBM Plex Mono',monospace;
+    font-size:12px; color:var(--ink-soft);
+  }
+
+  /* ---- toast ---- */
+  .toast{
+    position:fixed; left:50%; bottom:28px; transform:translateX(-50%) translateY(12px);
+    font-family:'IBM Plex Sans',sans-serif; font-size:13.5px; font-weight:500;
+    color:var(--ink); background:var(--panel); border:1px solid var(--rule); border-radius:999px;
+    padding:13px 22px; box-shadow:0 10px 30px rgba(20,20,30,0.18);
+    opacity:0; pointer-events:none; transition:opacity .2s ease, transform .2s ease; z-index:150;
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+  .toast b{color:var(--accent);}
+
+  footer{padding:60px 0 56px; font-size:11px; color:var(--ink-soft); font-family:'IBM Plex Mono',monospace; text-align:center; letter-spacing:0.06em;}
+  footer .status-dot{display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--cyan); box-shadow:0 0 8px var(--cyan); margin-right:8px; animation:pulse 2s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:1;} 50%{opacity:0.35;}}
+
+  @media (max-width:720px){
+    .qcard-body{flex-direction:column;}
+    .qdock{
+      width:auto; flex-direction:row; border-left:none; border-top:1px solid var(--rule); padding:10px; flex-wrap:wrap; justify-content:center;
+    }
+    .dock-divider{width:1px; height:22px;}
+  }
+  @media (max-width:520px){
+    .topbar-title{display:none;}
+    .search-box input{width:90px;}
+    .subject-hero h1{font-size:22px;}
+    .qcard-header{flex-direction:column;}
+    .mathpad{grid-template-columns:repeat(4,1fr);}
+  }
+  @media (prefers-reduced-motion: reduce){
+    footer .status-dot{animation:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a href="index.html" class="logo">IB<span>::HUB</span></a>
+    <div class="topbar-title">IB Subjects Hub</div>
+    <div class="topbar-actions">
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" placeholder="search_">
+      </div>
+      <nav><a href="#">Login</a></nav>
+      <div class="theme-switch-wrap">
+        <span class="theme-label" id="label-light">Light</span>
+        <button class="theme-switch" id="theme-toggle" type="button" aria-label="Toggle dark mode">
+          <span class="knob"></span><span class="switch-dot"></span>
+        </button>
+        <span class="theme-label" id="label-dark">Dark</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="crumbbar term-panel">
+    <a href="subject.html?s=maths&course=aa" class="crumb">&larr; Mathematics / <b>Question Bank</b></a>
+    <button class="copy-btn" id="copy-link" title="Copy link" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="1"></rect><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"></path></svg>
+    </button>
+  </div>
+
+  <div class="subject-hero term-panel">
+    <div class="subject-hero-row">
+      <div class="subject-glyph">∑</div>
+      <div>
+        <h1>Mathematics: AA Question Bank</h1>
+        <p class="tagline">Exam-style questions, sorted by syllabus topic</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="qb-layout">
+    <aside class="side-nav term-panel" id="side-nav">
+      <div class="side-nav-head">
+        <span class="side-nav-eyebrow">Browse</span>
+        <h3 class="side-nav-title">Topics</h3>
+        <div class="side-nav-progress">
+          <div class="progress-ring" id="progress-ring" style="--pct:0;">
+            <div class="progress-ring-inner" id="progress-ring-label">0%</div>
+          </div>
+          <div class="side-nav-progress-text">
+            <span id="progress-count">0 / 2</span>
+            <span class="side-nav-progress-label">questions done</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="topic-row is-open" style="--accent:var(--cyan); --accent-rgb:var(--cyan-rgb);">
+        <button class="topic-btn" type="button">
+          <span class="topic-glyph">x</span>
+          <span class="topic-info">
+            <span class="topic-name">1 &middot; Number &amp; Algebra</span>
+            <span class="topic-count">2 questions</span>
+          </span>
+          <svg class="topic-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"></path></svg>
+        </button>
+        <div class="topic-body">
+          <div class="topic-links">
+            <a class="q-link" href="#qcard-1" data-target="qcard-1">
+              <span class="q-link-dot"></span>
+              <span class="q-link-text">1.1.1 Standard Form &mdash; Q1(a)</span>
+            </a>
+            <a class="q-link" href="#qcard-2" data-target="qcard-2">
+              <span class="q-link-dot"></span>
+              <span class="q-link-text">1.1.3 Partial Fractions &mdash; Q2(a)</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="topic-row" style="--accent:var(--violet); --accent-rgb:var(--violet-rgb);">
+        <button class="topic-btn" type="button">
+          <span class="topic-glyph">f(x)</span>
+          <span class="topic-info">
+            <span class="topic-name">2 &middot; Functions</span>
+            <span class="topic-count">Coming soon</span>
+          </span>
+          <svg class="topic-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"></path></svg>
+        </button>
+        <div class="topic-body">
+          <span class="q-link is-soon">No questions here yet</span>
+        </div>
+      </div>
+
+      <div class="topic-row" style="--accent:var(--green); --accent-rgb:var(--green-rgb);">
+        <button class="topic-btn" type="button">
+          <span class="topic-glyph">&Delta;</span>
+          <span class="topic-info">
+            <span class="topic-name">3 &middot; Geometry &amp; Trig</span>
+            <span class="topic-count">Coming soon</span>
+          </span>
+          <svg class="topic-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"></path></svg>
+        </button>
+        <div class="topic-body">
+          <span class="q-link is-soon">No questions here yet</span>
+        </div>
+      </div>
+
+      <div class="topic-row" style="--accent:var(--teal); --accent-rgb:var(--teal-rgb);">
+        <button class="topic-btn" type="button">
+          <span class="topic-glyph">&sigma;</span>
+          <span class="topic-info">
+            <span class="topic-name">4 &middot; Statistics &amp; Prob</span>
+            <span class="topic-count">Coming soon</span>
+          </span>
+          <svg class="topic-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"></path></svg>
+        </button>
+        <div class="topic-body">
+          <span class="q-link is-soon">No questions here yet</span>
+        </div>
+      </div>
+
+      <div class="topic-row" style="--accent:var(--coral); --accent-rgb:var(--coral-rgb);">
+        <button class="topic-btn" type="button">
+          <span class="topic-glyph">&int;</span>
+          <span class="topic-info">
+            <span class="topic-name">5 &middot; Calculus</span>
+            <span class="topic-count">Coming soon</span>
+          </span>
+          <svg class="topic-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"></path></svg>
+        </button>
+        <div class="topic-body">
+          <span class="q-link is-soon">No questions here yet</span>
+        </div>
+      </div>
+    </aside>
+
+    <div class="qb-main">
+
+  <div class="qlist" id="qlist">
+
+    <div class="qcard term-panel" id="qcard-1" data-qid="q1a" style="--accent:var(--cyan); --accent-rgb:var(--cyan-rgb);">
+      <div class="qcard-accent"></div>
+
+      <div class="qcard-header">
+        <div class="qtitle-group">
+          <span class="qid-badge">1a</span>
+          <div class="qtitle-text">
+            <h2>Question 1</h2>
+            <span class="qtopic">HL 1.1 &middot; Standard Form</span>
+          </div>
+        </div>
+        <div class="qtools">
+          <button class="qtool-btn done-btn" id="done-btn-1" title="Mark as done" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9 12l2 2 4-4"></path></svg>
+          </button>
+          <button class="qtool-btn expand-btn" id="expand-btn-1" title="Focus mode" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3"></path><path d="M16 3h3a2 2 0 0 1 2 2v3"></path><path d="M21 16v3a2 2 0 0 1-2 2h-3"></path><path d="M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="qchips">
+        <span class="chip-calc">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="8" y1="10" x2="8" y2="10.01"></line><line x1="12" y1="10" x2="12" y2="10.01"></line><line x1="16" y1="10" x2="16" y2="10.01"></line><line x1="8" y1="14" x2="8" y2="14.01"></line><line x1="12" y1="14" x2="12" y2="14.01"></line><line x1="16" y1="14" x2="16" y2="14.01"></line></svg>
+          Calculator
+        </span>
+        <span class="chip-diff level-medium">
+          <span class="chip-diff-label">Medium</span>
+          <span class="diff-track"><span class="diff-fill" style="width:66%;"></span></span>
+        </span>
+        <span class="chip-marks">Max mark: 3</span>
+      </div>
+
+      <hr class="qcard-rule">
+
+      <div class="qcard-body">
+        <div class="qmain">
+          <p class="qstem">Consider the numbers $a = 6.21 \times 10^{5}$ and $b = 1.48 \times 10^{-6}$.</p>
+          <div class="qparts">
+            <div class="qpart-row">
+              <span class="qpart-label">(a)</span>
+              <span class="qpart-text">Calculate $C = \sqrt[10]{\left(\dfrac{a}{b}\right)^{3}}$. Give your answer correct to 3 significant figures.</span>
+              <span class="qpart-marks">[3]</span>
+            </div>
+          </div>
+
+          <div class="qinput">
+            <label class="qinput-label" for="answer-1a">Your answer</label>
+            <div class="qinput-row">
+              <input type="text" id="answer-1a" class="answer-field" placeholder="e.g. 3070" inputmode="decimal" autocomplete="off">
+              <button class="submit-btn" id="submit-btn-1a" type="button">Check</button>
+            </div>
+            <p class="qfeedback" id="qfeedback-1a"></p>
+            <div class="mathpad" id="mathpad-1a">
+              <button class="mathpad-btn" data-key="7" type="button">7</button>
+              <button class="mathpad-btn" data-key="8" type="button">8</button>
+              <button class="mathpad-btn" data-key="9" type="button">9</button>
+              <button class="mathpad-btn func" data-key="(" type="button">(</button>
+              <button class="mathpad-btn func" data-key=")" type="button">)</button>
+              <button class="mathpad-btn clear" data-key="back" type="button">⌫</button>
+              <button class="mathpad-btn clear" data-key="clear" type="button">C</button>
+              <button class="mathpad-btn func" data-key="∞" type="button">∞</button>
+
+              <button class="mathpad-btn" data-key="4" type="button">4</button>
+              <button class="mathpad-btn" data-key="5" type="button">5</button>
+              <button class="mathpad-btn" data-key="6" type="button">6</button>
+              <button class="mathpad-btn func" data-key="×" type="button">×</button>
+              <button class="mathpad-btn func" data-key="÷" type="button">÷</button>
+              <button class="mathpad-btn func" data-key="+" type="button">+</button>
+              <button class="mathpad-btn func" data-key="-" type="button">&minus;</button>
+              <button class="mathpad-btn func" data-key="±" type="button">±</button>
+
+              <button class="mathpad-btn" data-key="1" type="button">1</button>
+              <button class="mathpad-btn" data-key="2" type="button">2</button>
+              <button class="mathpad-btn" data-key="3" type="button">3</button>
+              <button class="mathpad-btn func" data-key="π" type="button">π</button>
+              <button class="mathpad-btn func" data-key="e" type="button">e</button>
+              <button class="mathpad-btn func" data-key="√" type="button">√</button>
+              <button class="mathpad-btn func" data-key="∛" type="button">∛</button>
+              <button class="mathpad-btn func" data-key="recip" type="button">1/x</button>
+
+              <button class="mathpad-btn" data-key="0" type="button">0</button>
+              <button class="mathpad-btn" data-key="." type="button">.</button>
+              <button class="mathpad-btn func" data-key="frac" type="button">a/b</button>
+              <button class="mathpad-btn func" data-key="sq" type="button">x²</button>
+              <button class="mathpad-btn func" data-key="cube" type="button">x³</button>
+              <button class="mathpad-btn func" data-key="pow" type="button">xⁿ</button>
+              <button class="mathpad-btn func" data-key="exp10" type="button">&times;10ⁿ</button>
+              <button class="mathpad-btn func" data-key="abs" type="button">|x|</button>
+
+              <button class="mathpad-btn func" data-key="sin" type="button">sin</button>
+              <button class="mathpad-btn func" data-key="cos" type="button">cos</button>
+              <button class="mathpad-btn func" data-key="tan" type="button">tan</button>
+              <button class="mathpad-btn func" data-key="asin" type="button">sin<sup>-1</sup></button>
+              <button class="mathpad-btn func" data-key="acos" type="button">cos<sup>-1</sup></button>
+              <button class="mathpad-btn func" data-key="atan" type="button">tan<sup>-1</sup></button>
+              <button class="mathpad-btn func" data-key="ln" type="button">ln</button>
+              <button class="mathpad-btn func" data-key="log" type="button">log</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="qdock">
+          <button class="dock-btn save-btn" id="save-btn-1" title="Save" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"></path></svg>
+          </button>
+          <span class="dock-label">Save</span>
+
+          <span class="dock-divider"></span>
+
+          <a class="dock-btn" href="Mathematics_AA_Markscheme_Q1.pdf" target="_blank" rel="noopener" title="Mark scheme (PDF) — Question 1">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"></rect><line x1="8" y1="8" x2="16" y2="8"></line><line x1="8" y1="12" x2="16" y2="12"></line><line x1="8" y1="16" x2="12" y2="16"></line></svg>
+          </a>
+          <span class="dock-label">M/S</span>
+
+          <button class="dock-btn wb-open-btn" id="wb-open-btn-1" title="Open whiteboard" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+          </button>
+          <span class="dock-label">Board</span>
+
+          <button class="dock-btn is-soon" data-name="AI Feedback" title="AI feedback" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6L12 3z"></path><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8L19 15z"></path></svg>
+          </button>
+          <span class="dock-label">AI</span>
+
+          <span class="dock-divider"></span>
+
+          <a class="dock-btn" href="maths-formula-booklet.html" target="_blank" rel="noopener" title="Formula booklet">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><path d="M15 3h6v6"></path><path d="M10 14L21 3"></path></svg>
+          </a>
+          <span class="dock-label">Fx</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="qcard term-panel" id="qcard-2" data-qid="q2a" style="--accent:var(--cyan); --accent-rgb:var(--cyan-rgb);">
+      <div class="qcard-accent"></div>
+
+      <div class="qcard-header">
+        <div class="qtitle-group">
+          <span class="qid-badge">2a</span>
+          <div class="qtitle-text">
+            <h2>Question 2</h2>
+            <span class="qtopic">HL 1.1 &middot; Partial Fractions</span>
+          </div>
+        </div>
+        <div class="qtools">
+          <button class="qtool-btn done-btn" id="done-btn-2" title="Mark as done" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9 12l2 2 4-4"></path></svg>
+          </button>
+          <button class="qtool-btn expand-btn" id="expand-btn-2" title="Focus mode" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3"></path><path d="M16 3h3a2 2 0 0 1 2 2v3"></path><path d="M21 16v3a2 2 0 0 1-2 2h-3"></path><path d="M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="qchips">
+        <span class="chip-calc no-calc">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="9" y1="18" x2="15" y2="12"></line><line x1="9" y1="12" x2="15" y2="18"></line></svg>
+          No calculator
+        </span>
+        <span class="chip-diff level-medium">
+          <span class="chip-diff-label">Medium</span>
+          <span class="diff-track"><span class="diff-fill" style="width:66%;"></span></span>
+        </span>
+        <span class="chip-marks">Max mark: 4</span>
+      </div>
+
+      <hr class="qcard-rule">
+
+      <div class="qcard-body">
+        <div class="qmain">
+          <p class="qstem">Consider the rational function $\dfrac{23-4x}{(x+1)(x-2)^{2}}$.</p>
+          <div class="qparts">
+            <div class="qpart-row">
+              <span class="qpart-label">(a)</span>
+              <span class="qpart-text">Write it as the sum of partial fractions in the form $\dfrac{A}{x+1}+\dfrac{B}{x-2}+\dfrac{C}{(x-2)^{2}}$.</span>
+              <span class="qpart-marks">[4]</span>
+            </div>
+          </div>
+
+          <div class="qinput">
+            <label class="qinput-label">Your answer</label>
+            <div class="qinput-row multi">
+              <div class="qanswer-slot"><span class="slot-label">A =</span><input type="text" id="answer-2a-A" class="answer-field small" placeholder="?" inputmode="decimal" autocomplete="off"></div>
+              <div class="qanswer-slot"><span class="slot-label">B =</span><input type="text" id="answer-2a-B" class="answer-field small" placeholder="?" inputmode="decimal" autocomplete="off"></div>
+              <div class="qanswer-slot"><span class="slot-label">C =</span><input type="text" id="answer-2a-C" class="answer-field small" placeholder="?" inputmode="decimal" autocomplete="off"></div>
+              <button class="submit-btn" id="submit-btn-2a" type="button">Check</button>
+            </div>
+            <p class="qfeedback" id="qfeedback-2a"></p>
+          </div>
+
+          <div class="ms-panel" id="ms-panel-2">
+            <p class="ms-panel-label">Mark scheme</p>
+            <p>$23-4x = A(x-2)^{2} + B(x+1)(x-2) + C(x+1)$ &nbsp;&mdash;&nbsp; (M1)</p>
+            <p>substituting $x=-1$: $27 = 9A \Rightarrow A = 3$ &nbsp;&mdash;&nbsp; (A1)</p>
+            <p>substituting $x=2$: $15 = 3C \Rightarrow C = 5$ &nbsp;&mdash;&nbsp; (A1)</p>
+            <p>comparing $x^{2}$ coefficients: $0 = A+B \Rightarrow B = -3$ &nbsp;&mdash;&nbsp; (A1)</p>
+          </div>
+        </div>
+
+        <div class="qdock">
+          <button class="dock-btn save-btn" id="save-btn-2" title="Save" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"></path></svg>
+          </button>
+          <span class="dock-label">Save</span>
+
+          <span class="dock-divider"></span>
+
+          <button class="dock-btn" id="ms-btn-2" title="Mark scheme" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"></rect><line x1="8" y1="8" x2="16" y2="8"></line><line x1="8" y1="12" x2="16" y2="12"></line><line x1="8" y1="16" x2="12" y2="16"></line></svg>
+          </button>
+          <span class="dock-label">M/S</span>
+
+          <button class="dock-btn wb-open-btn" id="wb-open-btn-2" title="Open whiteboard" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+          </button>
+          <span class="dock-label">Board</span>
+
+          <button class="dock-btn is-soon" data-name="AI Feedback" title="AI feedback" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6L12 3z"></path><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8L19 15z"></path></svg>
+          </button>
+          <span class="dock-label">AI</span>
+
+          <span class="dock-divider"></span>
+
+          <a class="dock-btn" href="maths-formula-booklet.html" target="_blank" rel="noopener" title="Formula booklet">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><path d="M15 3h6v6"></path><path d="M10 14L21 3"></path></svg>
+          </a>
+          <span class="dock-label">Fx</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="soon-note">More questions, topics &amp; filters are coming soon.</p>
+
+    </div>
+  </div>
+
+</div>
+
+<div class="fs-backdrop" id="fs-backdrop"></div>
+<div class="toast" id="toast"><b>Coming soon</b> — this feature isn't live yet</div>
+
+<div class="wb-modal-backdrop" id="wb-modal-backdrop">
+  <div class="wb-modal term-panel">
+    <div class="wb-modal-head">
+      <div>
+        <span class="wb-modal-eyebrow">Whiteboard</span>
+        <h3 class="wb-modal-title">Show your working</h3>
+        <span class="wb-modal-hint">Scroll inside the board for more space — it runs on for pages</span>
+      </div>
+      <button class="wb-close-btn" id="wb-close-btn" title="Close" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+
+    <div class="wb-modal-question" id="wb-modal-question"></div>
+
+    <div class="wb-toolbar">
+      <div class="wb-swatches">
+        <button class="wb-swatch is-active" data-color="#23262B" style="background:#23262B;" title="Black" type="button"></button>
+        <button class="wb-swatch" data-color="#0EA5C4" style="background:#0EA5C4;" title="Blue" type="button"></button>
+        <button class="wb-swatch" data-color="#DB2777" style="background:#DB2777;" title="Pink" type="button"></button>
+      </div>
+      <div class="wb-sizes">
+        <button class="wb-size-btn" data-size="2" title="Thin" type="button"><span class="dot" style="width:4px;height:4px;"></span></button>
+        <button class="wb-size-btn is-active" data-size="4" title="Medium" type="button"><span class="dot" style="width:7px;height:7px;"></span></button>
+        <button class="wb-size-btn" data-size="8" title="Thick" type="button"><span class="dot" style="width:11px;height:11px;"></span></button>
+      </div>
+      <button class="wb-tool-btn" id="wb-eraser-1" type="button">Eraser</button>
+      <button class="wb-tool-btn" id="wb-undo-1" type="button">Undo</button>
+      <button class="wb-tool-btn" id="wb-clear-1" type="button">Clear</button>
+    </div>
+
+    <div class="wb-canvas-wrap">
+      <canvas id="wb-canvas-1" height="4000"></canvas>
+    </div>
+
+    <div class="wb-actions">
+      <button class="wb-submit-btn trigger-soon" data-name="AI marking" type="button">Submit for AI marking</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap"><span class="status-dot"></span>SYSTEM ONLINE — IB SUBJECTS HUB, NOTES &amp; PAST PAPERS FOR EVERY DP SUBJECT</div>
+</footer>
+
+<script src="theme.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  if(window.renderMathInElement){
+    renderMathInElement(document.getElementById('qlist'), {
+      delimiters: [{left:'$', right:'$', display:false}],
+      throwOnError:false
+    });
+  }
+});
+
+// ---------- save / mark-as-done icons (generic across all question cards) ----------
+var DONE_KEY = 'ib-hub-qb-done';
+function getDoneSet(){
+  try{ return new Set(JSON.parse(localStorage.getItem(DONE_KEY)) || []); }
+  catch(e){ return new Set(); }
+}
+function setDoneSet(set){ localStorage.setItem(DONE_KEY, JSON.stringify(Array.from(set))); }
+
+document.querySelectorAll('.qcard .save-btn').forEach(function(btn){
+  btn.addEventListener('click', function(){ btn.classList.toggle('is-active'); });
+});
+
+document.querySelectorAll('.qcard .done-btn').forEach(function(btn){
+  var qid = btn.closest('.qcard').getAttribute('data-qid');
+  btn.addEventListener('click', function(){
+    var isDone = btn.classList.toggle('is-active');
+    var done = getDoneSet();
+    if(isDone) done.add(qid); else done.delete(qid);
+    setDoneSet(done);
+    updateProgress();
+  });
+});
+
+// ---------- topic sidebar: progress ring ----------
+var TOTAL_QUESTIONS = document.querySelectorAll('.qcard[data-qid]').length;
+function updateProgress(){
+  var doneCount = getDoneSet().size;
+  var pct = Math.round((doneCount / TOTAL_QUESTIONS) * 100);
+  document.getElementById('progress-ring').style.setProperty('--pct', pct);
+  document.getElementById('progress-ring-label').textContent = pct + '%';
+  document.getElementById('progress-count').textContent = doneCount + ' / ' + TOTAL_QUESTIONS;
+}
+(function initDoneState(){
+  var done = getDoneSet();
+  document.querySelectorAll('.qcard .done-btn').forEach(function(btn){
+    var qid = btn.closest('.qcard').getAttribute('data-qid');
+    if(done.has(qid)) btn.classList.add('is-active');
+  });
+  updateProgress();
+})();
+
+// ---------- topic sidebar: accordion ----------
+document.querySelectorAll('.topic-btn').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    btn.closest('.topic-row').classList.toggle('is-open');
+  });
+});
+
+// ---------- topic sidebar: jump to question ----------
+document.querySelectorAll('.q-link[data-target]').forEach(function(link){
+  link.addEventListener('click', function(e){
+    e.preventDefault();
+    var target = document.getElementById(link.getAttribute('data-target'));
+    if(!target) return;
+    target.scrollIntoView({ behavior:'smooth', block:'center' });
+    target.classList.remove('is-flashed');
+    void target.offsetWidth;
+    target.classList.add('is-flashed');
+  });
+});
+
+// ---------- coming soon toast ----------
+var toast = document.getElementById('toast');
+var toastTimer;
+document.querySelectorAll('.dock-btn.is-soon, .trigger-soon').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    toast.innerHTML = '<b>' + btn.getAttribute('data-name') + '</b> is coming soon';
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toast.classList.remove('show'); }, 2200);
+  });
+});
+
+// ---------- whiteboard pop-up ----------
+function openWhiteboard(qcardId){
+  var qcard = document.getElementById(qcardId);
+  var recap = document.getElementById('wb-modal-question');
+  recap.innerHTML = qcard.querySelector('.qstem').outerHTML + qcard.querySelector('.qparts').outerHTML;
+  if(window.renderMathInElement){
+    renderMathInElement(recap, { delimiters:[{left:'$', right:'$', display:false}], throwOnError:false });
+  }
+  document.getElementById('wb-modal-backdrop').classList.add('show');
+  sizeWhiteboardOnce();
+}
+function closeWhiteboard(){
+  document.getElementById('wb-modal-backdrop').classList.remove('show');
+}
+document.querySelectorAll('.qcard .wb-open-btn').forEach(function(btn){
+  btn.addEventListener('click', function(){ openWhiteboard(btn.closest('.qcard').id); });
+});
+document.getElementById('wb-close-btn').addEventListener('click', closeWhiteboard);
+document.getElementById('wb-modal-backdrop').addEventListener('click', function(e){
+  if(e.target === this) closeWhiteboard();
+});
+
+// ---------- whiteboard drawing ----------
+var sizeWhiteboardOnce = initWhiteboard('wb-canvas-1');
+function initWhiteboard(canvasId){
+  var canvas = document.getElementById(canvasId);
+  var ctx = canvas.getContext('2d');
+  var ratio = window.devicePixelRatio || 1;
+  var cssHeight = canvas.height;
+  var sized = false;
+
+  function sizeCanvas(){
+    if(sized) return;
+    var cssWidth = canvas.parentElement.clientWidth;
+    if(!cssWidth) return;
+    canvas.width = cssWidth * ratio;
+    canvas.height = cssHeight * ratio;
+    canvas.style.width = cssWidth + 'px';
+    canvas.style.height = cssHeight + 'px';
+    ctx.scale(ratio, ratio);
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    fillWhite();
+    sized = true;
+  }
+  function fillWhite(){
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.restore();
+  }
+
+  var drawing = false;
+  var color = '#23262B';
+  var size = 4;
+  var erasing = false;
+  var undoStack = [];
+
+  function pushUndo(){
+    undoStack.push(canvas.toDataURL());
+    if(undoStack.length > 25) undoStack.shift();
+  }
+  function pos(e){
+    var rect = canvas.getBoundingClientRect();
+    return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+  }
+
+  canvas.addEventListener('pointerdown', function(e){
+    drawing = true;
+    pushUndo();
+    var p = pos(e);
+    ctx.beginPath();
+    ctx.moveTo(p.x, p.y);
+    canvas.setPointerCapture(e.pointerId);
+  });
+  canvas.addEventListener('pointermove', function(e){
+    if(!drawing) return;
+    var p = pos(e);
+    ctx.lineWidth = erasing ? size * 4 : size;
+    ctx.strokeStyle = erasing ? '#fff' : color;
+    ctx.lineTo(p.x, p.y);
+    ctx.stroke();
+  });
+  function stopDrawing(){ drawing = false; }
+  canvas.addEventListener('pointerup', stopDrawing);
+  canvas.addEventListener('pointerleave', stopDrawing);
+  canvas.addEventListener('pointercancel', stopDrawing);
+
+  var section = canvas.closest('.wb-modal');
+  var eraserBtn = section.querySelector('[id^="wb-eraser-"]');
+
+  section.querySelectorAll('.wb-swatch').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      section.querySelectorAll('.wb-swatch').forEach(function(b){ b.classList.remove('is-active'); });
+      btn.classList.add('is-active');
+      color = btn.getAttribute('data-color');
+      erasing = false;
+      eraserBtn.classList.remove('is-active');
+    });
+  });
+  section.querySelectorAll('.wb-size-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      section.querySelectorAll('.wb-size-btn').forEach(function(b){ b.classList.remove('is-active'); });
+      btn.classList.add('is-active');
+      size = parseInt(btn.getAttribute('data-size'), 10);
+    });
+  });
+
+  eraserBtn.addEventListener('click', function(){
+    erasing = !erasing;
+    eraserBtn.classList.toggle('is-active', erasing);
+  });
+
+  section.querySelector('[id^="wb-undo-"]').addEventListener('click', function(){
+    if(!undoStack.length) return;
+    var img = new Image();
+    img.onload = function(){
+      ctx.save();
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0);
+      ctx.restore();
+    };
+    img.src = undoStack.pop();
+  });
+  section.querySelector('[id^="wb-clear-"]').addEventListener('click', function(){
+    pushUndo();
+    fillWhite();
+  });
+
+  return sizeCanvas;
+}
+
+// ---------- fullscreen focus mode ----------
+document.querySelectorAll('.qcard .expand-btn').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    btn.closest('.qcard').classList.toggle('is-fullscreen');
+    document.getElementById('fs-backdrop').classList.toggle('show');
+  });
+});
+document.getElementById('fs-backdrop').addEventListener('click', function(){
+  document.querySelectorAll('.qcard.is-fullscreen').forEach(function(c){ c.classList.remove('is-fullscreen'); });
+  this.classList.remove('show');
+});
+
+// ---------- on-screen math keypad ----------
+// special keys insert a template and place the cursor inside it (cursorOffset chars after the start)
+var MATHPAD_SPECIAL = {
+  frac:  { insert:'()/()', cursorOffset:1 },
+  abs:   { insert:'||', cursorOffset:1 },
+  sq:    { insert:'²', cursorOffset:1 },
+  cube:  { insert:'³', cursorOffset:1 },
+  recip: { insert:'1/()', cursorOffset:3 },
+  pow:   { insert:'^()', cursorOffset:2 },
+  exp10: { insert:'×10^()', cursorOffset:5 },
+  sin:   { insert:'sin()', cursorOffset:4 },
+  cos:   { insert:'cos()', cursorOffset:4 },
+  tan:   { insert:'tan()', cursorOffset:4 },
+  asin:  { insert:'sin⁻¹()', cursorOffset:6 },
+  acos:  { insert:'cos⁻¹()', cursorOffset:6 },
+  atan:  { insert:'tan⁻¹()', cursorOffset:6 },
+  ln:    { insert:'ln()', cursorOffset:3 },
+  log:   { insert:'log()', cursorOffset:4 }
+};
+
+function wireMathpad(inputId, padId){
+  var input = document.getElementById(inputId);
+  var pad = document.getElementById(padId);
+
+  input.addEventListener('focus', function(){ pad.classList.add('show'); });
+  input.addEventListener('blur', function(){ pad.classList.remove('show'); });
+
+  pad.querySelectorAll('.mathpad-btn').forEach(function(btn){
+    // mousedown + preventDefault keeps focus on the input so blur never fires
+    btn.addEventListener('mousedown', function(e){ e.preventDefault(); });
+    btn.addEventListener('click', function(){
+      var key = btn.getAttribute('data-key');
+      var start = input.selectionStart != null ? input.selectionStart : input.value.length;
+      var end = input.selectionEnd != null ? input.selectionEnd : input.value.length;
+      var val = input.value;
+
+      if(key === 'clear'){
+        input.value = '';
+        start = end = 0;
+      } else if(key === 'back'){
+        if(start === end && start > 0){
+          input.value = val.slice(0, start - 1) + val.slice(end);
+          start = start - 1; end = start;
+        } else {
+          input.value = val.slice(0, start) + val.slice(end);
+          end = start;
+        }
+      } else if(MATHPAD_SPECIAL[key]){
+        var special = MATHPAD_SPECIAL[key];
+        input.value = val.slice(0, start) + special.insert + val.slice(end);
+        start = end = start + special.cursorOffset;
+      } else {
+        input.value = val.slice(0, start) + key + val.slice(end);
+        start = end = start + key.length;
+      }
+      input.focus();
+      input.setSelectionRange(start, end);
+    });
+  });
+}
+wireMathpad('answer-1a', 'mathpad-1a');
+
+// ---------- answer check ----------
+// mirrors the official markscheme: 3070 (3 s.f.) is full marks, the unrounded
+// 3068 is M1A1A0, and calculator notation (e.g. 3.07E3) is never accepted
+function checkAnswer(inputId, feedbackId){
+  var input = document.getElementById(inputId);
+  var feedback = document.getElementById(feedbackId);
+  var raw = input.value.trim();
+  feedback.classList.remove('is-correct', 'is-wrong', 'is-warning');
+
+  if(/e/i.test(raw)){
+    feedback.textContent = 'Don’t use calculator notation (e.g. 3.07E3) — write it as 3070 or 3.07 × 10³.';
+    feedback.classList.add('is-wrong');
+    return;
+  }
+
+  var value = parseFloat(raw.replace(/,/g, ''));
+  if(isNaN(value)){
+    feedback.textContent = 'Enter a number first.';
+    feedback.classList.add('is-wrong');
+    return;
+  }
+  if(Math.abs(value - 3070) <= 1){
+    feedback.textContent = 'Correct — well done!';
+    feedback.classList.add('is-correct');
+  } else if(Math.abs(value - 3068.05) <= 1){
+    feedback.textContent = 'That’s the unrounded value — round to 3 s.f. to get full marks (3070).';
+    feedback.classList.add('is-warning');
+  } else {
+    feedback.textContent = 'Not quite. Check the M/S (mark scheme) PDF to see the working.';
+    feedback.classList.add('is-wrong');
+  }
+}
+document.getElementById('submit-btn-1a').addEventListener('click', function(){
+  checkAnswer('answer-1a', 'qfeedback-1a');
+});
+document.getElementById('answer-1a').addEventListener('keydown', function(e){
+  if(e.key === 'Enter') checkAnswer('answer-1a', 'qfeedback-1a');
+});
+
+// ---------- question 2: mark scheme toggle (no sourced PDF, inline reveal) ----------
+document.getElementById('ms-btn-2').addEventListener('click', function(){
+  this.classList.toggle('is-active');
+  document.getElementById('ms-panel-2').classList.toggle('show');
+});
+
+// ---------- question 2: partial fractions answer check (A, B, C) ----------
+function checkPartialFractions(){
+  var expected = { A: 3, B: -3, C: 5 };
+  var feedback = document.getElementById('qfeedback-2a');
+  feedback.classList.remove('is-correct', 'is-wrong', 'is-warning');
+
+  var values = {};
+  var anyBlank = false;
+  ['A', 'B', 'C'].forEach(function(key){
+    var raw = document.getElementById('answer-2a-' + key).value.trim();
+    if(raw === ''){ anyBlank = true; return; }
+    values[key] = parseFloat(raw);
+  });
+  if(anyBlank){
+    feedback.textContent = 'Fill in A, B and C first.';
+    feedback.classList.add('is-wrong');
+    return;
+  }
+
+  var correctCount = ['A', 'B', 'C'].filter(function(key){
+    return !isNaN(values[key]) && Math.abs(values[key] - expected[key]) <= 0.01;
+  }).length;
+
+  if(correctCount === 3){
+    feedback.textContent = 'Correct — well done!';
+    feedback.classList.add('is-correct');
+  } else if(correctCount > 0){
+    feedback.textContent = correctCount + ' out of 3 correct — check your working and try again.';
+    feedback.classList.add('is-warning');
+  } else {
+    feedback.textContent = 'Not quite. Open the mark scheme (M/S) to see the working.';
+    feedback.classList.add('is-wrong');
+  }
+}
+document.getElementById('submit-btn-2a').addEventListener('click', checkPartialFractions);
+['A', 'B', 'C'].forEach(function(key){
+  document.getElementById('answer-2a-' + key).addEventListener('keydown', function(e){
+    if(e.key === 'Enter') checkPartialFractions();
+  });
+});
+
+document.getElementById('copy-link').addEventListener('click', function(){
+  navigator.clipboard && navigator.clipboard.writeText(window.location.href);
+});
+</script>
+
+</body>
+</html>

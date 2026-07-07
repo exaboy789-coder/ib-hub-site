@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<script>
+  (function(){
+    var stored = localStorage.getItem('ib-hub-theme');
+    var theme = stored || 'light';
+    document.documentElement.setAttribute('data-theme', theme);
+  })();
+</script>
+<title>Formula Booklet — Mathematics AA — IB Subjects Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<link rel="stylesheet" href="theme.css">
+<style>
+  .term-panel,.fcard,.search-box,.topbar,.level-toggle,.quicknav a{transition:background-color .25s ease, border-color .25s ease, box-shadow .25s ease;}
+  html{scroll-behavior:smooth; background-color:var(--bg); min-height:100%;}
+  body{
+    margin:0; min-height:100vh; background-color:var(--bg); color:var(--ink);
+    font-family:'IBM Plex Sans', sans-serif; line-height:1.55;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px;}
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace; font-size:12px; letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--accent); font-weight:500;
+  }
+  h1,h2,h3{font-family:'Space Grotesk', sans-serif; font-weight:600; margin:0; color:var(--ink);}
+
+  /* ---- top bar ---- */
+  .topbar{border-bottom:1px solid var(--rule); background:rgba(var(--panel-rgb),0.88); backdrop-filter:blur(8px); position:sticky; top:0; z-index:20;}
+  .topbar-inner{max-width:1080px;margin:0 auto;padding:16px 24px;display:flex;justify-content:space-between;align-items:center;gap:20px;}
+  .logo{font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:17px; white-space:nowrap; letter-spacing:0.02em;}
+  .logo span{color:var(--cyan);}
+  .topbar-title{font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--ink-soft); letter-spacing:0.1em; text-transform:uppercase; flex:1; text-align:center;}
+  .topbar-actions{display:flex; align-items:center; gap:14px;}
+  .search-box{display:flex; align-items:center; gap:8px; border:1.5px solid var(--rule); background:var(--panel); border-radius:999px; padding:9px 16px; transition:border-color .2s ease, box-shadow .2s ease;}
+  .search-box:focus-within{border-color:var(--cyan); box-shadow:0 0 0 4px rgba(var(--cyan-rgb),0.12);}
+  .search-box svg{width:14px;height:14px;flex-shrink:0;color:var(--ink-soft);}
+  .search-box input{border:none; outline:none; background:transparent; font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--ink); width:150px; caret-color:var(--cyan);}
+  .search-box input::placeholder{color:#566182;}
+  .topbar nav a{font-size:13px; text-decoration:none; color:var(--ink); font-weight:600; border:1.5px solid var(--rule); border-radius:999px; padding:9px 18px; transition:all .2s ease; background:var(--panel);}
+  .topbar nav a:hover{border-color:var(--cyan); color:var(--cyan); box-shadow:0 0 0 4px rgba(var(--cyan-rgb),0.1);}
+  .theme-switch{background:linear-gradient(135deg, var(--cyan), var(--pink));}
+
+  /* ---- friendly card (was glitch terminal panel) ---- */
+  .term-panel{position:relative; border:1px solid var(--rule); background:var(--panel); border-radius:20px; box-shadow:0 2px 10px rgba(20,20,30,0.04);}
+
+  /* ---- breadcrumb ---- */
+  .crumbbar{margin:36px 0 0; padding:14px 20px; display:flex; align-items:center; justify-content:space-between;}
+  .crumb{font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--ink-soft); text-decoration:none; display:flex; align-items:center; gap:10px;}
+  .crumb b{color:var(--ink); font-weight:500;}
+  .crumb:hover{color:var(--accent);}
+  .copy-btn{
+    border:1.5px solid var(--rule); background:none; color:var(--ink-soft); width:32px; height:32px; border-radius:999px;
+    display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all .2s ease;
+  }
+  .copy-btn:hover{border-color:var(--accent); color:var(--accent); box-shadow:0 0 12px rgba(var(--accent-rgb),0.25);}
+  .copy-btn svg{width:14px;height:14px;}
+
+  /* ---- hero ---- */
+  .subject-hero{margin:18px 0 0; padding:34px 30px;}
+  .subject-hero-row{display:flex; align-items:center; gap:20px; flex-wrap:wrap;}
+  .subject-glyph{
+    width:64px; height:64px; flex-shrink:0; display:flex; align-items:center; justify-content:center;
+    font-family:'IBM Plex Mono', monospace; font-size:24px; font-weight:600;
+    border-radius:18px; color:var(--accent);
+    background:rgba(var(--accent-rgb),0.12);
+  }
+  .subject-hero h1{
+    font-size:28px; line-height:1.2; color:var(--ink);
+  }
+  .subject-hero .tagline{font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--ink-soft); margin-top:8px;}
+  .toggle-row{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:18px;}
+  .level-toggle{display:inline-flex; background:var(--panel-soft); border-radius:999px; padding:4px; gap:2px;}
+  .level-btn{
+    font-family:'IBM Plex Sans', sans-serif; font-size:13px; font-weight:600;
+    padding:9px 22px; text-decoration:none; color:var(--ink-soft);
+    border-radius:999px; transition:all .2s ease; cursor:pointer; background:none;
+  }
+  .level-btn:hover{color:var(--ink);}
+  .level-btn.active{color:#fff; background:var(--accent); box-shadow:0 4px 12px rgba(var(--accent-rgb),0.35);}
+  .hl-hint{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--ink-soft); letter-spacing:0.04em;}
+  .hl-hint b{color:var(--accent);}
+
+  /* ---- topic quick-nav ---- */
+  .quicknav{margin:18px 0 0; padding:14px 18px; display:flex; gap:8px; flex-wrap:wrap;}
+  .quicknav a{
+    font-family:'IBM Plex Sans',sans-serif; font-size:12.5px; font-weight:600;
+    color:var(--ink-soft); text-decoration:none; border:1.5px solid var(--rule); border-radius:999px; padding:8px 14px; transition:all .2s ease;
+  }
+  .quicknav a:hover{color:var(--accent); border-color:var(--accent); box-shadow:0 0 10px rgba(var(--accent-rgb),0.2);}
+
+  /* ---- filter ---- */
+  .filter-row{margin:30px 0 0; display:flex; align-items:center; gap:12px;}
+  .filter-row .search-box{flex:1;}
+  .filter-row .search-box input{width:100%;}
+  .filter-count{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--ink-soft); white-space:nowrap;}
+
+  /* ---- topic sections ---- */
+  .topic-section{padding:46px 0 6px; scroll-margin-top:80px;}
+  .topic-section.is-empty{display:none;}
+  .topic-head{display:flex; align-items:baseline; gap:14px; margin-bottom:22px; padding-bottom:10px; border-bottom:1px solid var(--rule);}
+  .topic-head h2{font-size:20px;}
+  .topic-head .topic-num{font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--accent);}
+  .group-label{font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-soft); margin:18px 0 12px;}
+  .group-label.hl-only{color:var(--pink);}
+
+  .formula-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:16px;}
+  .fcard{padding:20px 22px 18px; border-radius:18px; transition:border-color .15s ease, box-shadow .15s ease;}
+  .fcard:hover{box-shadow:0 10px 22px rgba(var(--accent-rgb),0.15);}
+  .fcard:hover{border-color:var(--accent);}
+  .fcard.hl-card{border-left:2px solid var(--pink);}
+  .fcard.is-hidden{display:none;}
+  .fhead{display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-bottom:10px;}
+  .ftag{font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.06em; color:var(--accent); text-transform:uppercase;}
+  .ftag.hl-tag{color:var(--pink);}
+  .ftitle{font-family:'Space Grotesk',sans-serif; font-size:14px; font-weight:600; color:var(--ink); margin:2px 0 0;}
+  .fbadge{font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:0.06em; text-transform:uppercase; color:var(--pink); border:1px solid rgba(var(--pink-rgb),0.5); padding:2px 6px; white-space:nowrap; flex-shrink:0;}
+  .fbody{display:flex; flex-direction:column; gap:9px; padding-top:6px;}
+  .fline{overflow-x:auto; padding:2px 0;}
+  .fline .katex{color:var(--ink); font-size:1.04em;}
+  .fbody .fline:first-child .katex-display, .fline .katex{color:var(--ink);}
+  .fcard:hover .fline .katex{color:var(--accent);}
+
+  section.intro{padding:52px 0 0;}
+  .section-head{text-align:center; margin-bottom:0;}
+
+  footer{padding:60px 0 56px; font-size:11px; color:var(--ink-soft); font-family:'IBM Plex Mono',monospace; text-align:center; letter-spacing:0.06em;}
+  footer .status-dot{display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--cyan); box-shadow:0 0 8px var(--cyan); margin-right:8px; animation:pulse 2s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:1;} 50%{opacity:0.35;}}
+
+  .no-results{display:none; text-align:center; padding:60px 0; font-family:'IBM Plex Mono',monospace; color:var(--ink-soft); font-size:13px;}
+  .no-results.show{display:block;}
+
+  @media (max-width:760px){
+    .formula-grid{grid-template-columns:1fr;}
+  }
+  @media (max-width:520px){
+    .topbar-title{display:none;}
+    .search-box input{width:90px;}
+    .subject-hero h1{font-size:22px;}
+    .filter-row .search-box input{width:auto;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    footer .status-dot{animation:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a href="index.html" class="logo">IB<span>::HUB</span></a>
+    <div class="topbar-title">IB Subjects Hub</div>
+    <div class="topbar-actions">
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" placeholder="search_">
+      </div>
+      <nav><a href="#">Login</a></nav>
+      <div class="theme-switch-wrap">
+        <span class="theme-label" id="label-light">Light</span>
+        <button class="theme-switch" id="theme-toggle" type="button" aria-label="Toggle dark mode">
+          <span class="knob"></span><span class="switch-dot"></span>
+        </button>
+        <span class="theme-label" id="label-dark">Dark</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="crumbbar term-panel">
+    <a href="subject.html?s=maths&course=aa" class="crumb">&larr; Mathematics / <b>Formula Booklet</b></a>
+    <button class="copy-btn" id="copy-link" title="Copy link" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="1"></rect><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"></path></svg>
+    </button>
+  </div>
+
+  <div class="subject-hero term-panel">
+    <div class="subject-hero-row">
+      <div class="subject-glyph">∑</div>
+      <div>
+        <h1>Mathematics: AA Formula Booklet</h1>
+        <p class="tagline">Every formula from the official IB data booklet, sorted by syllabus topic</p>
+      </div>
+    </div>
+    <div class="toggle-row">
+      <div class="level-toggle" id="level-toggle">
+        <a class="level-btn" data-level="hl">HL</a>
+        <a class="level-btn" data-level="sl">SL</a>
+      </div>
+      <span class="hl-hint"><b id="hl-count">—</b> formulas are HL-only</span>
+      <a href="Mathematics_AA_Formula_Booklet.pdf" target="_blank" rel="noopener" class="level-btn" style="text-decoration:none;">Open as PDF ↗</a>
+    </div>
+  </div>
+
+  <div class="quicknav term-panel" id="quicknav"></div>
+
+  <div class="filter-row">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <input type="text" id="formula-filter" placeholder="filter formulas, e.g. 'binomial' or 'vector'_">
+    </div>
+    <span class="filter-count" id="filter-count"></span>
+  </div>
+
+  <div id="topics"></div>
+
+  <p class="no-results" id="no-results">No formulas match that search — try a different term.</p>
+
+</div>
+
+<footer>
+  <div class="wrap"><span class="status-dot"></span>SYSTEM ONLINE — IB SUBJECTS HUB, NOTES &amp; PAST PAPERS FOR EVERY DP SUBJECT</div>
+</footer>
+
+<script src="theme.js"></script>
+<script>
+// ---------- formula data, grouped by syllabus topic ----------
+// each card: { tag, title, hl(optional bool), lines:[latex,...] }
+var topics = [
+  {
+    id: 'prior', num: '', label: 'Prior Learning',
+    cards: [
+      { tag:'PRIOR', title:'Area of a parallelogram', lines:['A = bh'] },
+      { tag:'PRIOR', title:'Area of a triangle', lines:['A = \\tfrac{1}{2}bh'] },
+      { tag:'PRIOR', title:'Area of a trapezoid', lines:['A = \\tfrac{1}{2}(a+b)h'] },
+      { tag:'PRIOR', title:'Area of a circle', lines:['A = \\pi r^2'] },
+      { tag:'PRIOR', title:'Circumference of a circle', lines:['C = 2\\pi r'] },
+      { tag:'PRIOR', title:'Volume of a cuboid', lines:['V = lwh'] },
+      { tag:'PRIOR', title:'Volume of a cylinder', lines:['V = \\pi r^2 h'] },
+      { tag:'PRIOR', title:'Volume of a prism', lines:['V = Ah'] },
+      { tag:'PRIOR', title:'Curved surface area of a cylinder', lines:['A = 2\\pi rh'] },
+      { tag:'PRIOR', title:'Distance between two points', lines:['d=\\sqrt{(x_2-x_1)^2+(y_2-y_1)^2}'] },
+      { tag:'PRIOR', title:'Midpoint of a line segment', lines:['\\left(\\dfrac{x_1+x_2}{2},\\ \\dfrac{y_1+y_2}{2}\\right)'] }
+    ]
+  },
+  {
+    id: 'topic1', num: 'Topic 1', label: 'Number and Algebra',
+    cards: [
+      { tag:'SL 1.2', title:'Arithmetic sequences', lines:['u_n = u_1+(n-1)d','S_n=\\tfrac{n}{2}\\big(2u_1+(n-1)d\\big)=\\tfrac{n}{2}(u_1+u_n)'] },
+      { tag:'SL 1.3', title:'Geometric sequences', lines:['u_n = u_1 r^{\\,n-1}','S_n=\\dfrac{u_1(r^n-1)}{r-1}=\\dfrac{u_1(1-r^n)}{1-r},\\ \\ r\\ne1'] },
+      { tag:'SL 1.4', title:'Compound interest', lines:['FV = PV\\left(1+\\dfrac{r}{100k}\\right)^{kn}'] },
+      { tag:'SL 1.5', title:'Exponents and logarithms', lines:['\\log_a b = x \\iff a^x=b,\\ \\ a>0,\\ b>0,\\ a\\ne1'] },
+      { tag:'SL 1.7', title:'Laws of logarithms', lines:['\\log_a(xy)=\\log_a x+\\log_a y','\\log_a\\!\\left(\\dfrac{x}{y}\\right)=\\log_a x-\\log_a y','\\log_a x^m = m\\log_a x','\\log_a x=\\dfrac{\\log_b x}{\\log_b a}'] },
+      { tag:'SL 1.8', title:'Sum of an infinite geometric sequence', lines:['S_\\infty=\\dfrac{u_1}{1-r},\\ \\ |r|<1'] },
+      { tag:'SL 1.9', title:'Binomial theorem', lines:['(a+b)^n=a^n+\\binom{n}{1}a^{n-1}b+\\dots+\\binom{n}{r}a^{n-r}b^r+\\dots+b^n','\\binom{n}{r}=\\dfrac{n!}{r!(n-r)!}'] }
+    ],
+    hlCards: [
+      { tag:'AHL 1.10', title:'Combinations & permutations', lines:['{}^nC_r=\\dfrac{n!}{r!(n-r)!}','{}^nP_r=\\dfrac{n!}{(n-r)!}'] },
+      { tag:'AHL 1.12', title:'Complex numbers', lines:['z=a+b\\mathrm{i}'] },
+      { tag:'AHL 1.13', title:'Modulus–argument & exponential form', lines:['z=r(\\cos\\theta+\\mathrm{i}\\sin\\theta)=re^{\\mathrm{i}\\theta}=r\\operatorname{cis}\\theta'] },
+      { tag:'AHL 1.14', title:"De Moivre's theorem", lines:['\\big[r(\\cos\\theta+\\mathrm{i}\\sin\\theta)\\big]^n=r^n(\\cos n\\theta+\\mathrm{i}\\sin n\\theta)=r^ne^{\\mathrm{i}n\\theta}=r^n\\operatorname{cis}n\\theta'] }
+    ]
+  },
+  {
+    id: 'topic2', num: 'Topic 2', label: 'Functions',
+    cards: [
+      { tag:'SL 2.1', title:'Equations of a straight line', lines:['y=mx+c \\qquad ax+by+d=0 \\qquad y-y_1=m(x-x_1)','m=\\dfrac{y_2-y_1}{x_2-x_1}'] },
+      { tag:'SL 2.6', title:'Axis of symmetry of a quadratic', lines:['f(x)=ax^2+bx+c \\ \\Rightarrow\\ x=-\\dfrac{b}{2a}'] },
+      { tag:'SL 2.7', title:'Solving a quadratic equation', lines:['ax^2+bx+c=0 \\ \\Rightarrow\\ x=\\dfrac{-b\\pm\\sqrt{b^2-4ac}}{2a}','\\Delta=b^2-4ac'] },
+      { tag:'SL 2.9', title:'Exponential and logarithmic functions', lines:['a^x=e^{x\\ln a}\\qquad \\log_a a^x=a^{\\log_a x}=x,\\ \\ a>0,\\ a\\ne1'] }
+    ],
+    hlCards: [
+      { tag:'AHL 2.12', title:'Sum and product of roots of a polynomial', lines:['\\sum_{r=0}^{n}a_rx^r=0','\\text{sum} = -\\dfrac{a_{n-1}}{a_n} \\qquad \\text{product} = (-1)^n\\dfrac{a_0}{a_n}'] }
+    ]
+  },
+  {
+    id: 'topic3', num: 'Topic 3', label: 'Geometry and Trigonometry',
+    cards: [
+      { tag:'SL 3.1', title:'Distance & midpoint in 3D', lines:['d=\\sqrt{(x_2-x_1)^2+(y_2-y_1)^2+(z_2-z_1)^2}','\\left(\\dfrac{x_1+x_2}{2},\\dfrac{y_1+y_2}{2},\\dfrac{z_1+z_2}{2}\\right)'] },
+      { tag:'SL 3.1', title:'Volumes & surface areas', lines:['V=\\tfrac{1}{3}Ah \\ \\ \\text{(pyramid)}\\qquad V=\\tfrac{1}{3}\\pi r^2h \\ \\ \\text{(cone)}','A=\\pi rl \\ \\ \\text{(cone, curved)}\\qquad V=\\tfrac{4}{3}\\pi r^3,\\ \\ A=4\\pi r^2 \\ \\ \\text{(sphere)}'] },
+      { tag:'SL 3.2', title:'Sine rule, cosine rule, area of a triangle', lines:['\\dfrac{a}{\\sin A}=\\dfrac{b}{\\sin B}=\\dfrac{c}{\\sin C}','c^2=a^2+b^2-2ab\\cos C\\qquad \\cos C=\\dfrac{a^2+b^2-c^2}{2ab}','A=\\tfrac{1}{2}ab\\sin C'] },
+      { tag:'SL 3.4', title:'Arc length & sector area', lines:['l=r\\theta \\qquad A=\\tfrac{1}{2}r^2\\theta'] },
+      { tag:'SL 3.5', title:'Tangent identity', lines:['\\tan\\theta=\\dfrac{\\sin\\theta}{\\cos\\theta}'] },
+      { tag:'SL 3.6', title:'Pythagorean & double angle identities', lines:['\\cos^2\\theta+\\sin^2\\theta=1','\\sin2\\theta=2\\sin\\theta\\cos\\theta','\\cos2\\theta=\\cos^2\\theta-\\sin^2\\theta=2\\cos^2\\theta-1=1-2\\sin^2\\theta'] }
+    ],
+    hlCards: [
+      { tag:'AHL 3.9', title:'Reciprocal & Pythagorean identities', lines:['\\sec\\theta=\\dfrac{1}{\\cos\\theta}\\qquad \\operatorname{cosec}\\theta=\\dfrac{1}{\\sin\\theta}','1+\\tan^2\\theta=\\sec^2\\theta\\qquad 1+\\cot^2\\theta=\\operatorname{cosec}^2\\theta'] },
+      { tag:'AHL 3.10', title:'Compound & double angle identities', lines:['\\sin(A\\pm B)=\\sin A\\cos B\\pm\\cos A\\sin B','\\cos(A\\pm B)=\\cos A\\cos B\\mp\\sin A\\sin B','\\tan(A\\pm B)=\\dfrac{\\tan A\\pm\\tan B}{1\\mp\\tan A\\tan B}\\qquad \\tan2\\theta=\\dfrac{2\\tan\\theta}{1-\\tan^2\\theta}'] },
+      { tag:'AHL 3.12', title:'Magnitude of a vector', lines:['|\\mathbf{v}|=\\sqrt{v_1^2+v_2^2+v_3^2}'] },
+      { tag:'AHL 3.13', title:'Scalar product & angle between vectors', lines:['\\mathbf{v}\\cdot\\mathbf{w}=v_1w_1+v_2w_2+v_3w_3=|\\mathbf{v}||\\mathbf{w}|\\cos\\theta','\\cos\\theta=\\dfrac{v_1w_1+v_2w_2+v_3w_3}{|\\mathbf{v}||\\mathbf{w}|}'] },
+      { tag:'AHL 3.14', title:'Vector, parametric & Cartesian line equations', lines:['\\mathbf{r}=\\mathbf{a}+\\lambda\\mathbf{b}','x=x_0+l\\lambda,\\ \\ y=y_0+m\\lambda,\\ \\ z=z_0+n\\lambda','\\dfrac{x-x_0}{l}=\\dfrac{y-y_0}{m}=\\dfrac{z-z_0}{n}'] },
+      { tag:'AHL 3.16', title:'Vector product & area of a parallelogram', lines:['\\mathbf{v}\\times\\mathbf{w}=\\big(v_2w_3-v_3w_2,\\ v_3w_1-v_1w_3,\\ v_1w_2-v_2w_1\\big)','|\\mathbf{v}\\times\\mathbf{w}|=|\\mathbf{v}||\\mathbf{w}|\\sin\\theta\\qquad A=|\\mathbf{v}\\times\\mathbf{w}|'] },
+      { tag:'AHL 3.17', title:'Vector & Cartesian equations of a plane', lines:['\\mathbf{r}=\\mathbf{a}+\\lambda\\mathbf{b}+\\mu\\mathbf{c}','\\mathbf{r}\\cdot\\mathbf{n}=\\mathbf{a}\\cdot\\mathbf{n}\\qquad ax+by+cz=d'] }
+    ]
+  },
+  {
+    id: 'topic4', num: 'Topic 4', label: 'Statistics and Probability',
+    cards: [
+      { tag:'SL 4.2', title:'Interquartile range', lines:['IQR=Q_3-Q_1'] },
+      { tag:'SL 4.3', title:'Mean of a set of data', lines:['\\bar{x}=\\dfrac{\\sum f_ix_i}{n},\\ \\ \\ n=\\sum f_i'] },
+      { tag:'SL 4.5', title:'Probability & complementary events', lines:['P(A)=\\dfrac{n(A)}{n(U)}\\qquad P(A)+P(A\')=1'] },
+      { tag:'SL 4.6', title:'Combined, conditional & independent events', lines:['P(A\\cup B)=P(A)+P(B)-P(A\\cap B)','P(A\\cup B)=P(A)+P(B)\\ \\ \\text{(mutually exclusive)}','P(A\\mid B)=\\dfrac{P(A\\cap B)}{P(B)}\\qquad P(A\\cap B)=P(A)P(B)\\ \\ \\text{(independent)}'] },
+      { tag:'SL 4.7', title:'Expected value of a discrete random variable', lines:['E(X)=\\sum xP(X=x)'] },
+      { tag:'SL 4.8', title:'Binomial distribution', lines:['X\\sim B(n,p)\\qquad E(X)=np\\qquad \\operatorname{Var}(X)=np(1-p)'] },
+      { tag:'SL 4.12', title:'Standardized normal variable', lines:['z=\\dfrac{x-\\mu}{\\sigma}'] }
+    ],
+    hlCards: [
+      { tag:'AHL 4.13', title:"Bayes' theorem", lines:['P(B\\mid A)=\\dfrac{P(A\\mid B)\\,P(B)}{P(A\\mid B)\\,P(B)+P(A\\mid B\')\\,P(B\')}','P(B_i\\mid A)=\\dfrac{P(B_i)P(A\\mid B_i)}{\\sum_j P(B_j)P(A\\mid B_j)}'] },
+      { tag:'AHL 4.14', title:'Variance & standard deviation', lines:['\\sigma^2=\\dfrac{\\sum f_ix_i^2}{n}-\\mu^2\\qquad \\sigma=\\sqrt{\\dfrac{\\sum f_i(x_i-\\mu)^2}{n}}','E(aX+b)=aE(X)+b\\qquad \\operatorname{Var}(aX+b)=a^2\\operatorname{Var}(X)'] },
+      { tag:'AHL 4.14', title:'Continuous & discrete X — expectation and variance', lines:['E(X)=\\mu=\\int_{-\\infty}^{\\infty}xf(x)\\,dx\\qquad \\operatorname{Var}(X)=E(X^2)-\\big[E(X)\\big]^2','\\operatorname{Var}(X)=\\sum (x-\\mu)^2P(X=x)\\ \\ \\text{(discrete)}','\\operatorname{Var}(X)=\\int_{-\\infty}^{\\infty}(x-\\mu)^2f(x)\\,dx\\ \\ \\text{(continuous)}'] }
+    ]
+  },
+  {
+    id: 'topic5', num: 'Topic 5', label: 'Calculus',
+    cards: [
+      { tag:'SL 5.3', title:'Derivative of xⁿ', lines:['f(x)=x^n \\ \\Rightarrow\\ f\'(x)=nx^{n-1}'] },
+      { tag:'SL 5.5', title:'Integral of xⁿ & area under a curve', lines:['\\int x^n\\,dx=\\dfrac{x^{n+1}}{n+1}+C,\\ \\ n\\ne-1','A=\\int_a^b y\\,dx,\\ \\ \\ f(x)>0'] },
+      { tag:'SL 5.6', title:'Standard derivatives', lines:['f(x)=\\sin x\\ \\Rightarrow\\ f\'(x)=\\cos x \\qquad f(x)=\\cos x\\ \\Rightarrow\\ f\'(x)=-\\sin x','f(x)=e^x\\ \\Rightarrow\\ f\'(x)=e^x \\qquad f(x)=\\ln x\\ \\Rightarrow\\ f\'(x)=\\dfrac{1}{x}'] },
+      { tag:'SL 5.6', title:'Chain, product & quotient rules', lines:['y=g(u)\\ \\Rightarrow\\ \\dfrac{dy}{dx}=\\dfrac{dy}{du}\\times\\dfrac{du}{dx}\\ \\ \\text{(chain)}','y=uv \\ \\Rightarrow\\ \\dfrac{dy}{dx}=u\\dfrac{dv}{dx}+v\\dfrac{du}{dx}\\ \\ \\text{(product)}','y=\\dfrac{u}{v}\\ \\Rightarrow\\ \\dfrac{dy}{dx}=\\dfrac{v\\frac{du}{dx}-u\\frac{dv}{dx}}{v^2}\\ \\ \\text{(quotient)}'] },
+      { tag:'SL 5.9', title:'Kinematics', lines:['a=\\dfrac{dv}{dt}=\\dfrac{d^2s}{dt^2}','\\text{distance}=\\int_{t_1}^{t_2}|v(t)|\\,dt \\qquad \\text{displacement}=\\int_{t_1}^{t_2}v(t)\\,dt'] },
+      { tag:'SL 5.10', title:'Standard integrals', lines:['\\int \\dfrac{1}{x}\\,dx=\\ln|x|+C \\qquad \\int \\sin x\\,dx=-\\cos x+C','\\int \\cos x\\,dx=\\sin x+C \\qquad \\int e^x\\,dx=e^x+C'] },
+      { tag:'SL 5.11', title:'Area enclosed by a curve and the x-axis', lines:['A=\\int_a^b y\\,dx'] }
+    ],
+    hlCards: [
+      { tag:'AHL 5.12', title:'Derivative from first principles', lines:['f\'(x)=\\lim_{h\\to0}\\dfrac{f(x+h)-f(x)}{h}'] },
+      { tag:'AHL 5.15', title:'Further standard derivatives', lines:['\\tan x \\to \\sec^2x \\qquad \\sec x \\to \\sec x\\tan x \\qquad \\operatorname{cosec}x\\to-\\operatorname{cosec}x\\cot x \\qquad \\cot x\\to-\\operatorname{cosec}^2x','a^x\\to a^x\\ln a \\qquad \\log_a x \\to \\dfrac{1}{x\\ln a}','\\arcsin x\\to\\dfrac{1}{\\sqrt{1-x^2}} \\qquad \\arccos x\\to\\dfrac{-1}{\\sqrt{1-x^2}} \\qquad \\arctan x\\to\\dfrac{1}{1+x^2}'] },
+      { tag:'AHL 5.15', title:'Further standard integrals', lines:['\\int a^x\\,dx=\\dfrac{a^x}{\\ln a}+C','\\int\\dfrac{1}{a^2+x^2}\\,dx=\\dfrac{1}{a}\\arctan\\dfrac{x}{a}+C','\\int\\dfrac{1}{\\sqrt{a^2-x^2}}\\,dx=\\arcsin\\dfrac{x}{a}+C,\\ \\ |x|<a'] },
+      { tag:'AHL 5.16', title:'Integration by parts', lines:['\\int u\\,dv=uv-\\int v\\,du'] },
+      { tag:'AHL 5.17', title:'Area & volume of revolution', lines:['A=\\int_a^b x\\,dy\\ \\ \\text{(against the y-axis)}','V=\\pi\\int_a^b y^2\\,dx\\ \\ \\text{or}\\ \\ V=\\pi\\int_a^b x^2\\,dy'] },
+      { tag:'AHL 5.18', title:"Euler's method & integrating factor", lines:['y_{n+1}=y_n+h\\,f(x_n,y_n),\\ \\ x_{n+1}=x_n+h','\\text{integrating factor} = e^{\\int P(x)\\,dx}\\ \\ \\text{for}\\ \\ y\'+P(x)y=Q(x)'] },
+      { tag:'AHL 5.19', title:'Maclaurin series', lines:['f(x)=f(0)+f\'(0)x+\\dfrac{f\'\'(0)}{2!}x^2+\\dots','e^x=1+x+\\dfrac{x^2}{2!}+\\dots\\qquad \\ln(1+x)=x-\\dfrac{x^2}{2}+\\dfrac{x^3}{3}-\\dots','\\sin x=x-\\dfrac{x^3}{3!}+\\dfrac{x^5}{5!}-\\dots\\qquad \\cos x=1-\\dfrac{x^2}{2!}+\\dfrac{x^4}{4!}-\\dots','\\arctan x=x-\\dfrac{x^3}{3}+\\dfrac{x^5}{5}-\\dots'] }
+    ]
+  }
+];
+
+// ---------- build the page ----------
+var topicsEl = document.getElementById('topics');
+var quicknav = document.getElementById('quicknav');
+var totalHl = 0, totalAll = 0;
+var qnHtml = '';
+
+topics.forEach(function(topic){
+  qnHtml += '<a href="#' + topic.id + '">' + (topic.num ? topic.num + ' — ' : '') + topic.label + '</a>';
+
+  var section = document.createElement('div');
+  section.className = 'topic-section';
+  section.id = topic.id;
+
+  var headHtml = '<div class="topic-head">' +
+    (topic.num ? '<span class="topic-num">' + topic.num + '</span>' : '') +
+    '<h2>' + topic.label + '</h2></div>';
+
+  var bodyHtml = '<p class="group-label">SL &amp; HL</p><div class="formula-grid" data-group="base">';
+  topic.cards.forEach(function(c){ bodyHtml += cardHtml(c, false); });
+  bodyHtml += '</div>';
+
+  if(topic.hlCards && topic.hlCards.length){
+    bodyHtml += '<p class="group-label hl-only">HL only</p><div class="formula-grid" data-group="hl">';
+    topic.hlCards.forEach(function(c){ bodyHtml += cardHtml(c, true); totalHl++; });
+    bodyHtml += '</div>';
+  }
+
+  totalAll += topic.cards.length + (topic.hlCards ? topic.hlCards.length : 0);
+
+  section.innerHTML = headHtml + bodyHtml;
+  topicsEl.appendChild(section);
+});
+
+quicknav.innerHTML = qnHtml;
+document.getElementById('hl-count').textContent = totalHl;
+
+function cardHtml(c, isHl){
+  var lines = c.lines.map(function(l){ return '<div class="fline" data-latex="' + escapeAttr(l) + '"></div>'; }).join('');
+  return '<div class="fcard term-panel' + (isHl ? ' hl-card' : '') + '" data-search="' + escapeAttr((c.tag + ' ' + c.title).toLowerCase()) + '">' +
+    '<div class="fhead"><div><div class="ftag' + (isHl ? ' hl-tag' : '') + '">' + c.tag + '</div><h3 class="ftitle">' + c.title + '</h3></div>' +
+    (isHl ? '<span class="fbadge">HL</span>' : '') + '</div>' +
+    '<div class="fbody">' + lines + '</div></div>';
+}
+function escapeAttr(s){ return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;'); }
+
+// ---------- render KaTeX once it loads ----------
+function renderMath(){
+  document.querySelectorAll('.fline').forEach(function(el){
+    try{
+      katex.render(el.getAttribute('data-latex'), el, { throwOnError:false, displayMode:false });
+    }catch(e){ el.textContent = el.getAttribute('data-latex'); }
+  });
+}
+if(window.katex){ renderMath(); }
+else{ document.addEventListener('DOMContentLoaded', renderMath); }
+
+// ---------- HL / SL toggle (real bookmarkable URL) ----------
+var params = new URLSearchParams(window.location.search);
+var level = (params.get('level') || 'hl').toLowerCase();
+if(level !== 'hl' && level !== 'sl') level = 'hl';
+
+function applyLevel(lv, pushUrl){
+  level = lv;
+  document.querySelectorAll('.level-btn').forEach(function(b){
+    b.classList.toggle('active', b.getAttribute('data-level') === lv);
+  });
+  document.querySelectorAll('.formula-grid[data-group="hl"]').forEach(function(g){
+    g.style.display = lv === 'hl' ? '' : 'none';
+  });
+  document.querySelectorAll('.group-label.hl-only').forEach(function(g){
+    g.style.display = lv === 'hl' ? '' : 'none';
+  });
+  if(pushUrl){
+    var url = new URL(window.location.href);
+    url.searchParams.set('level', lv);
+    history.replaceState(null, '', url);
+  }
+  applyFilter();
+}
+document.querySelectorAll('.level-btn').forEach(function(b){
+  b.addEventListener('click', function(){ applyLevel(b.getAttribute('data-level'), true); });
+});
+
+// ---------- live filter ----------
+var filterInput = document.getElementById('formula-filter');
+var filterCount = document.getElementById('filter-count');
+var noResults = document.getElementById('no-results');
+
+function applyFilter(){
+  var q = filterInput.value.trim().toLowerCase();
+  var visibleCount = 0;
+  topics.forEach(function(topic){
+    var section = document.getElementById(topic.id);
+    var anyVisibleInSection = false;
+    section.querySelectorAll('.fcard').forEach(function(card){
+      var inHlGroup = card.closest('.formula-grid').getAttribute('data-group') === 'hl';
+      if(inHlGroup && level === 'sl'){ card.classList.add('is-hidden'); return; }
+      var matches = !q || card.getAttribute('data-search').indexOf(q) !== -1;
+      card.classList.toggle('is-hidden', !matches);
+      if(matches){ visibleCount++; anyVisibleInSection = true; }
+    });
+    section.classList.toggle('is-empty', !anyVisibleInSection);
+  });
+  filterCount.textContent = q ? (visibleCount + ' match' + (visibleCount === 1 ? '' : 'es')) : (visibleCount + ' formulas shown');
+  noResults.classList.toggle('show', q && visibleCount === 0);
+}
+filterInput.addEventListener('input', applyFilter);
+
+applyLevel(level, false);
+
+document.getElementById('copy-link').addEventListener('click', function(){
+  navigator.clipboard && navigator.clipboard.writeText(window.location.href);
+});
+</script>
+
+</body>
+</html>
