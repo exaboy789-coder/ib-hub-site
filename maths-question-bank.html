@@ -106,6 +106,34 @@
   .side-nav-progress-text span#progress-count{font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:700; color:var(--ink);}
   .side-nav-progress-label{font-family:'IBM Plex Sans',sans-serif; font-size:10.5px; color:var(--ink-soft);}
 
+  .organise-wrap{position:relative; margin-top:14px;}
+  .organise-btn{
+    width:100%; display:flex; align-items:center; gap:8px; font-family:'IBM Plex Sans',sans-serif; font-size:12.5px; font-weight:600;
+    color:var(--ink); background:var(--bg-soft); border:1.5px solid var(--rule); border-radius:10px; padding:9px 12px; cursor:pointer;
+    transition:all .2s ease;
+  }
+  .organise-btn:hover{border-color:var(--accent); color:var(--accent);}
+  .organise-btn svg{width:14px; height:14px; flex-shrink:0;}
+  .organise-btn .organise-caret{margin-left:auto; transition:transform .2s ease;}
+  .organise-btn.is-open .organise-caret{transform:rotate(180deg);}
+
+  .organise-menu{
+    display:none; position:absolute; top:calc(100% + 8px); left:0; right:0; z-index:40;
+    background:var(--panel); border:1px solid var(--rule); border-radius:12px; padding:14px;
+    box-shadow:0 14px 32px rgba(20,20,30,0.18);
+  }
+  .organise-menu.show{display:block;}
+  .organise-menu-label{
+    font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--ink-soft); margin:0 0 8px;
+  }
+  .organise-menu-label:not(:first-child){margin-top:14px;}
+  .organise-radio, .organise-check{
+    display:flex; align-items:center; gap:8px; font-family:'IBM Plex Sans',sans-serif; font-size:12.5px; color:var(--ink);
+    padding:5px 2px; cursor:pointer;
+  }
+  .organise-radio input, .organise-check input{accent-color:var(--accent); cursor:pointer;}
+
   .topic-row{border-bottom:1px solid var(--rule);}
   .topic-row:last-child{border-bottom:none;}
   .topic-btn{
@@ -113,6 +141,8 @@
     cursor:pointer; text-align:left; transition:background-color .15s ease;
   }
   .topic-btn:hover{background:rgba(var(--accent-rgb),0.06);}
+  .topic-btn.trigger-soon{cursor:default; opacity:.5;}
+  .topic-btn.trigger-soon:hover{background:none;}
   .topic-glyph{
     width:28px; height:28px; flex-shrink:0; border-radius:9px; display:flex; align-items:center; justify-content:center;
     font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:700; color:var(--accent);
@@ -121,12 +151,57 @@
   .topic-info{flex:1; min-width:0; display:flex; flex-direction:column; gap:2px;}
   .topic-name{font-family:'Space Grotesk',sans-serif; font-size:13px; font-weight:600; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
   .topic-count{font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--accent);}
-  .topic-arrow{width:12px; height:12px; flex-shrink:0; color:var(--ink-soft); transition:transform .2s ease;}
-  .topic-row.is-open .topic-arrow{transform:rotate(180deg);}
+  .topic-arrow{width:12px; height:12px; flex-shrink:0; color:var(--ink-soft); transition:transform .15s ease;}
+  .topic-row:hover .topic-arrow{transform:translateX(2px);}
 
+  /* ---- topic accordion (expand a topic to see its sub-topic sections) ---- */
   .topic-body{display:grid; grid-template-rows:0fr; transition:grid-template-rows .22s ease;}
   .topic-row.is-open .topic-body{grid-template-rows:1fr;}
+  .topic-row.is-open .topic-arrow{transform:rotate(90deg);}
   .topic-body > *{overflow:hidden;}
+
+  /* ---- sub-topic sections within a topic (1.1, 1.2, ...) ---- */
+  .qb-subtopic{border-top:1px solid var(--rule);}
+  .qb-subtopic-btn{
+    width:100%; display:flex; align-items:center; gap:10px; padding:11px 16px 11px 22px; background:none; border:none;
+    cursor:pointer; text-align:left; transition:background-color .15s ease;
+  }
+  .qb-subtopic-btn:hover{background:rgba(var(--accent-rgb),0.06);}
+  .qb-subtopic-btn.is-soon{cursor:default; opacity:.5;}
+  .qb-subtopic-btn.is-soon:hover{background:none;}
+  .qb-subtopic-num{font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; color:var(--accent); flex-shrink:0;}
+  .qb-subtopic-title{font-family:'IBM Plex Sans',sans-serif; font-size:12.5px; font-weight:600; color:var(--ink); flex:1; min-width:0;}
+  .qb-subtopic-count{font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--ink-soft); flex-shrink:0;}
+  .qb-subtopic-arrow{width:11px; height:11px; flex-shrink:0; color:var(--ink-soft); transition:transform .2s ease;}
+  .qb-subtopic.is-open .qb-subtopic-arrow{transform:rotate(180deg);}
+
+  .qb-subtopic-body{display:grid; grid-template-rows:0fr; transition:grid-template-rows .22s ease;}
+  .qb-subtopic.is-open .qb-subtopic-body{grid-template-rows:1fr;}
+  .qb-subtopic-body > *{overflow:hidden;}
+  .qb-subtopic-inner{padding:4px 12px 12px 22px;}
+
+  /* ---- sub-sub-topic sections within a sub-topic (1.1.1, 1.1.2, ...) ---- */
+  .qb-subsub{border-top:1px solid var(--rule);}
+  .qb-subsub:first-child{border-top:none;}
+  .qb-subsub-btn{
+    width:100%; display:flex; align-items:center; gap:9px; padding:9px 10px 9px 8px; background:none; border:none;
+    cursor:pointer; text-align:left; transition:background-color .15s ease;
+  }
+  .qb-subsub-btn:hover{background:rgba(var(--accent-rgb),0.06);}
+  .qb-subsub-btn.is-soon{cursor:default; opacity:.5;}
+  .qb-subsub-btn.is-soon:hover{background:none;}
+  .qb-subsub-num{font-family:'IBM Plex Mono',monospace; font-size:10.5px; font-weight:600; color:var(--accent); flex-shrink:0;}
+  .qb-subsub-title{font-family:'IBM Plex Sans',sans-serif; font-size:12px; font-weight:600; color:var(--ink); flex:1; min-width:0;}
+  .qb-subsub-count{font-family:'IBM Plex Mono',monospace; font-size:9.5px; color:var(--ink-soft); flex-shrink:0;}
+  .qb-subsub-arrow{width:10px; height:10px; flex-shrink:0; color:var(--ink-soft); transition:transform .2s ease;}
+  .qb-subsub.is-open .qb-subsub-arrow{transform:rotate(180deg);}
+
+  .qb-subsub-body{display:grid; grid-template-rows:0fr; transition:grid-template-rows .22s ease;}
+  .qb-subsub.is-open .qb-subsub-body{grid-template-rows:1fr;}
+  .qb-subsub-body > *{overflow:hidden;}
+  .qb-subsub-inner{padding:2px 8px 10px 16px;}
+
+  .qb-q-links{max-height:340px; overflow-y:auto; overflow-x:hidden;}
 
   .q-link{
     display:flex; align-items:center; gap:9px; padding:9px 16px 9px 22px; text-decoration:none;
@@ -134,8 +209,13 @@
   }
   .q-link:hover{color:var(--accent); background:rgba(var(--accent-rgb),0.08);}
   .q-link-dot{width:6px; height:6px; border-radius:50%; background:var(--accent); flex-shrink:0;}
+  .q-link[data-difficulty="easy"] .q-link-dot{background:var(--green);}
+  .q-link[data-difficulty="medium"] .q-link-dot{background:var(--amber);}
+  .q-link[data-difficulty="hard"] .q-link-dot{background:var(--coral);}
+  .q-link[data-difficulty="extreme"] .q-link-dot{background:var(--pink);}
   .q-link.is-soon{color:var(--ink-soft); opacity:.55; cursor:default; font-style:italic;}
   .q-link.is-soon:hover{background:none; color:var(--ink-soft);}
+  .q-link.is-filtered-out{display:none;}
 
   @keyframes qflash{
     0%, 100%{box-shadow:0 2px 10px rgba(20,20,30,0.04);}
@@ -191,6 +271,7 @@
   .chip-diff.level-easy .chip-diff-label,.chip-diff.level-easy .diff-fill{color:var(--green); background:var(--green);}
   .chip-diff.level-medium .chip-diff-label,.chip-diff.level-medium .diff-fill{color:var(--amber); background:var(--amber);}
   .chip-diff.level-hard .chip-diff-label,.chip-diff.level-hard .diff-fill{color:var(--coral); background:var(--coral);}
+  .chip-diff.level-extreme .chip-diff-label,.chip-diff.level-extreme .diff-fill{color:var(--pink); background:var(--pink);}
 
   .qcard-rule{border:none; border-top:1px solid var(--rule); margin:0;}
 
@@ -246,15 +327,6 @@
   .qanswer-slot{display:flex; align-items:center; gap:6px;}
   .slot-label{font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:600; color:var(--ink-soft);}
   .answer-field.small{flex:none; width:64px; text-align:center;}
-
-  /* ---- inline mark scheme reveal (for questions without a sourced PDF) ---- */
-  .ms-panel{margin-top:16px; padding-top:14px; border-top:1px dashed var(--rule); display:none;}
-  .ms-panel.show{display:block;}
-  .ms-panel-label{
-    font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.09em; text-transform:uppercase;
-    color:var(--green); margin:0 0 8px;
-  }
-  .ms-panel p{font-family:'IBM Plex Sans',sans-serif; font-size:13.5px; color:var(--ink-soft); margin:0 0 6px; line-height:1.6;}
 
   /* ---- on-screen math keypad (floating pop-up) ---- */
   .mathpad{
@@ -444,83 +516,207 @@
         </div>
       </div>
 
-      <div class="topic-row is-open" style="--accent:var(--cyan); --accent-rgb:var(--cyan-rgb);">
+      <div class="topic-row is-open" data-topic-id="1" style="--accent:var(--cyan); --accent-rgb:var(--cyan-rgb);">
         <button class="topic-btn" type="button">
           <span class="topic-glyph">x</span>
           <span class="topic-info">
             <span class="topic-name">1 &middot; Number &amp; Algebra</span>
             <span class="topic-count">2 questions</span>
           </span>
-          <svg class="topic-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"></path></svg>
+          <svg class="topic-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 6l6 6-6 6"></path></svg>
         </button>
         <div class="topic-body">
-          <div class="topic-links">
-            <a class="q-link" href="#qcard-1" data-target="qcard-1">
-              <span class="q-link-dot"></span>
-              <span class="q-link-text">1.1.1 Standard Form &mdash; Q1(a)</span>
-            </a>
-            <a class="q-link" href="#qcard-2" data-target="qcard-2">
-              <span class="q-link-dot"></span>
-              <span class="q-link-text">1.1.3 Partial Fractions &mdash; Q2(a)</span>
-            </a>
+          <div class="topic-body-inner">
+
+            <div class="qb-subtopic is-open" data-subtopic="1.1">
+              <button class="qb-subtopic-btn" type="button">
+                <span class="qb-subtopic-num">1.1</span>
+                <span class="qb-subtopic-title">Number &amp; Algebra Tools</span>
+                <span class="qb-subtopic-count">2</span>
+                <svg class="qb-subtopic-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"></path></svg>
+              </button>
+              <div class="qb-subtopic-body">
+                <div class="qb-subtopic-inner">
+
+                  <div class="qb-subsub is-open" data-subsub="1.1.1">
+                    <button class="qb-subsub-btn" type="button">
+                      <span class="qb-subsub-num">1.1.1</span>
+                      <span class="qb-subsub-title">Standard Form</span>
+                      <span class="qb-subsub-count">5</span>
+                      <svg class="qb-subsub-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"></path></svg>
+                    </button>
+                    <div class="qb-subsub-body">
+                      <div class="qb-subsub-inner">
+                        <div class="qb-q-links" id="qb-q-links-111">
+                          <a class="q-link" href="#qcard-1" data-target="qcard-1" data-difficulty="medium" data-qnum="1">
+                            <span class="q-link-dot"></span>
+                            <span class="q-link-text">Q1(a)</span>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="qb-subsub" data-subsub="1.1.2">
+                    <button class="qb-subsub-btn" type="button">
+                      <span class="qb-subsub-num">1.1.2</span>
+                      <span class="qb-subsub-title">Laws of Indices</span>
+                      <span class="qb-subsub-count">7</span>
+                      <svg class="qb-subsub-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"></path></svg>
+                    </button>
+                    <div class="qb-subsub-body">
+                      <div class="qb-subsub-inner">
+                        <div class="qb-q-links" id="qb-q-links-112"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="qb-subsub is-open" data-subsub="1.1.3">
+                    <button class="qb-subsub-btn" type="button">
+                      <span class="qb-subsub-num">1.1.3</span>
+                      <span class="qb-subsub-title">Partial Fractions</span>
+                      <span class="qb-subsub-count">21</span>
+                      <svg class="qb-subsub-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"></path></svg>
+                    </button>
+                    <div class="qb-subsub-body">
+                      <div class="qb-subsub-inner">
+                        <div class="organise-wrap">
+                          <button class="organise-btn" id="organise-btn" type="button">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
+                            Organise
+                            <svg class="organise-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"></path></svg>
+                          </button>
+                          <div class="organise-menu" id="organise-menu">
+                            <p class="organise-menu-label">Sort by</p>
+                            <label class="organise-radio"><input type="radio" name="qb-sort" value="number" checked> Question order</label>
+                            <label class="organise-radio"><input type="radio" name="qb-sort" value="easiest"> Easiest first</label>
+                            <label class="organise-radio"><input type="radio" name="qb-sort" value="hardest"> Hardest first</label>
+                            <p class="organise-menu-label">Show difficulty</p>
+                            <label class="organise-check"><input type="checkbox" class="qb-diff-filter" value="easy" checked> Easy</label>
+                            <label class="organise-check"><input type="checkbox" class="qb-diff-filter" value="medium" checked> Medium</label>
+                            <label class="organise-check"><input type="checkbox" class="qb-diff-filter" value="hard" checked> Hard</label>
+                            <label class="organise-check"><input type="checkbox" class="qb-diff-filter" value="extreme" checked> Extreme</label>
+                          </div>
+                        </div>
+                        <div class="qb-q-links" id="qb-q-links"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+            <div class="qb-subtopic" data-subtopic="1.2">
+              <button class="qb-subtopic-btn is-soon trigger-soon" data-name="1.2 Exponentials &amp; Logs questions" type="button">
+                <span class="qb-subtopic-num">1.2</span>
+                <span class="qb-subtopic-title">Exponentials &amp; Logs</span>
+                <span class="qb-subtopic-count">Soon</span>
+              </button>
+            </div>
+            <div class="qb-subtopic" data-subtopic="1.3">
+              <button class="qb-subtopic-btn is-soon trigger-soon" data-name="1.3 Sequences &amp; Series questions" type="button">
+                <span class="qb-subtopic-num">1.3</span>
+                <span class="qb-subtopic-title">Sequences &amp; Series</span>
+                <span class="qb-subtopic-count">Soon</span>
+              </button>
+            </div>
+            <div class="qb-subtopic" data-subtopic="1.4">
+              <button class="qb-subtopic-btn is-soon trigger-soon" data-name="1.4 Simple Proof &amp; Reasoning questions" type="button">
+                <span class="qb-subtopic-num">1.4</span>
+                <span class="qb-subtopic-title">Simple Proof &amp; Reasoning</span>
+                <span class="qb-subtopic-count">Soon</span>
+              </button>
+            </div>
+            <div class="qb-subtopic" data-subtopic="1.5">
+              <button class="qb-subtopic-btn is-soon trigger-soon" data-name="1.5 Further Proof &amp; Reasoning questions" type="button">
+                <span class="qb-subtopic-num">1.5</span>
+                <span class="qb-subtopic-title">Further Proof &amp; Reasoning</span>
+                <span class="qb-subtopic-count">Soon</span>
+              </button>
+            </div>
+            <div class="qb-subtopic" data-subtopic="1.6">
+              <button class="qb-subtopic-btn is-soon trigger-soon" data-name="1.6 Binomial Theorem questions" type="button">
+                <span class="qb-subtopic-num">1.6</span>
+                <span class="qb-subtopic-title">Binomial Theorem</span>
+                <span class="qb-subtopic-count">Soon</span>
+              </button>
+            </div>
+            <div class="qb-subtopic" data-subtopic="1.7">
+              <button class="qb-subtopic-btn is-soon trigger-soon" data-name="1.7 Permutations &amp; Combinations questions" type="button">
+                <span class="qb-subtopic-num">1.7</span>
+                <span class="qb-subtopic-title">Permutations &amp; Combinations</span>
+                <span class="qb-subtopic-count">Soon</span>
+              </button>
+            </div>
+            <div class="qb-subtopic" data-subtopic="1.8">
+              <button class="qb-subtopic-btn is-soon trigger-soon" data-name="1.8 Complex Numbers questions" type="button">
+                <span class="qb-subtopic-num">1.8</span>
+                <span class="qb-subtopic-title">Complex Numbers</span>
+                <span class="qb-subtopic-count">Soon</span>
+              </button>
+            </div>
+            <div class="qb-subtopic" data-subtopic="1.9">
+              <button class="qb-subtopic-btn is-soon trigger-soon" data-name="1.9 Further Complex Numbers questions" type="button">
+                <span class="qb-subtopic-num">1.9</span>
+                <span class="qb-subtopic-title">Further Complex Numbers</span>
+                <span class="qb-subtopic-count">Soon</span>
+              </button>
+            </div>
+            <div class="qb-subtopic" data-subtopic="1.10">
+              <button class="qb-subtopic-btn is-soon trigger-soon" data-name="1.10 Systems of Linear Equations questions" type="button">
+                <span class="qb-subtopic-num">1.10</span>
+                <span class="qb-subtopic-title">Systems of Linear Equations</span>
+                <span class="qb-subtopic-count">Soon</span>
+              </button>
+            </div>
+
           </div>
         </div>
       </div>
 
       <div class="topic-row" style="--accent:var(--violet); --accent-rgb:var(--violet-rgb);">
-        <button class="topic-btn" type="button">
+        <button class="topic-btn trigger-soon" data-name="Functions questions" type="button">
           <span class="topic-glyph">f(x)</span>
           <span class="topic-info">
             <span class="topic-name">2 &middot; Functions</span>
             <span class="topic-count">Coming soon</span>
           </span>
-          <svg class="topic-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"></path></svg>
+          <svg class="topic-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 6l6 6-6 6"></path></svg>
         </button>
-        <div class="topic-body">
-          <span class="q-link is-soon">No questions here yet</span>
-        </div>
       </div>
 
       <div class="topic-row" style="--accent:var(--green); --accent-rgb:var(--green-rgb);">
-        <button class="topic-btn" type="button">
+        <button class="topic-btn trigger-soon" data-name="Geometry &amp; Trig questions" type="button">
           <span class="topic-glyph">&Delta;</span>
           <span class="topic-info">
             <span class="topic-name">3 &middot; Geometry &amp; Trig</span>
             <span class="topic-count">Coming soon</span>
           </span>
-          <svg class="topic-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"></path></svg>
+          <svg class="topic-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 6l6 6-6 6"></path></svg>
         </button>
-        <div class="topic-body">
-          <span class="q-link is-soon">No questions here yet</span>
-        </div>
       </div>
 
       <div class="topic-row" style="--accent:var(--teal); --accent-rgb:var(--teal-rgb);">
-        <button class="topic-btn" type="button">
+        <button class="topic-btn trigger-soon" data-name="Statistics &amp; Prob questions" type="button">
           <span class="topic-glyph">&sigma;</span>
           <span class="topic-info">
             <span class="topic-name">4 &middot; Statistics &amp; Prob</span>
             <span class="topic-count">Coming soon</span>
           </span>
-          <svg class="topic-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"></path></svg>
+          <svg class="topic-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 6l6 6-6 6"></path></svg>
         </button>
-        <div class="topic-body">
-          <span class="q-link is-soon">No questions here yet</span>
-        </div>
       </div>
 
       <div class="topic-row" style="--accent:var(--coral); --accent-rgb:var(--coral-rgb);">
-        <button class="topic-btn" type="button">
+        <button class="topic-btn trigger-soon" data-name="Calculus questions" type="button">
           <span class="topic-glyph">&int;</span>
           <span class="topic-info">
             <span class="topic-name">5 &middot; Calculus</span>
             <span class="topic-count">Coming soon</span>
           </span>
-          <svg class="topic-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"></path></svg>
+          <svg class="topic-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 6l6 6-6 6"></path></svg>
         </button>
-        <div class="topic-body">
-          <span class="q-link is-soon">No questions here yet</span>
-        </div>
       </div>
     </aside>
 
@@ -663,105 +859,6 @@
       </div>
     </div>
 
-    <div class="qcard term-panel" id="qcard-2" data-qid="q2a" style="--accent:var(--cyan); --accent-rgb:var(--cyan-rgb);">
-      <div class="qcard-accent"></div>
-
-      <div class="qcard-header">
-        <div class="qtitle-group">
-          <span class="qid-badge">2a</span>
-          <div class="qtitle-text">
-            <h2>Question 2</h2>
-            <span class="qtopic">HL 1.1 &middot; Partial Fractions</span>
-          </div>
-        </div>
-        <div class="qtools">
-          <button class="qtool-btn done-btn" id="done-btn-2" title="Mark as done" type="button">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9 12l2 2 4-4"></path></svg>
-          </button>
-          <button class="qtool-btn expand-btn" id="expand-btn-2" title="Focus mode" type="button">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3"></path><path d="M16 3h3a2 2 0 0 1 2 2v3"></path><path d="M21 16v3a2 2 0 0 1-2 2h-3"></path><path d="M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
-          </button>
-        </div>
-      </div>
-
-      <div class="qchips">
-        <span class="chip-calc no-calc">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="9" y1="18" x2="15" y2="12"></line><line x1="9" y1="12" x2="15" y2="18"></line></svg>
-          No calculator
-        </span>
-        <span class="chip-diff level-medium">
-          <span class="chip-diff-label">Medium</span>
-          <span class="diff-track"><span class="diff-fill" style="width:66%;"></span></span>
-        </span>
-        <span class="chip-marks">Max mark: 4</span>
-      </div>
-
-      <hr class="qcard-rule">
-
-      <div class="qcard-body">
-        <div class="qmain">
-          <p class="qstem">Consider the rational function $\dfrac{23-4x}{(x+1)(x-2)^{2}}$.</p>
-          <div class="qparts">
-            <div class="qpart-row">
-              <span class="qpart-label">(a)</span>
-              <span class="qpart-text">Write it as the sum of partial fractions in the form $\dfrac{A}{x+1}+\dfrac{B}{x-2}+\dfrac{C}{(x-2)^{2}}$.</span>
-              <span class="qpart-marks">[4]</span>
-            </div>
-          </div>
-
-          <div class="qinput">
-            <label class="qinput-label">Your answer</label>
-            <div class="qinput-row multi">
-              <div class="qanswer-slot"><span class="slot-label">A =</span><input type="text" id="answer-2a-A" class="answer-field small" placeholder="?" inputmode="decimal" autocomplete="off"></div>
-              <div class="qanswer-slot"><span class="slot-label">B =</span><input type="text" id="answer-2a-B" class="answer-field small" placeholder="?" inputmode="decimal" autocomplete="off"></div>
-              <div class="qanswer-slot"><span class="slot-label">C =</span><input type="text" id="answer-2a-C" class="answer-field small" placeholder="?" inputmode="decimal" autocomplete="off"></div>
-              <button class="submit-btn" id="submit-btn-2a" type="button">Check</button>
-            </div>
-            <p class="qfeedback" id="qfeedback-2a"></p>
-          </div>
-
-          <div class="ms-panel" id="ms-panel-2">
-            <p class="ms-panel-label">Mark scheme</p>
-            <p>$23-4x = A(x-2)^{2} + B(x+1)(x-2) + C(x+1)$ &nbsp;&mdash;&nbsp; (M1)</p>
-            <p>substituting $x=-1$: $27 = 9A \Rightarrow A = 3$ &nbsp;&mdash;&nbsp; (A1)</p>
-            <p>substituting $x=2$: $15 = 3C \Rightarrow C = 5$ &nbsp;&mdash;&nbsp; (A1)</p>
-            <p>comparing $x^{2}$ coefficients: $0 = A+B \Rightarrow B = -3$ &nbsp;&mdash;&nbsp; (A1)</p>
-          </div>
-        </div>
-
-        <div class="qdock">
-          <button class="dock-btn save-btn" id="save-btn-2" title="Save" type="button">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"></path></svg>
-          </button>
-          <span class="dock-label">Save</span>
-
-          <span class="dock-divider"></span>
-
-          <button class="dock-btn" id="ms-btn-2" title="Mark scheme" type="button">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"></rect><line x1="8" y1="8" x2="16" y2="8"></line><line x1="8" y1="12" x2="16" y2="12"></line><line x1="8" y1="16" x2="12" y2="16"></line></svg>
-          </button>
-          <span class="dock-label">M/S</span>
-
-          <button class="dock-btn wb-open-btn" id="wb-open-btn-2" title="Open whiteboard" type="button">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
-          </button>
-          <span class="dock-label">Board</span>
-
-          <button class="dock-btn is-soon" data-name="AI Feedback" title="AI feedback" type="button">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6L12 3z"></path><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8L19 15z"></path></svg>
-          </button>
-          <span class="dock-label">AI</span>
-
-          <span class="dock-divider"></span>
-
-          <a class="dock-btn" href="maths-formula-booklet.html" target="_blank" rel="noopener" title="Formula booklet">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><path d="M15 3h6v6"></path><path d="M10 14L21 3"></path></svg>
-          </a>
-          <span class="dock-label">Fx</span>
-        </div>
-      </div>
-    </div>
-
   </div>
 
   <p class="soon-note">More questions, topics &amp; filters are coming soon.</p>
@@ -821,6 +918,490 @@
 
 <script src="theme.js"></script>
 <script>
+// =====================================================================
+// Questions 3-22: a generated partial-fractions practice set, ranging
+// from accessible to extremely hard. Data-driven so 20 questions don't
+// need to be hand-authored as HTML one by one.
+// =====================================================================
+var EXTRA_QUESTIONS = [
+  // ---- Q13: the original partial-fractions warm-up question ----
+  { n:13, difficulty:'medium', marks:4,
+    numerator:'23-4x', denominator:'(x+1)(x-2)^{2}', form:'\\dfrac{A}{x+1}+\\dfrac{B}{x-2}+\\dfrac{C}{(x-2)^{2}}',
+    fields:[{label:'A =', answer:3},{label:'B =', answer:-3},{label:'C =', answer:5}],
+    ms:['$23-4x = A(x-2)^{2} + B(x+1)(x-2) + C(x+1)$ &nbsp;&mdash;&nbsp; (M1)',
+        'substituting $x=-1$: $27 = 9A \\Rightarrow A = 3$ &nbsp;&mdash;&nbsp; (A1)',
+        'substituting $x=2$: $15 = 3C \\Rightarrow C = 5$ &nbsp;&mdash;&nbsp; (A1)',
+        'comparing $x^{2}$ coefficients: $0 = A+B \\Rightarrow B = -3$ &nbsp;&mdash;&nbsp; (A1)'] },
+
+  // ---- Easy: two distinct linear factors ----
+  { n:14, difficulty:'easy', marks:3,
+    numerator:'3x+4', denominator:'(x-2)(x+3)', form:'\\dfrac{A}{x-2}+\\dfrac{B}{x+3}',
+    fields:[{label:'A =', answer:2},{label:'B =', answer:1}],
+    ms:['$3x+4=A(x+3)+B(x-2)$','let $x=2$: $10=5A \\Rightarrow A=2$','let $x=-3$: $-5=-5B \\Rightarrow B=1$'] },
+  { n:15, difficulty:'easy', marks:3,
+    numerator:'2x+13', denominator:'(x-1)(x+4)', form:'\\dfrac{A}{x-1}+\\dfrac{B}{x+4}',
+    fields:[{label:'A =', answer:3},{label:'B =', answer:-1}],
+    ms:['$2x+13=A(x+4)+B(x-1)$','let $x=1$: $15=5A \\Rightarrow A=3$','let $x=-4$: $5=-5B \\Rightarrow B=-1$'] },
+  { n:16, difficulty:'easy', marks:3,
+    numerator:'5x+3', denominator:'(x+2)(x-5)', form:'\\dfrac{A}{x+2}+\\dfrac{B}{x-5}',
+    fields:[{label:'A =', answer:1},{label:'B =', answer:4}],
+    ms:['$5x+3=A(x-5)+B(x+2)$','let $x=-2$: $-7=-7A \\Rightarrow A=1$','let $x=5$: $28=7B \\Rightarrow B=4$'] },
+  { n:17, difficulty:'easy', marks:3,
+    numerator:'2x+10', denominator:'(x-3)(x+1)', form:'\\dfrac{A}{x-3}+\\dfrac{B}{x+1}',
+    fields:[{label:'A =', answer:4},{label:'B =', answer:-2}],
+    ms:['$2x+10=A(x+1)+B(x-3)$','let $x=3$: $16=4A \\Rightarrow A=4$','let $x=-1$: $8=-4B \\Rightarrow B=-2$'] },
+  { n:18, difficulty:'easy', marks:3,
+    numerator:'4x+32', denominator:'(x+6)(x-2)', form:'\\dfrac{A}{x+6}+\\dfrac{B}{x-2}',
+    fields:[{label:'A =', answer:-1},{label:'B =', answer:5}],
+    ms:['$4x+32=A(x-2)+B(x+6)$','let $x=-6$: $8=-8A \\Rightarrow A=-1$','let $x=2$: $40=8B \\Rightarrow B=5$'] },
+  { n:19, difficulty:'easy', marks:3,
+    numerator:'5x-2', denominator:'(x-4)(x+5)', form:'\\dfrac{A}{x-4}+\\dfrac{B}{x+5}',
+    fields:[{label:'A =', answer:2},{label:'B =', answer:3}],
+    ms:['$5x-2=A(x+5)+B(x-4)$','let $x=4$: $18=9A \\Rightarrow A=2$','let $x=-5$: $-27=-9B \\Rightarrow B=3$'] },
+
+  // ---- Medium: repeated factor (2-term) or harsher two-factor numbers ----
+  { n:20, difficulty:'medium', marks:4,
+    numerator:'3x-1', denominator:'(x-2)^{2}', form:'\\dfrac{A}{x-2}+\\dfrac{B}{(x-2)^{2}}',
+    fields:[{label:'A =', answer:3},{label:'B =', answer:5}],
+    ms:['$3x-1=A(x-2)+B$','let $x=2$: $5=B$','compare $x$ coefficients: $3=A$'] },
+  { n:21, difficulty:'medium', marks:4,
+    numerator:'-2x-1', denominator:'(x+4)^{2}', form:'\\dfrac{A}{x+4}+\\dfrac{B}{(x+4)^{2}}',
+    fields:[{label:'A =', answer:-2},{label:'B =', answer:7}],
+    ms:['$-2x-1=A(x+4)+B$','let $x=-4$: $7=B$','compare $x$ coefficients: $-2=A$'] },
+  { n:22, difficulty:'medium', marks:4,
+    numerator:'2x+61', denominator:'(x-7)(x+8)', form:'\\dfrac{A}{x-7}+\\dfrac{B}{x+8}',
+    fields:[{label:'A =', answer:5},{label:'B =', answer:-3}],
+    ms:['$2x+61=A(x+8)+B(x-7)$','let $x=7$: $75=15A \\Rightarrow A=5$','let $x=-8$: $45=-15B \\Rightarrow B=-3$'] },
+  { n:23, difficulty:'medium', marks:4,
+    numerator:'2x+13', denominator:'(2x-1)(x+3)', form:'\\dfrac{A}{2x-1}+\\dfrac{B}{x+3}',
+    fields:[{label:'A =', answer:4},{label:'B =', answer:-1}],
+    ms:['$2x+13=A(x+3)+B(2x-1)$','let $x=\\tfrac12$: $14=3.5A \\Rightarrow A=4$','let $x=-3$: $7=-7B \\Rightarrow B=-1$'] },
+  { n:24, difficulty:'medium', marks:4,
+    numerator:'6x-32', denominator:'(x-5)^{2}', form:'\\dfrac{A}{x-5}+\\dfrac{B}{(x-5)^{2}}',
+    fields:[{label:'A =', answer:6},{label:'B =', answer:-2}],
+    ms:['$6x-32=A(x-5)+B$','let $x=5$: $-2=B$','compare $x$ coefficients: $6=A$'] },
+
+  // ---- Hard: three distinct factors, or repeated + distinct ----
+  { n:25, difficulty:'hard', marks:5,
+    numerator:'5x^{2}-19x+20', denominator:'(x-1)(x-2)(x-3)', form:'\\dfrac{A}{x-1}+\\dfrac{B}{x-2}+\\dfrac{C}{x-3}',
+    fields:[{label:'A =', answer:3},{label:'B =', answer:-2},{label:'C =', answer:4}],
+    ms:['$5x^{2}-19x+20=A(x-2)(x-3)+B(x-1)(x-3)+C(x-1)(x-2)$','let $x=1$: $6=2A \\Rightarrow A=3$','let $x=2$: $2=-B \\Rightarrow B=-2$','let $x=3$: $8=2C \\Rightarrow C=4$'],
+    calculator:true,
+    partB:{ marks:2, text:'Hence find the exact value of $\\displaystyle\\int_{4}^{5} f(x)\\,dx$.',
+      fields:[{label:'Integral =', answer:2.8247}],
+      ms:['$\\displaystyle\\int f(x)\\,dx = 3\\ln|x-1|-2\\ln|x-2|+4\\ln|x-3|$','evaluating between $x=4$ and $x=5$ gives $\\ln\\!\\left(\\tfrac{4096}{243}\\right) \\approx 2.825$'] } },
+  { n:26, difficulty:'hard', marks:5,
+    numerator:'4x^{2}+4x-2', denominator:'x(x-1)(x+1)', form:'\\dfrac{A}{x}+\\dfrac{B}{x-1}+\\dfrac{C}{x+1}',
+    fields:[{label:'A =', answer:2},{label:'B =', answer:3},{label:'C =', answer:-1}],
+    ms:['$4x^{2}+4x-2=A(x-1)(x+1)+Bx(x+1)+Cx(x-1)$','let $x=0$: $-2=-A \\Rightarrow A=2$','let $x=1$: $6=2B \\Rightarrow B=3$','let $x=-1$: $-2=2C \\Rightarrow C=-1$'],
+    calculator:true,
+    partB:{ marks:2, text:'Hence find the exact value of $\\displaystyle\\int_{2}^{3} f(x)\\,dx$.',
+      fields:[{label:'Integral =', answer:2.6027}],
+      ms:['$\\displaystyle\\int f(x)\\,dx = 2\\ln|x|+3\\ln|x-1|-\\ln|x+1|$','evaluating between $x=2$ and $x=3$ gives $\\ln(13.5) \\approx 2.603$'] } },
+  { n:27, difficulty:'hard', marks:5,
+    numerator:'8x^{2}-25x+12', denominator:'(x-2)^{2}(x+1)', form:'\\dfrac{A}{x-2}+\\dfrac{B}{(x-2)^{2}}+\\dfrac{C}{x+1}',
+    fields:[{label:'A =', answer:3},{label:'B =', answer:-2},{label:'C =', answer:5}],
+    ms:['$8x^{2}-25x+12=A(x-2)(x+1)+B(x+1)+C(x-2)^{2}$','let $x=2$: $-6=3B \\Rightarrow B=-2$','let $x=-1$: $45=9C \\Rightarrow C=5$','compare $x^{2}$ coefficients: $8=A+C \\Rightarrow A=3$'],
+    calculator:true,
+    partB:{ marks:2, text:'Hence find the exact value of $\\displaystyle\\int_{3}^{4} f(x)\\,dx$.',
+      fields:[{label:'Integral =', answer:2.1952}],
+      ms:['$\\displaystyle\\int f(x)\\,dx = 3\\ln|x-2|+\\dfrac{2}{x-2}+5\\ln|x+1|$','evaluating between $x=3$ and $x=4$ gives $\\approx 2.195$'] } },
+  { n:28, difficulty:'hard', marks:5,
+    numerator:'x^{2}-2x-57', denominator:'(x+3)^{2}(x-4)', form:'\\dfrac{A}{x+3}+\\dfrac{B}{(x+3)^{2}}+\\dfrac{C}{x-4}',
+    fields:[{label:'A =', answer:2},{label:'B =', answer:6},{label:'C =', answer:-1}],
+    ms:['$x^{2}-2x-57=A(x+3)(x-4)+B(x-4)+C(x+3)^{2}$','let $x=-3$: $-42=-7B \\Rightarrow B=6$','let $x=4$: $-49=49C \\Rightarrow C=-1$','compare $x^{2}$ coefficients: $1=A+C \\Rightarrow A=2$'],
+    calculator:true,
+    partB:{ marks:2, text:'Hence find the exact value of $\\displaystyle\\int_{5}^{6} f(x)\\,dx$.',
+      fields:[{label:'Integral =', answer:-0.3742}],
+      ms:['$\\displaystyle\\int f(x)\\,dx = 2\\ln|x+3|-\\dfrac{6}{x+3}-\\ln|x-4|$','evaluating between $x=5$ and $x=6$ gives $\\approx -0.374$'] } },
+  { n:29, difficulty:'hard', marks:5,
+    numerator:'3x^{2}+8x-59', denominator:'(x-1)(x+2)(x-5)', form:'\\dfrac{A}{x-1}+\\dfrac{B}{x+2}+\\dfrac{C}{x-5}',
+    fields:[{label:'A =', answer:4},{label:'B =', answer:-3},{label:'C =', answer:2}],
+    ms:['$3x^{2}+8x-59=A(x+2)(x-5)+B(x-1)(x-5)+C(x-1)(x+2)$','let $x=1$: $-48=-12A \\Rightarrow A=4$','let $x=-2$: $-63=21B \\Rightarrow B=-3$','let $x=5$: $56=28C \\Rightarrow C=2$'],
+    calculator:true,
+    partB:{ marks:2, text:'Hence find the exact value of $\\displaystyle\\int_{6}^{7} f(x)\\,dx$.',
+      fields:[{label:'Integral =', answer:1.7622}],
+      ms:['$\\displaystyle\\int f(x)\\,dx = 4\\ln|x-1|-3\\ln|x+2|+2\\ln|x-5|$','evaluating between $x=6$ and $x=7$ gives $\\approx 1.762$'] } },
+
+  // ---- Extreme: irreducible quadratic factors, non-monic factors, four unknowns ----
+  { n:30, difficulty:'extreme', marks:6,
+    numerator:'3x^{2}-2x+5', denominator:'(x-1)(x^{2}+x+1)', form:'\\dfrac{A}{x-1}+\\dfrac{Bx+C}{x^{2}+x+1}',
+    fields:[{label:'A =', answer:2},{label:'B =', answer:1},{label:'C =', answer:-3}],
+    ms:['$3x^{2}-2x+5=A(x^{2}+x+1)+(Bx+C)(x-1)$','let $x=1$: $6=3A \\Rightarrow A=2$','compare $x^{2}$ coefficients: $3=A+B \\Rightarrow B=1$','compare constants: $5=A-C \\Rightarrow C=-3$'],
+    partB:{ marks:3, text:'Hence, by differentiating your partial fraction form term by term, find $f\'(2)$.',
+      fields:[{label:'f’(2) =', answer:-1.7551}],
+      ms:['$f\'(x) = -\\dfrac{2}{(x-1)^{2}} + \\dfrac{-x^{2}+6x+4}{(x^{2}+x+1)^{2}}$ (quotient rule on the second term)','$f\'(2) = -2 + \\dfrac{12}{49} = -\\dfrac{86}{49} \\approx -1.755$'] } },
+  { n:31, difficulty:'extreme', marks:6,
+    numerator:'3x^{2}+7x-3', denominator:'(x+2)(x^{2}+2x+5)', form:'\\dfrac{A}{x+2}+\\dfrac{Bx+C}{x^{2}+2x+5}',
+    fields:[{label:'A =', answer:-1},{label:'B =', answer:4},{label:'C =', answer:1}],
+    ms:['$3x^{2}+7x-3=A(x^{2}+2x+5)+(Bx+C)(x+2)$','let $x=-2$: $-5=5A \\Rightarrow A=-1$','compare $x^{2}$ coefficients: $3=A+B \\Rightarrow B=4$','compare constants: $-3=5A+2C \\Rightarrow C=1$'],
+    partB:{ marks:3, text:'Hence, by differentiating your partial fraction form term by term, find $f\'(0)$.',
+      fields:[{label:'f’(0) =', answer:0.97}],
+      ms:['$f\'(x) = \\dfrac{1}{(x+2)^{2}} + \\dfrac{-4x^{2}-2x+18}{(x^{2}+2x+5)^{2}}$ (quotient rule on the second term)','$f\'(0) = \\dfrac{1}{4} + \\dfrac{18}{25} = \\dfrac{97}{100} = 0.97$'] } },
+  { n:32, difficulty:'extreme', marks:6,
+    numerator:'20x^{2}-24x-14', denominator:'(2x-3)(x+1)(x-2)', form:'\\dfrac{A}{2x-3}+\\dfrac{B}{x+1}+\\dfrac{C}{x-2}',
+    fields:[{label:'A =', answer:4},{label:'B =', answer:2},{label:'C =', answer:6}],
+    ms:['$20x^{2}-24x-14=A(x+1)(x-2)+B(2x-3)(x-2)+C(2x-3)(x+1)$','let $x=\\tfrac32$: $-5=-1.25A \\Rightarrow A=4$','let $x=-1$: $30=15B \\Rightarrow B=2$','let $x=2$: $18=3C \\Rightarrow C=6$'],
+    partB:{ marks:3, text:'Hence, by differentiating your partial fraction form term by term, find $f\'(0)$.',
+      fields:[{label:'f’(0) =', answer:-4.3889}],
+      ms:['$f\'(x) = -\\dfrac{8}{(2x-3)^{2}} - \\dfrac{2}{(x+1)^{2}} - \\dfrac{6}{(x-2)^{2}}$','$f\'(0) = -\\dfrac{8}{9} - 2 - \\dfrac{3}{2} = -\\dfrac{79}{18} \\approx -4.389$'] } },
+  { n:33, difficulty:'extreme', marks:7,
+    numerator:'6x^{2}-6x+4', denominator:'(x-1)^{2}(x^{2}+1)', form:'\\dfrac{A}{x-1}+\\dfrac{B}{(x-1)^{2}}+\\dfrac{Cx+D}{x^{2}+1}',
+    fields:[{label:'A =', answer:1},{label:'B =', answer:2},{label:'C =', answer:-1},{label:'D =', answer:3}],
+    ms:['$6x^{2}-6x+4=A(x-1)(x^{2}+1)+B(x^{2}+1)+(Cx+D)(x-1)^{2}$','let $x=1$: $4=2B \\Rightarrow B=2$','compare $x^{3}$ coefficients: $0=A+C$','compare constants: $4=-A+B+D$','solving simultaneously with the $x^{2}$ and $x^{1}$ equations: $A=1$, $C=-1$, $D=3$'],
+    partB:{ marks:3, text:'Hence, by differentiating your partial fraction form term by term, find $f\'(2)$.',
+      fields:[{label:'f’(2) =', answer:-5.36}],
+      ms:['$f\'(x) = -\\dfrac{1}{(x-1)^{2}} - \\dfrac{4}{(x-1)^{3}} + \\dfrac{x^{2}-6x-1}{(x^{2}+1)^{2}}$ (quotient rule on the last term)','$f\'(2) = -1-4-\\dfrac{9}{25} = -\\dfrac{134}{25} = -5.36$'] } }
+];
+
+(function buildExtraQuestions(){
+  var diffMeta = {
+    easy:{ label:'Easy', pct:33 },
+    medium:{ label:'Medium', pct:66 },
+    hard:{ label:'Hard', pct:100 },
+    extreme:{ label:'Extreme', pct:100 }
+  };
+  var calcSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="9" y1="18" x2="15" y2="12"></line><line x1="9" y1="12" x2="15" y2="18"></line></svg>';
+  var doneSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9 12l2 2 4-4"></path></svg>';
+  var expandSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3"></path><path d="M16 3h3a2 2 0 0 1 2 2v3"></path><path d="M21 16v3a2 2 0 0 1-2 2h-3"></path><path d="M3 16v3a2 2 0 0 0 2 2h3"></path></svg>';
+  var saveSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"></path></svg>';
+  var msSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"></rect><line x1="8" y1="8" x2="16" y2="8"></line><line x1="8" y1="12" x2="16" y2="12"></line><line x1="8" y1="16" x2="12" y2="16"></line></svg>';
+  var aiSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6L12 3z"></path><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8L19 15z"></path></svg>';
+  var boardSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>';
+  var fxSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><path d="M15 3h6v6"></path><path d="M10 14L21 3"></path></svg>';
+
+  function renderSlots(fields){
+    return fields.map(function(f){
+      return '<div class="qanswer-slot"><span class="slot-label">' + f.label + '</span>' +
+        '<input type="text" class="answer-field small" data-answer="' + f.answer + '" data-tol="0.01" placeholder="?" inputmode="decimal" autocomplete="off"></div>';
+    }).join('');
+  }
+  function renderQuestion(q){
+    var qid = 'q' + q.n + 'a';
+    var meta = diffMeta[q.difficulty];
+    var topicTag = q.topicTag || 'HL 1.1 &middot; Partial Fractions';
+    var stem = q.stem || ('Consider the function $f(x) = \\dfrac{' + q.numerator + '}{' + q.denominator + '}$.');
+    var partText = q.partText || ('Write $f(x)$ as the sum of partial fractions in the form $' + q.form + '$.');
+    var totalMarks = q.marks + (q.partB ? q.partB.marks : 0);
+    var partBHtml = '';
+    if(q.partB){
+      partBHtml =
+        '<div class="qparts"><div class="qpart-row">' +
+          '<span class="qpart-label">(b)</span>' +
+          '<span class="qpart-text">' + q.partB.text + '</span>' +
+          '<span class="qpart-marks">[' + q.partB.marks + ']</span>' +
+        '</div></div>' +
+        '<div class="qinput">' +
+          '<label class="qinput-label">Your answer</label>' +
+          '<div class="qinput-row multi">' + renderSlots(q.partB.fields) + '<button class="submit-btn" type="button">Check</button></div>' +
+          '<p class="qfeedback"></p>' +
+        '</div>';
+    }
+    return '' +
+    '<div class="qcard term-panel" id="qcard-' + q.n + '" data-qid="' + qid + '" style="--accent:var(--cyan); --accent-rgb:var(--cyan-rgb);">' +
+      '<div class="qcard-accent"></div>' +
+      '<div class="qcard-header">' +
+        '<div class="qtitle-group">' +
+          '<span class="qid-badge">' + q.n + 'a</span>' +
+          '<div class="qtitle-text"><h2>Question ' + q.n + '</h2><span class="qtopic">' + topicTag + '</span></div>' +
+        '</div>' +
+        '<div class="qtools">' +
+          '<button class="qtool-btn done-btn" title="Mark as done" type="button">' + doneSvg + '</button>' +
+          '<button class="qtool-btn expand-btn" title="Focus mode" type="button">' + expandSvg + '</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="qchips">' +
+        (q.calculator ?
+          '<span class="chip-calc">' + calcSvg + 'Calculator</span>' :
+          '<span class="chip-calc no-calc">' + calcSvg + 'No calculator</span>') +
+        '<span class="chip-diff level-' + q.difficulty + '"><span class="chip-diff-label">' + meta.label + '</span>' +
+          '<span class="diff-track"><span class="diff-fill" style="width:' + meta.pct + '%;"></span></span></span>' +
+        '<span class="chip-marks">Max mark: ' + totalMarks + '</span>' +
+      '</div>' +
+      '<hr class="qcard-rule">' +
+      '<div class="qcard-body">' +
+        '<div class="qmain">' +
+          '<p class="qstem">' + stem + '</p>' +
+          '<div class="qparts"><div class="qpart-row">' +
+            '<span class="qpart-label">(a)</span>' +
+            '<span class="qpart-text">' + partText + '</span>' +
+            '<span class="qpart-marks">[' + q.marks + ']</span>' +
+          '</div></div>' +
+          '<div class="qinput">' +
+            '<label class="qinput-label">Your answer</label>' +
+            '<div class="qinput-row multi">' + renderSlots(q.fields) + '<button class="submit-btn" type="button">Check</button></div>' +
+            '<p class="qfeedback"></p>' +
+          '</div>' +
+          partBHtml +
+        '</div>' +
+        '<div class="qdock">' +
+          '<button class="dock-btn save-btn" title="Save" type="button">' + saveSvg + '</button><span class="dock-label">Save</span>' +
+          '<span class="dock-divider"></span>' +
+          '<a class="dock-btn" href="Mathematics_AA_Markscheme_Q' + q.n + '.pdf" target="_blank" rel="noopener" title="Mark scheme (PDF) &mdash; Question ' + q.n + '">' + msSvg + '</a><span class="dock-label">M/S</span>' +
+          '<button class="dock-btn wb-open-btn" title="Open whiteboard" type="button">' + boardSvg + '</button><span class="dock-label">Board</span>' +
+          '<button class="dock-btn is-soon" data-name="AI Feedback" title="AI feedback" type="button">' + aiSvg + '</button><span class="dock-label">AI</span>' +
+          '<span class="dock-divider"></span>' +
+          '<a class="dock-btn" href="maths-formula-booklet.html" target="_blank" rel="noopener" title="Formula booklet">' + fxSvg + '</a><span class="dock-label">Fx</span>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }
+
+  var qlist = document.getElementById('qlist');
+  var linksHtml = '';
+  EXTRA_QUESTIONS.forEach(function(q){
+    qlist.insertAdjacentHTML('beforeend', renderQuestion(q));
+    linksHtml += '<a class="q-link" href="#qcard-' + q.n + '" data-target="qcard-' + q.n + '" data-difficulty="' + q.difficulty + '" data-qnum="' + q.n + '">' +
+      '<span class="q-link-dot"></span><span class="q-link-text">Q' + q.n + '(a)</span></a>';
+  });
+
+  var topicLinks = document.getElementById('qb-q-links');
+  if(topicLinks){
+    topicLinks.insertAdjacentHTML('beforeend', linksHtml);
+    var totalQ = EXTRA_QUESTIONS.length + 2;
+    var topicCount = document.querySelector('.topic-row[data-topic-id="1"] .topic-count');
+    if(topicCount) topicCount.textContent = totalQ + ' questions';
+    var subtopicCount = document.querySelector('.qb-subtopic[data-subtopic="1.1"] .qb-subtopic-count');
+    if(subtopicCount) subtopicCount.textContent = totalQ;
+    var subsubCount = document.querySelector('.qb-subsub[data-subsub="1.1.3"] .qb-subsub-count');
+    if(subsubCount) subsubCount.textContent = EXTRA_QUESTIONS.length;
+  }
+
+  // ---------- generic multi-field answer check for the generated questions ----------
+  // scoped per .qinput block (not per qcard) since a question can have separate
+  // part (a) and part (b) answer areas, each checked independently
+  qlist.querySelectorAll('.qinput').forEach(function(block){
+    var inputs = block.querySelectorAll('.answer-field[data-answer]');
+    if(!inputs.length) return;
+    var feedback = block.querySelector('.qfeedback');
+    var submitBtn = block.querySelector('.submit-btn');
+    if(!submitBtn) return;
+    function runCheck(){
+      feedback.classList.remove('is-correct', 'is-wrong', 'is-warning');
+      var anyBlank = false, correctCount = 0;
+      inputs.forEach(function(inp){
+        var raw = inp.value.trim();
+        if(raw === ''){ anyBlank = true; return; }
+        var val = parseFloat(raw);
+        var expected = parseFloat(inp.getAttribute('data-answer'));
+        var tol = parseFloat(inp.getAttribute('data-tol')) || 0.01;
+        if(!isNaN(val) && Math.abs(val - expected) <= tol) correctCount++;
+      });
+      if(anyBlank){ feedback.textContent = 'Fill in every box first.'; feedback.classList.add('is-wrong'); return; }
+      if(correctCount === inputs.length){ feedback.textContent = 'Correct — well done!'; feedback.classList.add('is-correct'); }
+      else if(correctCount > 0){ feedback.textContent = correctCount + ' out of ' + inputs.length + ' correct — check your working and try again.'; feedback.classList.add('is-warning'); }
+      else { feedback.textContent = 'Not quite. Open the mark scheme (M/S) to see the working.'; feedback.classList.add('is-wrong'); }
+    }
+    submitBtn.addEventListener('click', runCheck);
+    inputs.forEach(function(inp){
+      inp.addEventListener('keydown', function(e){ if(e.key === 'Enter') runCheck(); });
+    });
+  });
+
+// =====================================================================
+// Questions 23-33: Standard Form (1.1.1) and Laws of Indices (1.1.2)
+// practice, skewed toward the harder end since both topics are fairly
+// accessible at their core.
+// =====================================================================
+var MORE_QUESTIONS = [
+  // ---- 1.1.1 Standard Form: 4 questions, hard/extreme ----
+  { n:2, subsub:'1.1.1', topicTag:'HL 1.1 &middot; Standard Form', difficulty:'hard', marks:5, calculator:true,
+    stem:'Consider $a = 1.5\\times10^{2}$ and $b = 4\\times10^{1}$.',
+    partText:'Calculate $C=\\sqrt[5]{(ab)^{3}}$, giving your answer correct to 3 significant figures.',
+    fields:[{label:'C =', answer:184.9, tol:0.5}],
+    ms:['$ab=(1.5\\times10^{2})(4\\times10^{1})=6\\times10^{3}$','$(ab)^{3}=6^{3}\\times10^{9}=2.16\\times10^{11}$','$C=\\sqrt[5]{2.16\\times10^{11}}\\approx184.9$'],
+    partB:{ marks:2, text:'Hence write $\\dfrac{1}{C}$ in the form $k\\times10^{n}$, correct to 3 significant figures.',
+      fields:[{label:'k =', answer:5.41, tol:0.02},{label:'n =', answer:-3, tol:0}],
+      ms:['$\\dfrac{1}{C}=\\dfrac{1}{184.9}$','$\\approx5.41\\times10^{-3}$'] } },
+  { n:3, subsub:'1.1.1', topicTag:'HL 1.1 &middot; Standard Form', difficulty:'hard', marks:5, calculator:true,
+    stem:'Consider $a = 8.1\\times10^{-3}$ and $b = 3\\times10^{6}$.',
+    partText:'Calculate $C=\\sqrt[3]{\\dfrac{a}{b}}$, giving your answer in the form $k\\times10^{n}$ correct to 3 significant figures.',
+    fields:[{label:'k =', answer:1.39, tol:0.02},{label:'n =', answer:-3, tol:0}],
+    ms:['$\\dfrac{a}{b}=\\dfrac{8.1\\times10^{-3}}{3\\times10^{6}}=2.7\\times10^{-9}$','$C=\\sqrt[3]{2.7\\times10^{-9}}=\\sqrt[3]{2.7}\\times10^{-3}$','$\\approx1.39\\times10^{-3}$'],
+    partB:{ marks:2, text:'Hence write $C^{2}$ in the form $k\\times10^{n}$, correct to 3 significant figures.',
+      fields:[{label:'k =', answer:1.94, tol:0.02},{label:'n =', answer:-6, tol:0}],
+      ms:['$C^{2}=(1.39\\times10^{-3})^{2}$','$\\approx1.94\\times10^{-6}$'] } },
+  { n:4, subsub:'1.1.1', topicTag:'HL 1.1 &middot; Standard Form', difficulty:'extreme', marks:6, calculator:true,
+    stem:'Given $a=4\\times10^{15}$ and $b=9\\times10^{12}$.',
+    partText:'Calculate $C=\\sqrt{a+b}$, giving your answer in the form $k\\times10^{n}$ correct to 3 significant figures.',
+    fields:[{label:'k =', answer:6.33, tol:0.02},{label:'n =', answer:7, tol:0}],
+    ms:['match the powers: $b=9\\times10^{12}=0.009\\times10^{15}$','$a+b\\approx4.009\\times10^{15}=40.09\\times10^{14}$ (adjust so the power is even)','$C=\\sqrt{40.09\\times10^{14}}=\\sqrt{40.09}\\times10^{7}\\approx6.33\\times10^{7}$'],
+    partB:{ marks:2, text:'Hence write $C^{2}$ in the form $k\\times10^{n}$, and verify it approximately equals $a+b$.',
+      fields:[{label:'k =', answer:4.01, tol:0.02},{label:'n =', answer:15, tol:0}],
+      ms:['$C^{2}=(6.33\\times10^{7})^{2}\\approx4.01\\times10^{15}$','this matches $a+b$ from part (a), as expected'] } },
+  { n:5, subsub:'1.1.1', topicTag:'HL 1.1 &middot; Standard Form', difficulty:'extreme', marks:6, calculator:true,
+    stem:'Given $a=7\\times10^{-4}$ and $b=2\\times10^{-5}$.',
+    partText:'Calculate $C=\\sqrt[3]{a-b}$, giving your answer in the form $k\\times10^{n}$ correct to 3 significant figures.',
+    fields:[{label:'k =', answer:8.79, tol:0.02},{label:'n =', answer:-2, tol:0}],
+    ms:['match the powers: $a=7\\times10^{-4}=70\\times10^{-5}$','$a-b=68\\times10^{-5}=6.8\\times10^{-4}=680\\times10^{-6}$ (adjust so the power is divisible by 3)','$C=\\sqrt[3]{680\\times10^{-6}}=\\sqrt[3]{680}\\times10^{-2}\\approx8.79\\times10^{-2}$'],
+    partB:{ marks:2, text:'Hence write $C^{3}$ in the form $k\\times10^{n}$, and verify it approximately equals $a-b$.',
+      fields:[{label:'k =', answer:6.80, tol:0.05},{label:'n =', answer:-4, tol:0}],
+      ms:['$C^{3}=(8.79\\times10^{-2})^{3}\\approx6.80\\times10^{-4}$','this matches $a-b$ from part (a), as expected'] } },
+
+  // ---- 1.1.2 Laws of Indices: 7 questions, skewed hard/extreme ----
+  { n:6, subsub:'1.1.2', topicTag:'HL 1.1 &middot; Laws of Indices', difficulty:'medium', marks:4, calculator:false,
+    stem:'Consider the equation $4^{x+3}=8^{2x-1}$.',
+    partText:'Solve the equation for $x$.',
+    fields:[{label:'x =', answer:2.25, tol:0.01}],
+    ms:['write both sides with base $2$: $2^{2(x+3)}=2^{3(2x-1)}$','equate exponents: $2x+6=6x-3$','solve: $9=4x \\Rightarrow x=2.25$'] },
+  { n:7, subsub:'1.1.2', topicTag:'HL 1.1 &middot; Laws of Indices', difficulty:'hard', marks:5, calculator:false,
+    stem:'Consider the expression $\\dfrac{(x^{3}y^{-2})^{4}(x^{-1}y^{5})^{2}}{(xy)^{-3}}$.',
+    partText:'Simplify it to the form $x^{a}y^{b}$, and find $a$ and $b$.',
+    fields:[{label:'a =', answer:13, tol:0},{label:'b =', answer:5, tol:0}],
+    ms:['$(x^{3}y^{-2})^{4}=x^{12}y^{-8}$ and $(x^{-1}y^{5})^{2}=x^{-2}y^{10}$','numerator: $x^{12-2}y^{-8+10}=x^{10}y^{2}$','divide by $(xy)^{-3}=x^{-3}y^{-3}$: $x^{10-(-3)}y^{2-(-3)}=x^{13}y^{5}$'],
+    partB:{ marks:2, text:'Hence simplify $\\sqrt{x^{a}y^{b}}$ (using your values of $a$ and $b$) to the form $x^{p}y^{q}$, and find $p$ and $q$.',
+      fields:[{label:'p =', answer:6.5, tol:0.01},{label:'q =', answer:2.5, tol:0.01}],
+      ms:['$\\sqrt{x^{13}y^{5}}=x^{\\frac{13}{2}}y^{\\frac{5}{2}}$','so $p=6.5$ and $q=2.5$'] } },
+  { n:8, subsub:'1.1.2', topicTag:'HL 1.1 &middot; Laws of Indices', difficulty:'hard', marks:4, calculator:false,
+    stem:'Consider the expression $\\left(\\dfrac{8}{27}\\right)^{-\\frac{2}{3}}$.',
+    partText:'Evaluate it exactly.',
+    fields:[{label:'Answer =', answer:2.25, tol:0.01}],
+    ms:['flip for the negative power: $\\left(\\dfrac{8}{27}\\right)^{-\\frac{2}{3}}=\\left(\\dfrac{27}{8}\\right)^{\\frac{2}{3}}$','cube root first: $\\sqrt[3]{\\dfrac{27}{8}}=\\dfrac{3}{2}$','square it: $\\left(\\dfrac{3}{2}\\right)^{2}=\\dfrac{9}{4}=2.25$'],
+    partB:{ marks:2, text:'Hence find the value of $\\left(\\dfrac{8}{27}\\right)^{-\\frac{4}{3}}$.',
+      fields:[{label:'Answer =', answer:5.0625, tol:0.01}],
+      ms:['note $-\\frac{4}{3}=2\\times\\left(-\\frac{2}{3}\\right)$, so this is the square of the part (a) answer','$\\left(\\dfrac{9}{4}\\right)^{2}=\\dfrac{81}{16}=5.0625$'] } },
+  { n:9, subsub:'1.1.2', topicTag:'HL 1.1 &middot; Laws of Indices', difficulty:'extreme', marks:6, calculator:false,
+    stem:'Consider the equation $2^{2x}-5\\times2^{x}+4=0$.',
+    partText:'Find the sum of all values of $x$ satisfying the equation.',
+    fields:[{label:'Sum =', answer:2, tol:0.01}],
+    ms:['let $u=2^{x}$: $u^{2}-5u+4=0$','factorise: $(u-1)(u-4)=0 \\Rightarrow u=1$ or $u=4$','$2^{x}=1\\Rightarrow x=0$; $2^{x}=4\\Rightarrow x=2$; sum $=2$'],
+    partB:{ marks:2, text:'Hence find the value of $2^{x_{1}}\\times2^{x_{2}}$, where $x_{1}$ and $x_{2}$ are the two solutions.',
+      fields:[{label:'Answer =', answer:4, tol:0.01}],
+      ms:['$2^{x_{1}}\\times2^{x_{2}}=u_{1}\\times u_{2}=1\\times4=4$','(consistent with $2^{x_{1}+x_{2}}=2^{2}=4$)'] } },
+  { n:10, subsub:'1.1.2', topicTag:'HL 1.1 &middot; Laws of Indices', difficulty:'extreme', marks:5, calculator:false,
+    stem:'Consider the expression $\\dfrac{\\sqrt[3]{x^{4}}\\times x^{-\\frac{1}{2}}}{\\sqrt{x^{-3}}}$.',
+    partText:'Simplify it to the form $x^{k}$, and find $k$.',
+    fields:[{label:'k =', answer:2.333, tol:0.01}],
+    ms:['$\\sqrt[3]{x^{4}}=x^{\\frac{4}{3}}$ and $\\sqrt{x^{-3}}=x^{-\\frac{3}{2}}$','numerator: $x^{\\frac{4}{3}-\\frac{1}{2}}=x^{\\frac{5}{6}}$','divide: $x^{\\frac{5}{6}-\\left(-\\frac{3}{2}\\right)}=x^{\\frac{5}{6}+\\frac{9}{6}}=x^{\\frac{14}{6}}=x^{\\frac{7}{3}}$'],
+    partB:{ marks:2, text:'Hence evaluate the original expression when $x=8$.',
+      fields:[{label:'Answer =', answer:128, tol:0.01}],
+      ms:['$8^{\\frac{7}{3}}=\\left(\\sqrt[3]{8}\\right)^{7}=2^{7}$','$=128$'] } },
+  { n:11, subsub:'1.1.2', topicTag:'HL 1.1 &middot; Laws of Indices', difficulty:'hard', marks:4, calculator:false,
+    stem:'Given that $3^{x}=5$.',
+    partText:'Find the value of $3^{2x+1}$.',
+    fields:[{label:'Answer =', answer:75, tol:0.01}],
+    ms:['$3^{2x+1}=3^{2x}\\times3=(3^{x})^{2}\\times3$','substitute $3^{x}=5$: $=5^{2}\\times3=25\\times3$','$=75$'],
+    partB:{ marks:2, text:'Hence find the value of $3^{4x+2}$.',
+      fields:[{label:'Answer =', answer:5625, tol:1}],
+      ms:['$3^{4x+2}=(3^{2x+1})^{2}$','substitute the part (a) result: $=75^{2}=5625$'] } },
+  { n:12, subsub:'1.1.2', topicTag:'HL 1.1 &middot; Laws of Indices', difficulty:'extreme', marks:4, calculator:false,
+    stem:'Given that $2^{a}=3$ and $2^{b}=5$.',
+    partText:'Find the value of $2^{2a-b}$.',
+    fields:[{label:'Answer =', answer:1.8, tol:0.01}],
+    ms:['$2^{2a-b}=\\dfrac{2^{2a}}{2^{b}}=\\dfrac{(2^{a})^{2}}{2^{b}}$','substitute: $=\\dfrac{3^{2}}{5}=\\dfrac{9}{5}$','$=1.8$'],
+    partB:{ marks:2, text:'Hence find the value of $2^{4a-2b}$.',
+      fields:[{label:'Answer =', answer:3.24, tol:0.01}],
+      ms:['$2^{4a-2b}=(2^{2a-b})^{2}$','substitute the part (a) result: $=1.8^{2}=3.24$'] } }
+];
+
+  var linksBySubsub = { '1.1.1':'', '1.1.2':'' };
+  var insertAfterEl = document.getElementById('qcard-1');
+  MORE_QUESTIONS.forEach(function(q){
+    insertAfterEl.insertAdjacentHTML('afterend', renderQuestion(q));
+    var card = document.getElementById('qcard-' + q.n);
+    insertAfterEl = card;
+    linksBySubsub[q.subsub] += '<a class="q-link" href="#qcard-' + q.n + '" data-target="qcard-' + q.n + '" data-difficulty="' + q.difficulty + '" data-qnum="' + q.n + '">' +
+      '<span class="q-link-dot"></span><span class="q-link-text">Q' + q.n + '(a)</span></a>';
+
+    // wire this specific new card only, so already-wired Q13-Q33 cards are never touched again
+    card.querySelectorAll('.qinput').forEach(function(block){
+      var inputs = block.querySelectorAll('.answer-field[data-answer]');
+      if(!inputs.length) return;
+      var feedback = block.querySelector('.qfeedback');
+      var submitBtn = block.querySelector('.submit-btn');
+      if(!submitBtn) return;
+      function runCheck(){
+        feedback.classList.remove('is-correct', 'is-wrong', 'is-warning');
+        var anyBlank = false, correctCount = 0;
+        inputs.forEach(function(inp){
+          var raw = inp.value.trim();
+          if(raw === ''){ anyBlank = true; return; }
+          var val = parseFloat(raw);
+          var expected = parseFloat(inp.getAttribute('data-answer'));
+          var tol = parseFloat(inp.getAttribute('data-tol')) || 0.01;
+          if(!isNaN(val) && Math.abs(val - expected) <= tol) correctCount++;
+        });
+        if(anyBlank){ feedback.textContent = 'Fill in every box first.'; feedback.classList.add('is-wrong'); return; }
+        if(correctCount === inputs.length){ feedback.textContent = 'Correct — well done!'; feedback.classList.add('is-correct'); }
+        else if(correctCount > 0){ feedback.textContent = correctCount + ' out of ' + inputs.length + ' correct — check your working and try again.'; feedback.classList.add('is-warning'); }
+        else { feedback.textContent = 'Not quite. Open the mark scheme (M/S) to see the working.'; feedback.classList.add('is-wrong'); }
+      }
+      submitBtn.addEventListener('click', runCheck);
+      inputs.forEach(function(inp){
+        inp.addEventListener('keydown', function(e){ if(e.key === 'Enter') runCheck(); });
+      });
+    });
+  });
+
+  var container111 = document.getElementById('qb-q-links-111');
+  if(container111) container111.insertAdjacentHTML('beforeend', linksBySubsub['1.1.1']);
+  var container112 = document.getElementById('qb-q-links-112');
+  if(container112) container112.insertAdjacentHTML('beforeend', linksBySubsub['1.1.2']);
+
+  var count111 = document.querySelector('.qb-subsub[data-subsub="1.1.1"] .qb-subsub-count');
+  if(count111) count111.textContent = 1 + 4;
+  var count112 = document.querySelector('.qb-subsub[data-subsub="1.1.2"] .qb-subsub-count');
+  if(count112) count112.textContent = 7;
+  var topicCount = document.querySelector('.topic-row[data-topic-id="1"] .topic-count');
+  if(topicCount) topicCount.textContent = (22 + MORE_QUESTIONS.length) + ' questions';
+  var subtopicCount = document.querySelector('.qb-subtopic[data-subtopic="1.1"] .qb-subtopic-count');
+  if(subtopicCount) subtopicCount.textContent = 22 + MORE_QUESTIONS.length;
+})();
+
+// =====================================================================
+// "Organise" menu: sort and filter the question links in the sidebar
+// =====================================================================
+(function wireOrganiseMenu(){
+  var btn = document.getElementById('organise-btn');
+  var menu = document.getElementById('organise-menu');
+  var topicLinks = document.getElementById('qb-q-links');
+  if(!btn || !menu || !topicLinks) return;
+
+  btn.addEventListener('click', function(e){
+    e.stopPropagation();
+    btn.classList.toggle('is-open');
+    menu.classList.toggle('show');
+  });
+  document.addEventListener('click', function(e){
+    if(!menu.contains(e.target) && e.target !== btn){
+      btn.classList.remove('is-open');
+      menu.classList.remove('show');
+    }
+  });
+
+  var diffRank = { easy:1, medium:2, hard:3, extreme:4 };
+
+  function applySort(mode){
+    var links = Array.prototype.slice.call(topicLinks.querySelectorAll('.q-link'));
+    links.sort(function(a, b){
+      var qa = parseInt(a.getAttribute('data-qnum'), 10);
+      var qb = parseInt(b.getAttribute('data-qnum'), 10);
+      if(mode === 'number') return qa - qb;
+      var ra = diffRank[a.getAttribute('data-difficulty')] || 0;
+      var rb = diffRank[b.getAttribute('data-difficulty')] || 0;
+      if(mode === 'easiest') return (ra - rb) || (qa - qb);
+      if(mode === 'hardest') return (rb - ra) || (qa - qb);
+      return 0;
+    });
+    links.forEach(function(link){ topicLinks.appendChild(link); });
+  }
+  document.querySelectorAll('input[name="qb-sort"]').forEach(function(radio){
+    radio.addEventListener('change', function(){ applySort(radio.value); });
+  });
+
+  function applyFilter(){
+    var shown = {};
+    document.querySelectorAll('.qb-diff-filter').forEach(function(cb){ shown[cb.value] = cb.checked; });
+    topicLinks.querySelectorAll('.q-link[data-difficulty]').forEach(function(link){
+      var difficulty = link.getAttribute('data-difficulty');
+      link.classList.toggle('is-filtered-out', shown[difficulty] === false);
+    });
+  }
+  document.querySelectorAll('.qb-diff-filter').forEach(function(cb){
+    cb.addEventListener('change', applyFilter);
+  });
+})();
+
 document.addEventListener('DOMContentLoaded', function(){
   if(window.renderMathInElement){
     renderMathInElement(document.getElementById('qlist'), {
@@ -871,11 +1452,25 @@ function updateProgress(){
   updateProgress();
 })();
 
-// ---------- topic sidebar: accordion ----------
-document.querySelectorAll('.topic-btn').forEach(function(btn){
-  btn.addEventListener('click', function(){
-    btn.closest('.topic-row').classList.toggle('is-open');
-  });
+// ---------- topic sidebar: expand a topic ----------
+document.querySelectorAll('.topic-row').forEach(function(row){
+  var btn = row.querySelector('.topic-btn');
+  if(btn.classList.contains('trigger-soon')) return;
+  btn.addEventListener('click', function(){ row.classList.toggle('is-open'); });
+});
+
+// ---------- topic sidebar: expand a sub-topic section ----------
+document.querySelectorAll('.qb-subtopic').forEach(function(sub){
+  var btn = sub.querySelector('.qb-subtopic-btn');
+  if(btn.classList.contains('is-soon')) return;
+  btn.addEventListener('click', function(){ sub.classList.toggle('is-open'); });
+});
+
+// ---------- topic sidebar: expand a sub-sub-topic section ----------
+document.querySelectorAll('.qb-subsub').forEach(function(sub){
+  var btn = sub.querySelector('.qb-subsub-btn');
+  if(btn.classList.contains('is-soon')) return;
+  btn.addEventListener('click', function(){ sub.classList.toggle('is-open'); });
 });
 
 // ---------- topic sidebar: jump to question ----------
@@ -1148,53 +1743,6 @@ document.getElementById('submit-btn-1a').addEventListener('click', function(){
 });
 document.getElementById('answer-1a').addEventListener('keydown', function(e){
   if(e.key === 'Enter') checkAnswer('answer-1a', 'qfeedback-1a');
-});
-
-// ---------- question 2: mark scheme toggle (no sourced PDF, inline reveal) ----------
-document.getElementById('ms-btn-2').addEventListener('click', function(){
-  this.classList.toggle('is-active');
-  document.getElementById('ms-panel-2').classList.toggle('show');
-});
-
-// ---------- question 2: partial fractions answer check (A, B, C) ----------
-function checkPartialFractions(){
-  var expected = { A: 3, B: -3, C: 5 };
-  var feedback = document.getElementById('qfeedback-2a');
-  feedback.classList.remove('is-correct', 'is-wrong', 'is-warning');
-
-  var values = {};
-  var anyBlank = false;
-  ['A', 'B', 'C'].forEach(function(key){
-    var raw = document.getElementById('answer-2a-' + key).value.trim();
-    if(raw === ''){ anyBlank = true; return; }
-    values[key] = parseFloat(raw);
-  });
-  if(anyBlank){
-    feedback.textContent = 'Fill in A, B and C first.';
-    feedback.classList.add('is-wrong');
-    return;
-  }
-
-  var correctCount = ['A', 'B', 'C'].filter(function(key){
-    return !isNaN(values[key]) && Math.abs(values[key] - expected[key]) <= 0.01;
-  }).length;
-
-  if(correctCount === 3){
-    feedback.textContent = 'Correct — well done!';
-    feedback.classList.add('is-correct');
-  } else if(correctCount > 0){
-    feedback.textContent = correctCount + ' out of 3 correct — check your working and try again.';
-    feedback.classList.add('is-warning');
-  } else {
-    feedback.textContent = 'Not quite. Open the mark scheme (M/S) to see the working.';
-    feedback.classList.add('is-wrong');
-  }
-}
-document.getElementById('submit-btn-2a').addEventListener('click', checkPartialFractions);
-['A', 'B', 'C'].forEach(function(key){
-  document.getElementById('answer-2a-' + key).addEventListener('keydown', function(e){
-    if(e.key === 'Enter') checkPartialFractions();
-  });
 });
 
 document.getElementById('copy-link').addEventListener('click', function(){

@@ -534,13 +534,341 @@ var topics = [
             ]
           },
           { type:'remember', text:'For a repeated factor like $(x-b)^{2}$, you need <b>both</b> $\\frac{B}{x-b}$ and $\\frac{C}{(x-b)^2}$ — using only one term for it is the single most common error.' },
-          { type:'practice', text:'Try a full past-paper style question on partial fractions with a repeated factor.', href:'maths-question-bank.html#qcard-2' }
+          { type:'practice', text:'Try a full past-paper style question on partial fractions with a repeated factor.', href:'maths-question-bank.html#qcard-13' }
         ]
       }
     ] },
-    { num:'1.2', title:'Exponentials &amp; Logs', subs:['1.2.1 Introduction to Logarithms','1.2.2 Laws of Logarithms','1.2.3 Solving Exponential Equations'] },
-    { num:'1.3', title:'Sequences &amp; Series', subs:['1.3.1 Language of Sequences &amp; Series','1.3.2 Arithmetic Sequences &amp; Series','1.3.3 Geometric Sequences &amp; Series','1.3.4 Applications of Sequences &amp; Series','1.3.5 Compound Interest &amp; Depreciation'] },
-    { num:'1.4', title:'Simple Proof &amp; Reasoning', subs:['1.4.1 Proof'] },
+    { num:'1.2', title:'Exponentials &amp; Logs', subs:[
+      { num:'1.2.1', title:'Introduction to Logarithms',
+        blocks:[
+          { type:'intro', icon:'zap', color:'violet',
+            text:'A logarithm answers the question “what power do I raise the base to, to get this number?” It is the inverse operation of an exponential.',
+            formula:'\\log_a x = n \\iff a^{n} = x'
+          },
+          { type:'ingredients', heading:'Key Ingredients', items:[
+            { iconText:'a', color:'cyan', label:'The Base (a)', formula:'a>0,\\ a\\ne1', desc:'What is being raised to a power' },
+            { iconText:'x', color:'green', label:'The Argument (x)', formula:'x>0', desc:'Must always be positive' },
+            { iconText:'n', color:'pink', label:'The Logarithm (n)', desc:'The power itself — the answer' }
+          ]},
+          { type:'columns', items:[
+            { type:'steps', heading:'Converting to Exponential Form', icon:'calculator', color:'amber', steps:[
+              { title:'Identify a and n', desc:'e.g. solve $\\log_2 x = 5$', formula:'$a=2,\\ n=5$' },
+              { title:'Rewrite using the definition', desc:'$\\log_a x = n \\iff x=a^{n}$', formula:'$x = 2^{5}$' },
+              { title:'Evaluate', desc:'', formula:'<span class="np-highlight">$x = 32$</span>' }
+            ]},
+            { type:'cardgroup', heading:'Special Values', cards:[
+              { iconText:'1', color:'cyan', title:'Log of 1', desc:'Any base raised to the power 0 gives 1.', example:{ from:'\\log_a 1', to:'0' } },
+              { iconText:'a', color:'green', title:'Log of the Base', desc:'Any base raised to the power 1 gives itself.', example:{ from:'\\log_a a', to:'1' } }
+            ]}
+          ]},
+          { type:'columns', items:[
+            { type:'cardgroup', heading:'Common &amp; Natural Logs', cards:[
+              { iconText:'10', color:'violet', title:'Common Logarithm', desc:'Base 10 — often written without the base.', example:{ from:'\\log x', to:'\\log_{10} x' } },
+              { iconText:'e', color:'teal', title:'Natural Logarithm', desc:'Base $e \\approx 2.718$ — written as $\\ln x$.', example:{ from:'\\ln x', to:'\\log_{e} x' } }
+            ]},
+            { type:'steps', heading:'Why the Restrictions?', icon:'calculator', color:'amber', steps:[
+              { title:'Base must be positive and not 1', desc:'If $a=1$, every power of $a$ is just 1, so $n$ could never be found.', formula:'$1^{n}=1$ for every $n$' },
+              { title:'Argument must be positive', desc:'A positive base raised to any real power is always positive.', formula:'$a^{n}>0$ for all $n$, when $a>0$' },
+              { title:'So logs of 0 or negatives are undefined', desc:'', formula:'<span class="np-highlight">$\\log_a x$ only exists for $x>0$</span>' }
+            ]}
+          ]},
+          { type:'remember', text:'A logarithm is just a power in disguise. If you get stuck, rewrite the log equation in exponential form $a^{n}=x$ — it is usually much easier to work with.' },
+          { type:'practice', text:'Try questions on evaluating and rewriting logarithms.', href:'maths-question-bank.html' }
+        ]
+      },
+      { num:'1.2.2', title:'Laws of Logarithms',
+        blocks:[
+          { type:'intro', icon:'zap', color:'violet',
+            text:'Logarithms follow their own set of laws, which mirror the laws of indices, letting you combine, split and simplify log expressions.',
+            formula:'\\log_a(xy) = \\log_a x + \\log_a y'
+          },
+          { type:'ingredients', heading:'Key Laws', items:[
+            { iconText:'×', color:'cyan', label:'Product Law', formula:'\\log_a(xy)=\\log_a x+\\log_a y', desc:'Multiplying inside becomes adding outside' },
+            { iconText:'÷', color:'green', label:'Quotient Law', formula:'\\log_a\\!\\left(\\dfrac{x}{y}\\right)=\\log_a x-\\log_a y', desc:'Dividing inside becomes subtracting outside' },
+            { iconText:'ⁿ', color:'pink', label:'Power Law', formula:'\\log_a(x^{n})=n\\log_a x', desc:'A power inside comes out as a multiplier' }
+          ]},
+          { type:'columns', items:[
+            { type:'steps', heading:'Combining Log Expressions', icon:'calculator', color:'amber', steps:[
+              { title:'Spot the operation between the logs', desc:'e.g. simplify $\\log_2 20 - \\log_2 5$', formula:'subtraction $\\Rightarrow$ quotient law' },
+              { title:'Apply the law', desc:'', formula:'$\\log_2 20-\\log_2 5=\\log_2\\!\\left(\\dfrac{20}{5}\\right)$' },
+              { title:'Simplify', desc:'', formula:'<span class="np-highlight">$\\log_2 4=2$</span>' }
+            ]},
+            { type:'cardgroup', heading:'Inverse Identities', cards:[
+              { iconText:'a', color:'violet', title:'Log of a Power of a', desc:'Taking the log undoes the exponential.', example:{ from:'\\log_a(a^{x})', to:'x' } },
+              { iconText:'a', color:'teal', title:'a to the Log of x', desc:'Raising to the log undoes the log.', example:{ from:'a^{\\log_a x}', to:'x' } }
+            ]}
+          ]},
+          { type:'columns', items:[
+            { type:'steps', heading:'Expanding a Log Expression', icon:'calculator', color:'amber', steps:[
+              { title:'Split the fraction (quotient law)', desc:'e.g. expand $\\ln\\!\\left(\\dfrac{x^{2}\\sqrt{y}}{z^{3}}\\right)$', formula:'$\\ln(x^{2}\\sqrt{y})-\\ln(z^{3})$' },
+              { title:'Split the product (product law)', desc:'', formula:'$\\ln(x^{2})+\\ln(\\sqrt{y})-\\ln(z^{3})$' },
+              { title:'Bring down the powers (power law)', desc:'', formula:'<span class="np-highlight">$2\\ln x+\\dfrac{1}{2}\\ln y-3\\ln z$</span>' }
+            ]},
+            { type:'cardgroup', heading:'Change of Base', cards:[
+              { iconText:'b', color:'cyan', title:'Change of Base Rule', desc:'Rewrite a log in terms of a base your calculator knows.', example:{ from:'\\log_a x', to:'\\dfrac{\\ln x}{\\ln a}' } }
+            ]}
+          ]},
+          { type:'remember', text:'The product, quotient and power laws only combine logs that share the <b>same base</b>. If the bases differ, use the change of base rule first.' },
+          { type:'practice', text:'Try questions on simplifying and expanding logarithmic expressions.', href:'maths-question-bank.html' }
+        ]
+      },
+      { num:'1.2.3', title:'Solving Exponential Equations',
+        blocks:[
+          { type:'intro', icon:'zap', color:'violet',
+            text:'When the unknown is stuck in an exponent, take logarithms of both sides (or rewrite with a common base) to bring it back down to earth.',
+            formula:'a^{x}=b \\ \\Rightarrow\\ x=\\dfrac{\\ln b}{\\ln a}'
+          },
+          { type:'ingredients', heading:'Key Methods', items:[
+            { iconText:'1', color:'cyan', label:'Same Base Method', desc:'Rewrite both sides with a common base, then equate the exponents' },
+            { iconText:'2', color:'green', label:'Take Logs Method', desc:'Apply $\\ln$ or $\\log$ to both sides when no common base is obvious' },
+            { iconText:'3', color:'pink', label:'Substitution Method', desc:'For equations quadratic in form, let $u=a^{x}$' }
+          ]},
+          { type:'columns', items:[
+            { type:'steps', heading:'Same Base Method', icon:'calculator', color:'amber', steps:[
+              { title:'Rewrite with a common base', desc:'e.g. solve $2^{x+1}=8^{x-2}$', formula:'$2^{x+1}=(2^{3})^{x-2}=2^{3x-6}$' },
+              { title:'Equate the exponents', desc:'', formula:'$x+1=3x-6$' },
+              { title:'Solve', desc:'', formula:'<span class="np-highlight">$x=3.5$</span>' }
+            ]},
+            { type:'steps', heading:'Taking Logs', icon:'calculator', color:'amber', steps:[
+              { title:'Take ln of both sides', desc:'e.g. solve $3^{x}=20$', formula:'$\\ln(3^{x})=\\ln 20$' },
+              { title:'Bring down the power', desc:'', formula:'$x\\ln 3=\\ln 20$' },
+              { title:'Divide to isolate x', desc:'', formula:'<span class="np-highlight">$x=\\dfrac{\\ln 20}{\\ln 3}\\approx2.73$</span>' }
+            ]}
+          ]},
+          { type:'columns', items:[
+            { type:'steps', heading:'Quadratic in Disguise', icon:'calculator', color:'amber', steps:[
+              { title:'Substitute u for the exponential', desc:'e.g. solve $e^{2x}-5e^{x}+6=0$', formula:'let $u=e^{x}$: $u^{2}-5u+6=0$' },
+              { title:'Solve the quadratic', desc:'', formula:'$(u-2)(u-3)=0 \\Rightarrow u=2$ or $u=3$' },
+              { title:'Solve for x', desc:'', formula:'<span class="np-highlight">$x=\\ln 2\\approx0.693$ or $x=\\ln 3\\approx1.099$</span>' }
+            ]},
+            { type:'cardgroup', heading:'Watch Out For', cards:[
+              { iconText:'!', color:'pink', title:'Rejecting Invalid Solutions', desc:'Since $a^{x}>0$ for every real $x$, any negative value of $u$ must be rejected.', example:{ from:'u=-1', to:'\\text{no solution}' } }
+            ]}
+          ]},
+          { type:'remember', text:'Because $a^{x}$ is always positive, immediately reject any negative solution for a substituted variable like $u=a^{x}$ before solving for $x$.' },
+          { type:'practice', text:'Try questions on solving exponential equations.', href:'maths-question-bank.html' }
+        ]
+      }
+    ] },
+    { num:'1.3', title:'Sequences &amp; Series', subs:[
+      { num:'1.3.1', title:'Language of Sequences &amp; Series',
+        blocks:[
+          { type:'intro', icon:'zap', color:'violet',
+            text:'A sequence is an ordered list of numbers called terms. A series is what you get when you add the terms of a sequence together.',
+            formula:'u_n \\ \\text{(term)}\\qquad S_n=\\sum_{r=1}^{n}u_r \\ \\text{(sum)}'
+          },
+          { type:'ingredients', heading:'Key Notation', items:[
+            { iconText:'u', color:'cyan', label:'Term Notation', formula:'u_1,\\,u_2,\\,u_3,\\ldots,u_n', desc:'The 1st, 2nd, 3rd, ..., nth term' },
+            { iconText:'Σ', color:'green', label:'Sigma Notation', formula:'\\sum_{r=1}^{n}u_r', desc:'Shorthand for a sum of terms' },
+            { iconText:'Sₙ', color:'pink', label:'Sum Notation', formula:'S_n=u_1+u_2+\\cdots+u_n', desc:'The sum of the first n terms' }
+          ]},
+          { type:'columns', items:[
+            { type:'cardgroup', heading:'Finite &amp; Infinite Sequences', cards:[
+              { iconText:'F', color:'cyan', title:'Finite Sequence', desc:'Has a fixed, last term.', example:{ from:'2,4,6,8', to:'\\text{stops at }8' } },
+              { iconText:'∞', color:'violet', title:'Infinite Sequence', desc:'Carries on forever.', example:{ from:'2,4,6,8,\\ldots', to:'\\text{never stops}' } }
+            ]},
+            { type:'steps', heading:'Using Sigma Notation', icon:'calculator', color:'amber', steps:[
+              { title:'Identify the rule and limits', desc:'e.g. evaluate $\\displaystyle\\sum_{r=1}^{4}2r$', formula:'rule: $2r$, from $r=1$ to $r=4$' },
+              { title:'Substitute each value of r', desc:'', formula:'$2(1)+2(2)+2(3)+2(4)$' },
+              { title:'Add them up', desc:'', formula:'<span class="np-highlight">$2+4+6+8=20$</span>' }
+            ]}
+          ]},
+          { type:'columns', items:[
+            { type:'steps', heading:'Recursive Definitions', icon:'calculator', color:'amber', steps:[
+              { title:'Start from the given first term', desc:'e.g. $u_1=3,\\ u_{n+1}=u_n+5$, find $u_4$', formula:'$u_1=3$' },
+              { title:'Apply the rule repeatedly', desc:'', formula:'$u_2=8,\\quad u_3=13$' },
+              { title:'Reach the required term', desc:'', formula:'<span class="np-highlight">$u_4=18$</span>' }
+            ]},
+            { type:'cardgroup', heading:'Recursive vs Explicit', cards:[
+              { iconText:'R', color:'green', title:'Recursive Formula', desc:'Defines a term using the previous term.', example:{ from:'u_{n+1}=u_n+d', to:'\\text{needs }u_1' } },
+              { iconText:'E', color:'pink', title:'Explicit Formula', desc:'Gives $u_n$ directly from $n$, with no earlier terms needed.', example:{ from:'u_n=u_1+(n-1)d', to:'\\text{direct}' } }
+            ]}
+          ]},
+          { type:'remember', text:'Don’t confuse $u_n$ (the value of just <b>one</b> term) with $S_n$ (the running total of the first $n$ terms) — they answer very different questions.' },
+          { type:'practice', text:'Try questions on sequence and series notation.', href:'maths-question-bank.html' }
+        ]
+      },
+      { num:'1.3.2', title:'Arithmetic Sequences &amp; Series',
+        blocks:[
+          { type:'intro', icon:'zap', color:'violet',
+            text:'In an arithmetic sequence, you add a fixed amount — the common difference — to get from one term to the next.',
+            formula:'u_n=u_1+(n-1)d'
+          },
+          { type:'ingredients', heading:'Key Formulae', items:[
+            { iconText:'d', color:'cyan', label:'Common Difference', formula:'d=u_{n+1}-u_n', desc:'The constant amount added each time' },
+            { iconText:'uₙ', color:'green', label:'nth Term', formula:'u_n=u_1+(n-1)d', desc:'Jump straight to any term' },
+            { iconText:'Sₙ', color:'pink', label:'Sum of n Terms', formula:'S_n=\\dfrac{n}{2}\\big(2u_1+(n-1)d\\big)', desc:'Or equivalently $S_n=\\dfrac{n}{2}(u_1+u_n)$' }
+          ]},
+          { type:'columns', items:[
+            { type:'steps', heading:'Finding a Term', icon:'calculator', color:'amber', steps:[
+              { title:'Identify u1 and d', desc:'e.g. $u_1=5,\\ d=3$, find $u_{10}$', formula:'$u_1=5,\\ d=3,\\ n=10$' },
+              { title:'Substitute into the nth term formula', desc:'', formula:'$u_{10}=5+(10-1)(3)$' },
+              { title:'Evaluate', desc:'', formula:'<span class="np-highlight">$u_{10}=32$</span>' }
+            ]},
+            { type:'cardgroup', heading:'Spotting an Arithmetic Sequence', cards:[
+              { iconText:'+', color:'green', title:'Constant Difference', desc:'Check that consecutive terms always differ by the same amount.', example:{ from:'7,11,15,19', to:'d=4' } }
+            ]}
+          ]},
+          { type:'columns', items:[
+            { type:'steps', heading:'Finding the Sum', icon:'calculator', color:'amber', steps:[
+              { title:'Identify u1, d and n', desc:'e.g. sum the first 20 terms with $u_1=4,\\ d=6$', formula:'$u_1=4,\\ d=6,\\ n=20$' },
+              { title:'Substitute into the sum formula', desc:'', formula:'$S_{20}=\\dfrac{20}{2}\\big(2(4)+19(6)\\big)$' },
+              { title:'Evaluate', desc:'', formula:'<span class="np-highlight">$S_{20}=1220$</span>' }
+            ]},
+            { type:'cardgroup', heading:'Finding the Number of Terms', cards:[
+              { iconText:'n', color:'violet', title:'Solve for n', desc:'Set the nth term formula equal to the known last term.', example:{ from:'2+5(n-1)=97', to:'n=20' } }
+            ]}
+          ]},
+          { type:'remember', text:'Always check the difference is truly <b>constant</b> across several pairs of terms before assuming a sequence is arithmetic.' },
+          { type:'practice', text:'Try questions on arithmetic sequences and series.', href:'maths-question-bank.html' }
+        ]
+      },
+      { num:'1.3.3', title:'Geometric Sequences &amp; Series',
+        blocks:[
+          { type:'intro', icon:'zap', color:'violet',
+            text:'In a geometric sequence, you multiply by a fixed amount — the common ratio — to get from one term to the next.',
+            formula:'u_n=u_1 r^{\\,n-1}'
+          },
+          { type:'ingredients', heading:'Key Formulae', items:[
+            { iconText:'r', color:'cyan', label:'Common Ratio', formula:'r=\\dfrac{u_{n+1}}{u_n}', desc:'The constant multiplier each time' },
+            { iconText:'uₙ', color:'green', label:'nth Term', formula:'u_n=u_1 r^{\\,n-1}', desc:'Jump straight to any term' },
+            { iconText:'Sₙ', color:'pink', label:'Sum of n Terms', formula:'S_n=\\dfrac{u_1(r^{\\,n}-1)}{r-1}', desc:'For $r \\ne 1$' }
+          ]},
+          { type:'columns', items:[
+            { type:'steps', heading:'Finding a Term', icon:'calculator', color:'amber', steps:[
+              { title:'Identify u1 and r', desc:'e.g. $u_1=3,\\ r=2$, find $u_6$', formula:'$u_1=3,\\ r=2,\\ n=6$' },
+              { title:'Substitute into the nth term formula', desc:'', formula:'$u_6=3(2)^{5}$' },
+              { title:'Evaluate', desc:'', formula:'<span class="np-highlight">$u_6=96$</span>' }
+            ]},
+            { type:'cardgroup', heading:'Sign Patterns', cards:[
+              { iconText:'±', color:'pink', title:'Negative Common Ratio', desc:'The terms alternate between positive and negative.', example:{ from:'r=-2', to:'4,-8,16,-32,\\ldots' } }
+            ]}
+          ]},
+          { type:'columns', items:[
+            { type:'steps', heading:'Finding the Sum', icon:'calculator', color:'amber', steps:[
+              { title:'Identify u1, r and n', desc:'e.g. sum the first 5 terms with $u_1=5,\\ r=3$', formula:'$u_1=5,\\ r=3,\\ n=5$' },
+              { title:'Substitute into the sum formula', desc:'', formula:'$S_5=\\dfrac{5(3^{5}-1)}{3-1}$' },
+              { title:'Evaluate', desc:'', formula:'<span class="np-highlight">$S_5=605$</span>' }
+            ]},
+            { type:'cardgroup', heading:'Sum to Infinity', cards:[
+              { iconText:'∞', color:'violet', title:'When It Exists', desc:'A sum to infinity only converges under this condition on r.', example:{ from:'|r|<1', to:'S_{\\infty}=\\dfrac{u_1}{1-r}' } }
+            ]}
+          ]},
+          { type:'remember', text:'A sum to infinity only makes sense when $|r|<1$ — if $|r|\\ge1$, the series diverges and has no finite sum.' },
+          { type:'practice', text:'Try questions on geometric sequences and series.', href:'maths-question-bank.html' }
+        ]
+      },
+      { num:'1.3.4', title:'Applications of Sequences &amp; Series',
+        blocks:[
+          { type:'intro', icon:'zap', color:'violet',
+            text:'Sequences and series model real situations that change by a fixed amount or a fixed percentage every step — from theatre seating to population growth.',
+            formula:'u_n=u_1+(n-1)d \\quad\\text{or}\\quad u_n=u_1 r^{\\,n-1}'
+          },
+          { type:'ingredients', heading:'Key Ideas', items:[
+            { iconText:'+', color:'cyan', label:'Arithmetic Model', desc:'Use when the same amount is added or removed every step' },
+            { iconText:'×', color:'green', label:'Geometric Model', desc:'Use when the same percentage is gained or lost every step' },
+            { iconText:'?', color:'pink', label:'Spotting Which to Use', desc:'Read the wording carefully — “by the same amount” vs “by the same percentage”' }
+          ]},
+          { type:'columns', items:[
+            { type:'steps', heading:'Modelling with an Arithmetic Sequence', icon:'calculator', color:'amber', steps:[
+              { title:'Identify the model', desc:'e.g. a theatre sells 40 tickets on day 1, and 5 more each following day', formula:'$u_1=40,\\ d=5$' },
+              { title:'Find a specific term', desc:'Tickets sold on day 10', formula:'$u_{10}=40+9(5)=85$' },
+              { title:'Find the total', desc:'Total tickets sold across the first 10 days', formula:'<span class="np-highlight">$S_{10}=\\dfrac{10}{2}(2(40)+9(5))=625$</span>' }
+            ]},
+            { type:'cardgroup', heading:'Reading the Wording', cards:[
+              { iconText:'A', color:'cyan', title:'“Increases by 5 each week”', desc:'A fixed amount — arithmetic.', example:{ from:'d=5', to:'u_n=u_1+(n-1)5' } },
+              { iconText:'G', color:'green', title:'“Increases by 5% each week”', desc:'A fixed percentage — geometric.', example:{ from:'r=1.05', to:'u_n=u_1(1.05)^{\\,n-1}' } }
+            ]}
+          ]},
+          { type:'columns', items:[
+            { type:'steps', heading:'Modelling with a Geometric Sequence', icon:'calculator', color:'amber', steps:[
+              { title:'Identify the model', desc:'e.g. a town of 5000 people grows 4% every year', formula:'$u_1=5000,\\ r=1.04$' },
+              { title:'Substitute into the nth term formula', desc:'Population after 6 years', formula:'$u_7=5000(1.04)^{6}$' },
+              { title:'Evaluate', desc:'', formula:'<span class="np-highlight">$u_7\\approx6327$</span>' }
+            ]},
+            { type:'cardgroup', heading:'Converting a Percentage to r', cards:[
+              { iconText:'↑', color:'green', title:'Percentage Increase', desc:'Add the percentage to 1 (as a decimal).', example:{ from:'\\text{+4}\\%', to:'r=1.04' } },
+              { iconText:'↓', color:'pink', title:'Percentage Decrease', desc:'Subtract the percentage from 1 (as a decimal).', example:{ from:'\\text{-4}\\%', to:'r=0.96' } }
+            ]}
+          ]},
+          { type:'remember', text:'Take care with which term counts as the starting point — if a population starts at $u_1$ and grows for 6 more years, that lands on $u_7$, not $u_6$.' },
+          { type:'practice', text:'Try questions on modelling with sequences and series.', href:'maths-question-bank.html' }
+        ]
+      },
+      { num:'1.3.5', title:'Compound Interest &amp; Depreciation',
+        blocks:[
+          { type:'intro', icon:'zap', color:'violet',
+            text:'Compound interest and depreciation are geometric sequences in disguise — money grows or loses value by a fixed percentage each compounding period.',
+            formula:'FV=PV\\left(1+\\dfrac{r}{100k}\\right)^{kn}'
+          },
+          { type:'ingredients', heading:'Key Variables', items:[
+            { iconText:'PV', color:'cyan', label:'Present Value', desc:'The starting amount' },
+            { iconText:'FV', color:'green', label:'Future Value', desc:'The amount after n years' },
+            { icon:'calculator', color:'pink', label:'Rate, Frequency &amp; Time', desc:'$r\\%$ per year, compounded $k$ times a year, for $n$ years' }
+          ]},
+          { type:'columns', items:[
+            { type:'steps', heading:'Compound Interest Example', icon:'calculator', color:'amber', steps:[
+              { title:'Identify PV, r, k and n', desc:'e.g. 2000 invested at 5% p.a., compounded annually, for 3 years', formula:'$PV=2000,\\ r=5,\\ k=1,\\ n=3$' },
+              { title:'Substitute into the formula', desc:'', formula:'$FV=2000\\left(1+\\dfrac{5}{100}\\right)^{3}$' },
+              { title:'Evaluate', desc:'', formula:'<span class="np-highlight">$FV\\approx2315.25$</span>' }
+            ]},
+            { type:'cardgroup', heading:'Compounding Frequency', cards:[
+              { iconText:'k', color:'violet', title:'Times per Year', desc:'Annual: $k=1$, semi-annual: $k=2$, quarterly: $k=4$, monthly: $k=12$.' }
+            ]}
+          ]},
+          { type:'columns', items:[
+            { type:'steps', heading:'Depreciation Example', icon:'calculator', color:'amber', steps:[
+              { title:'Identify PV, r and n', desc:'e.g. a car valued at 18\\,000 depreciating 12% per year, for 4 years', formula:'$PV=18\\,000,\\ r=12,\\ n=4$' },
+              { title:'Substitute (rate is now subtracted)', desc:'', formula:'$FV=18\\,000(1-0.12)^{4}$' },
+              { title:'Evaluate', desc:'', formula:'<span class="np-highlight">$FV\\approx10\\,794.52$</span>' }
+            ]},
+            { type:'cardgroup', heading:'Using Your GDC', cards:[
+              { iconText:'fx', color:'teal', title:'Finance Solver', desc:'The IB allows you to use your calculator’s built-in TVM (finance) app for these questions instead of the formula.' }
+            ]}
+          ]},
+          { type:'remember', text:'In the compound interest formula, always match $n$ (years) and $k$ (compounding periods per year) consistently in the exponent $kn$ — mixing them up is the most common error.' },
+          { type:'practice', text:'Try questions on compound interest and depreciation.', href:'maths-question-bank.html' }
+        ]
+      }
+    ] },
+    { num:'1.4', title:'Simple Proof &amp; Reasoning', subs:[
+      { num:'1.4.1', title:'Proof',
+        blocks:[
+          { type:'intro', icon:'zap', color:'violet',
+            text:'A mathematical proof is a logical argument that shows a statement is true in every possible case — not just in the examples you happen to check.',
+            formula:'P \\Rightarrow Q'
+          },
+          { type:'ingredients', heading:'Key Proof Methods', items:[
+            { iconText:'1', color:'cyan', label:'Direct Proof', desc:'Reason forward from known facts and definitions to the result' },
+            { iconText:'2', color:'green', label:'Proof by Exhaustion', desc:'Check every possible case individually — only works for finitely many cases' },
+            { iconText:'3', color:'pink', label:'Disproof by Counter-Example', desc:'Find one case where a statement fails to disprove it completely' }
+          ]},
+          { type:'columns', items:[
+            { type:'steps', heading:'Direct Proof Example', icon:'calculator', color:'amber', steps:[
+              { title:'Write the numbers using a definition', desc:'Prove that the sum of two even numbers is always even. Let the two even numbers be $2m$ and $2n$, for integers $m$ and $n$.', formula:'$2m+2n$' },
+              { title:'Add and factorise', desc:'', formula:'$2m+2n=2(m+n)$' },
+              { title:'Conclude', desc:'Since $m+n$ is an integer, $2(m+n)$ is a multiple of 2.', formula:'<span class="np-highlight">$\\therefore$ the sum of two even numbers is even</span>' }
+            ]},
+            { type:'cardgroup', heading:'Key Definitions', cards:[
+              { iconText:'2k', color:'cyan', title:'Even Number', desc:'Any integer that is a multiple of 2.', example:{ from:'n', to:'2k' } },
+              { iconText:'2k+1', color:'green', title:'Odd Number', desc:'One more than an even number.', example:{ from:'n', to:'2k+1' } }
+            ]}
+          ]},
+          { type:'columns', items:[
+            { type:'steps', heading:'Proof by Exhaustion Example', icon:'calculator', color:'amber', steps:[
+              { title:'State the claim', desc:'Prove that this expression is even for every integer from 1 to 4', formula:'$n^{2}+n$' },
+              { title:'Check every case', desc:'', formula:'$n=1:2,\\quad n=2:6,\\quad n=3:12,\\quad n=4:20$' },
+              { title:'Conclude', desc:'Every value obtained is even', formula:'<span class="np-highlight">$\\therefore n^{2}+n$ is even for $1\\le n\\le4$</span>' }
+            ]},
+            { type:'cardgroup', heading:'Disproof by Counter-Example', cards:[
+              { iconText:'!', color:'pink', title:'One Example Is Enough', desc:'A single counter-example is enough to disprove a general statement.', example:{ from:'\\text{“all primes are odd”}', to:'2\\text{ is prime and even}' } }
+            ]}
+          ]},
+          { type:'remember', text:'One counter-example is enough to <b>disprove</b> a general statement, but checking examples can never <b>prove</b> one true — except in proof by exhaustion, where every single case is checked.' },
+          { type:'practice', text:'Try questions on proof and reasoning.', href:'maths-question-bank.html' }
+        ]
+      }
+    ] },
     { num:'1.5', title:'Further Proof &amp; Reasoning', subs:['1.5.1 Proof by Induction','1.5.2 Proof by Contradiction'] },
     { num:'1.6', title:'Binomial Theorem', subs:['1.6.1 Binomial Theorem','1.6.2 Extension of The Binomial Theorem'] },
     { num:'1.7', title:'Permutations &amp; Combinations', subs:['1.7.1 Counting Principles','1.7.2 Permutations &amp; Combinations'] },
