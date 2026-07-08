@@ -14,7 +14,7 @@
 <title>Revision Notes — Mathematics AA HL — IB Subjects Hub</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
@@ -227,7 +227,31 @@
     display:inline-flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-size:10px; font-weight:700; flex-shrink:0;
   }
 
+  .np-we-question{
+    font-family:'IBM Plex Sans',sans-serif; font-size:14px; color:var(--ink); line-height:1.6;
+    margin:0 0 18px; padding-bottom:16px; border-bottom:1px dashed var(--rule);
+  }
   .np-steps{display:flex; flex-direction:column; gap:16px;}
+
+  /* ---- "handwritten on paper" look for a worked-example's working-out ---- */
+  .np-steps.is-handwritten{
+    background:#FBF3D9; border-radius:12px; padding:22px 24px; gap:14px;
+    transform:rotate(-0.4deg); box-shadow:0 6px 18px rgba(0,0,0,0.16);
+  }
+  .np-steps.is-handwritten .np-step-num{
+    background:none; border:2px solid #2B2618; color:#2B2618; font-family:'Kalam',cursive; font-weight:700;
+  }
+  .np-steps.is-handwritten .np-step-title{
+    font-family:'Kalam',cursive; font-size:16px; font-weight:700; color:#1E3A5F; margin:0 0 2px;
+  }
+  .np-steps.is-handwritten .np-step-desc{
+    font-family:'Kalam',cursive; font-size:13.5px; color:#4a4232;
+  }
+  .np-steps.is-handwritten .np-step-formula{background:none; padding:6px 0 0;}
+  .np-steps.is-handwritten .np-step-formula .katex,
+  .np-steps.is-handwritten .np-step-formula .katex *{
+    font-family:'Kalam',cursive !important; color:#1E3A5F !important;
+  }
   .np-step{display:flex; gap:14px;}
   .np-step-num{
     width:28px; height:28px; border-radius:50%; background:var(--c); color:#fff; flex-shrink:0;
@@ -494,6 +518,21 @@ var topics = [
                 formula:'$0=A+B \\Rightarrow$ <span class="np-highlight">$B=-3$</span>' }
             ]}
           ]},
+          { type:'steps', heading:'Worked Example', icon:'calculator', color:'amber', handwritten:true,
+            question:'Express $\\dfrac{9x^{2}}{(x-1)^{2}(2x+1)}$ as partial fractions in the form $\\dfrac{A}{x-1}+\\dfrac{B}{2x+1}+\\dfrac{C}{(x-1)^{2}}$.',
+            steps:[
+              { title:'Multiply through by the denominator', desc:'This clears the fractions and gives an identity in $x$.',
+                formula:'$9x^{2} = A(x-1)(2x+1) + B(x-1)^{2} + C(2x+1)$' },
+              { title:'Substitute x = 1', desc:'This root of the repeated factor makes the $A$ and $B$ terms vanish.',
+                formula:'$9 = 3C \\Rightarrow C = 3$' },
+              { title:'Substitute x = −1/2', desc:'This root of $(2x+1)$ makes the $A$ and $C$ terms vanish.',
+                formula:'$\\dfrac{9}{4} = \\left(-\\dfrac{3}{2}\\right)^{2}B = \\dfrac{9}{4}B \\Rightarrow B = 1$' },
+              { title:'Substitute x = 0', desc:'Use the values of $B$ and $C$ already found to solve for $A$.',
+                formula:'$0 = -A+B+C = -A+1+3 \\Rightarrow A = 4$' },
+              { title:'Write the result', desc:'',
+                formula:'<span class="np-highlight">$\\dfrac{9x^{2}}{(x-1)^{2}(2x+1)} = \\dfrac{4}{x-1}+\\dfrac{1}{2x+1}+\\dfrac{3}{(x-1)^{2}}$</span>' }
+            ]
+          },
           { type:'remember', text:'For a repeated factor like $(x-b)^{2}$, you need <b>both</b> $\\frac{B}{x-b}$ and $\\frac{C}{(x-b)^2}$ — using only one term for it is the single most common error.' },
           { type:'practice', text:'Try a full past-paper style question on partial fractions with a repeated factor.', href:'maths-question-bank.html#qcard-2' }
         ]
@@ -643,6 +682,8 @@ function renderBlock(b){
   if(b.type === 'intro') return renderIntro(b);
   if(b.type === 'ingredients') return renderIngredients(b);
   if(b.type === 'columns') return '<div class="np-columns">' + b.items.map(renderColumn).join('') + '</div>';
+  if(b.type === 'steps') return renderSteps(b);
+  if(b.type === 'cardgroup') return renderCardGroup(b);
   if(b.type === 'remember') return renderRemember(b);
   if(b.type === 'practice') return renderPractice(b);
   return '';
@@ -695,7 +736,8 @@ function renderCardGroup(col){
 function renderSteps(col){
   return '<div class="np-card">' +
     '<h3 class="np-card-heading">' + (col.icon ? '<span class="np-card-icon"' + colorVars(col.color) + '>' + svgIcon(col.icon) + '</span>' : '') + col.heading + '</h3>' +
-    '<div class="np-steps">' + col.steps.map(function(s, i){
+    (col.question ? '<p class="np-we-question">' + col.question + '</p>' : '') +
+    '<div class="np-steps' + (col.handwritten ? ' is-handwritten' : '') + '">' + col.steps.map(function(s, i){
       return '<div class="np-step">' +
         '<span class="np-step-num"' + colorVars(col.color) + '>' + (i + 1) + '</span>' +
         '<div class="np-step-body">' +
