@@ -326,7 +326,8 @@
     <div class="topbar-actions">
       <div class="search-box">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-        <input type="text" placeholder="search_">
+        <input type="text" id="global-search" placeholder="search_" autocomplete="off">
+        <div class="global-search-dropdown" id="global-search-dropdown"></div>
       </div>
       <nav><a href="#">Login</a></nav>
       <div class="theme-switch-wrap">
@@ -388,6 +389,7 @@
 </footer>
 
 <script src="theme.js"></script>
+<script src="search-index.js"></script>
 <script>
 // ---------- topic data ----------
 // each topic: { id, num, label, subtopics:[ { num, title, subs:[...] } ] }

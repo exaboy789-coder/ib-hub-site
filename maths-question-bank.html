@@ -467,7 +467,8 @@
     <div class="topbar-actions">
       <div class="search-box">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-        <input type="text" placeholder="search_">
+        <input type="text" id="global-search" placeholder="search_" autocomplete="off">
+        <div class="global-search-dropdown" id="global-search-dropdown"></div>
       </div>
       <nav><a href="#">Login</a></nav>
       <div class="theme-switch-wrap">
@@ -1321,6 +1322,7 @@
 </footer>
 
 <script src="theme.js"></script>
+<script src="search-index.js"></script>
 <script>
 // =====================================================================
 // Questions 3-22: a generated partial-fractions practice set, ranging
@@ -1553,6 +1555,81 @@ var EXTRA_QUESTIONS = [
     '</div>';
   }
 
+  // ---------- shared helpers reused by every question set below ----------
+  // wire the Check button + Enter-to-check for every answer block in scopeEl (a single
+  // card or a whole container); called once per card so nothing is ever double-wired
+  function wireAnswerCheck(scopeEl){
+    scopeEl.querySelectorAll('.qinput').forEach(function(block){
+      var inputs = block.querySelectorAll('.answer-field[data-answer]');
+      if(!inputs.length) return;
+      var feedback = block.querySelector('.qfeedback');
+      var submitBtn = block.querySelector('.submit-btn');
+      if(!submitBtn) return;
+      function runCheck(){
+        feedback.classList.remove('is-correct', 'is-wrong', 'is-warning');
+        var anyBlank = false, correctCount = 0;
+        inputs.forEach(function(inp){
+          var raw = inp.value.trim();
+          if(raw === ''){ anyBlank = true; return; }
+          var val = parseFloat(raw);
+          var expected = parseFloat(inp.getAttribute('data-answer'));
+          var tol = parseFloat(inp.getAttribute('data-tol')) || 0.01;
+          if(!isNaN(val) && Math.abs(val - expected) <= tol) correctCount++;
+        });
+        if(anyBlank){ feedback.textContent = 'Fill in every box first.'; feedback.classList.add('is-wrong'); return; }
+        if(correctCount === inputs.length){ feedback.textContent = 'Correct — well done!'; feedback.classList.add('is-correct'); }
+        else if(correctCount > 0){ feedback.textContent = correctCount + ' out of ' + inputs.length + ' correct — check your working and try again.'; feedback.classList.add('is-warning'); }
+        else { feedback.textContent = 'Not quite. Open the mark scheme (M/S) to see the working.'; feedback.classList.add('is-wrong'); }
+      }
+      submitBtn.addEventListener('click', runCheck);
+      inputs.forEach(function(inp){
+        inp.addEventListener('keydown', function(e){ if(e.key === 'Enter') runCheck(); });
+      });
+    });
+  }
+
+  // insert every question in questionsArray after the last existing qcard (or after
+  // startAfterId if given), build its sidebar q-link, and wire its answer checking —
+  // used by every topic's question set except EXTRA_QUESTIONS (1.1.3), which has its
+  // own Organise-menu-driven link container
+  function insertQuestionSet(questionsArray, subsubList, startAfterId){
+    var linksBySubsub = {};
+    subsubList.forEach(function(s){ linksBySubsub[s] = ''; });
+    var insertAfterEl = startAfterId ? document.getElementById(startAfterId) :
+      (document.querySelector('.qcard[data-qid]:last-of-type') || document.getElementById('qlist').lastElementChild);
+    questionsArray.forEach(function(q){
+      insertAfterEl.insertAdjacentHTML('afterend', renderQuestion(q));
+      var card = document.getElementById('qcard-' + q.n);
+      insertAfterEl = card;
+      linksBySubsub[q.subsub] += '<a class="q-link" href="#qcard-' + q.n + '" data-target="qcard-' + q.n + '" data-difficulty="' + q.difficulty + '" data-qnum="' + q.n + '">' +
+        '<span class="q-link-dot"></span><span class="q-link-text">Q' + q.n + '(a)</span></a>';
+      wireAnswerCheck(card);
+    });
+    subsubList.forEach(function(sub){
+      var container = document.getElementById('qb-q-links-' + sub.replace(/\./g,''));
+      if(container) container.insertAdjacentHTML('beforeend', linksBySubsub[sub]);
+    });
+  }
+
+  // recompute every sidebar count from the actual DOM, so no running totals ever
+  // need to be tracked or hardcoded as questions are added
+  function recalcAllCounts(){
+    document.querySelectorAll('.qb-subsub[data-subsub]').forEach(function(subEl){
+      var sub = subEl.getAttribute('data-subsub');
+      var countEl = subEl.querySelector('.qb-subsub-count');
+      if(countEl) countEl.textContent = document.querySelectorAll('.qcard[data-subsub="' + sub + '"]').length;
+    });
+    document.querySelectorAll('.qb-subtopic[data-subtopic]').forEach(function(subtopicEl){
+      var num = subtopicEl.getAttribute('data-subtopic');
+      var countEl = subtopicEl.querySelector('.qb-subtopic-count');
+      if(countEl) countEl.textContent = document.querySelectorAll('.qcard[data-subsub^="' + num + '."]').length;
+    });
+    document.querySelectorAll('.topic-row[data-topic-id]').forEach(function(topicEl){
+      var countEl = topicEl.querySelector('.topic-count');
+      if(countEl) countEl.textContent = document.querySelectorAll('.qcard[data-qid]').length + ' questions';
+    });
+  }
+
   var qlist = document.getElementById('qlist');
   var linksHtml = '';
   EXTRA_QUESTIONS.forEach(function(q){
@@ -1562,47 +1639,11 @@ var EXTRA_QUESTIONS = [
   });
 
   var topicLinks = document.getElementById('qb-q-links');
-  if(topicLinks){
-    topicLinks.insertAdjacentHTML('beforeend', linksHtml);
-    var totalQ = EXTRA_QUESTIONS.length + 2;
-    var topicCount = document.querySelector('.topic-row[data-topic-id="1"] .topic-count');
-    if(topicCount) topicCount.textContent = totalQ + ' questions';
-    var subtopicCount = document.querySelector('.qb-subtopic[data-subtopic="1.1"] .qb-subtopic-count');
-    if(subtopicCount) subtopicCount.textContent = totalQ;
-    var subsubCount = document.querySelector('.qb-subsub[data-subsub="1.1.3"] .qb-subsub-count');
-    if(subsubCount) subsubCount.textContent = EXTRA_QUESTIONS.length;
-  }
+  if(topicLinks) topicLinks.insertAdjacentHTML('beforeend', linksHtml);
 
-  // ---------- generic multi-field answer check for the generated questions ----------
-  // scoped per .qinput block (not per qcard) since a question can have separate
-  // part (a) and part (b) answer areas, each checked independently
-  qlist.querySelectorAll('.qinput').forEach(function(block){
-    var inputs = block.querySelectorAll('.answer-field[data-answer]');
-    if(!inputs.length) return;
-    var feedback = block.querySelector('.qfeedback');
-    var submitBtn = block.querySelector('.submit-btn');
-    if(!submitBtn) return;
-    function runCheck(){
-      feedback.classList.remove('is-correct', 'is-wrong', 'is-warning');
-      var anyBlank = false, correctCount = 0;
-      inputs.forEach(function(inp){
-        var raw = inp.value.trim();
-        if(raw === ''){ anyBlank = true; return; }
-        var val = parseFloat(raw);
-        var expected = parseFloat(inp.getAttribute('data-answer'));
-        var tol = parseFloat(inp.getAttribute('data-tol')) || 0.01;
-        if(!isNaN(val) && Math.abs(val - expected) <= tol) correctCount++;
-      });
-      if(anyBlank){ feedback.textContent = 'Fill in every box first.'; feedback.classList.add('is-wrong'); return; }
-      if(correctCount === inputs.length){ feedback.textContent = 'Correct — well done!'; feedback.classList.add('is-correct'); }
-      else if(correctCount > 0){ feedback.textContent = correctCount + ' out of ' + inputs.length + ' correct — check your working and try again.'; feedback.classList.add('is-warning'); }
-      else { feedback.textContent = 'Not quite. Open the mark scheme (M/S) to see the working.'; feedback.classList.add('is-wrong'); }
-    }
-    submitBtn.addEventListener('click', runCheck);
-    inputs.forEach(function(inp){
-      inp.addEventListener('keydown', function(e){ if(e.key === 'Enter') runCheck(); });
-    });
-  });
+  // ---------- answer checking for qcard-1 + all EXTRA_QUESTIONS cards ----------
+  // bulk-scoped (not per-card) since these are the only cards in #qlist at this point
+  wireAnswerCheck(qlist);
 
 // =====================================================================
 // Questions 23-33: Standard Form (1.1.1) and Laws of Indices (1.1.2)
@@ -1700,58 +1741,7 @@ var MORE_QUESTIONS = [
       ms:['$2^{4a-2b}=(2^{2a-b})^{2}$','substitute the part (a) result: $=1.8^{2}=3.24$'] } }
 ];
 
-  var linksBySubsub = { '1.1.1':'', '1.1.2':'' };
-  var insertAfterEl = document.getElementById('qcard-1');
-  MORE_QUESTIONS.forEach(function(q){
-    insertAfterEl.insertAdjacentHTML('afterend', renderQuestion(q));
-    var card = document.getElementById('qcard-' + q.n);
-    insertAfterEl = card;
-    linksBySubsub[q.subsub] += '<a class="q-link" href="#qcard-' + q.n + '" data-target="qcard-' + q.n + '" data-difficulty="' + q.difficulty + '" data-qnum="' + q.n + '">' +
-      '<span class="q-link-dot"></span><span class="q-link-text">Q' + q.n + '(a)</span></a>';
-
-    // wire this specific new card only, so already-wired Q13-Q33 cards are never touched again
-    card.querySelectorAll('.qinput').forEach(function(block){
-      var inputs = block.querySelectorAll('.answer-field[data-answer]');
-      if(!inputs.length) return;
-      var feedback = block.querySelector('.qfeedback');
-      var submitBtn = block.querySelector('.submit-btn');
-      if(!submitBtn) return;
-      function runCheck(){
-        feedback.classList.remove('is-correct', 'is-wrong', 'is-warning');
-        var anyBlank = false, correctCount = 0;
-        inputs.forEach(function(inp){
-          var raw = inp.value.trim();
-          if(raw === ''){ anyBlank = true; return; }
-          var val = parseFloat(raw);
-          var expected = parseFloat(inp.getAttribute('data-answer'));
-          var tol = parseFloat(inp.getAttribute('data-tol')) || 0.01;
-          if(!isNaN(val) && Math.abs(val - expected) <= tol) correctCount++;
-        });
-        if(anyBlank){ feedback.textContent = 'Fill in every box first.'; feedback.classList.add('is-wrong'); return; }
-        if(correctCount === inputs.length){ feedback.textContent = 'Correct — well done!'; feedback.classList.add('is-correct'); }
-        else if(correctCount > 0){ feedback.textContent = correctCount + ' out of ' + inputs.length + ' correct — check your working and try again.'; feedback.classList.add('is-warning'); }
-        else { feedback.textContent = 'Not quite. Open the mark scheme (M/S) to see the working.'; feedback.classList.add('is-wrong'); }
-      }
-      submitBtn.addEventListener('click', runCheck);
-      inputs.forEach(function(inp){
-        inp.addEventListener('keydown', function(e){ if(e.key === 'Enter') runCheck(); });
-      });
-    });
-  });
-
-  var container111 = document.getElementById('qb-q-links-111');
-  if(container111) container111.insertAdjacentHTML('beforeend', linksBySubsub['1.1.1']);
-  var container112 = document.getElementById('qb-q-links-112');
-  if(container112) container112.insertAdjacentHTML('beforeend', linksBySubsub['1.1.2']);
-
-  var count111 = document.querySelector('.qb-subsub[data-subsub="1.1.1"] .qb-subsub-count');
-  if(count111) count111.textContent = 1 + 4;
-  var count112 = document.querySelector('.qb-subsub[data-subsub="1.1.2"] .qb-subsub-count');
-  if(count112) count112.textContent = 7;
-  var topicCount = document.querySelector('.topic-row[data-topic-id="1"] .topic-count');
-  if(topicCount) topicCount.textContent = (22 + MORE_QUESTIONS.length) + ' questions';
-  var subtopicCount = document.querySelector('.qb-subtopic[data-subtopic="1.1"] .qb-subtopic-count');
-  if(subtopicCount) subtopicCount.textContent = 22 + MORE_QUESTIONS.length;
+  insertQuestionSet(MORE_QUESTIONS, ['1.1.1','1.1.2'], 'qcard-1');
 
 // =====================================================================
 // Questions 34-58: Topic 1.2 (Exponentials & Logs) practice set —
@@ -1787,60 +1777,8 @@ var TOPIC_1_2_QUESTIONS = [
   { n:58, subsub:'1.2.3', topicTag:'HL 1.2 &middot; Solving Exponential Equations', difficulty:'extreme', marks:9, calculator:true, stem:'Consider the function $f(x) = 3^{x} + 3^{-x}$. Suppose $f(x) = 3.5$ for some value(s) of $x$.', partText:'Letting $u=3^{x}$, form a quadratic equation in $u$ and hence find the two possible values of $u$.', fields:[{ label:'u&#8321; =', answer:3.19 },{ label:'u&#8322; =', answer:0.314 }], partB:{ marks:4, text:'Hence find the two corresponding values of $x$, correct to 3 significant figures.', fields:[{ label:'x&#8321; =', answer:1.05 },{ label:'x&#8322; =', answer:-1.05 }] }, partC:{ marks:1, text:'Hence state the value of $x_1+x_2$.', fields:[{ label:'Answer =', answer:0 }] } }
 ];
 
-(function buildTopic12Questions(){
-  var linksBySubsub = { '1.2.1':'', '1.2.2':'', '1.2.3':'' };
-  var insertAfterEl = document.querySelector('.qcard[data-qid]:last-of-type') || document.getElementById('qlist').lastElementChild;
-  TOPIC_1_2_QUESTIONS.forEach(function(q){
-    insertAfterEl.insertAdjacentHTML('afterend', renderQuestion(q));
-    var card = document.getElementById('qcard-' + q.n);
-    insertAfterEl = card;
-    linksBySubsub[q.subsub] += '<a class="q-link" href="#qcard-' + q.n + '" data-target="qcard-' + q.n + '" data-difficulty="' + q.difficulty + '" data-qnum="' + q.n + '">' +
-      '<span class="q-link-dot"></span><span class="q-link-text">Q' + q.n + '(a)</span></a>';
+  insertQuestionSet(TOPIC_1_2_QUESTIONS, ['1.2.1','1.2.2','1.2.3']);
 
-    // wire this specific new card only, so already-wired cards are never touched again
-    card.querySelectorAll('.qinput').forEach(function(block){
-      var inputs = block.querySelectorAll('.answer-field[data-answer]');
-      if(!inputs.length) return;
-      var feedback = block.querySelector('.qfeedback');
-      var submitBtn = block.querySelector('.submit-btn');
-      if(!submitBtn) return;
-      function runCheck(){
-        feedback.classList.remove('is-correct', 'is-wrong', 'is-warning');
-        var anyBlank = false, correctCount = 0;
-        inputs.forEach(function(inp){
-          var raw = inp.value.trim();
-          if(raw === ''){ anyBlank = true; return; }
-          var val = parseFloat(raw);
-          var expected = parseFloat(inp.getAttribute('data-answer'));
-          var tol = parseFloat(inp.getAttribute('data-tol')) || 0.01;
-          if(!isNaN(val) && Math.abs(val - expected) <= tol) correctCount++;
-        });
-        if(anyBlank){ feedback.textContent = 'Fill in every box first.'; feedback.classList.add('is-wrong'); return; }
-        if(correctCount === inputs.length){ feedback.textContent = 'Correct — well done!'; feedback.classList.add('is-correct'); }
-        else if(correctCount > 0){ feedback.textContent = correctCount + ' out of ' + inputs.length + ' correct — check your working and try again.'; feedback.classList.add('is-warning'); }
-        else { feedback.textContent = 'Not quite. Open the mark scheme (M/S) to see the working.'; feedback.classList.add('is-wrong'); }
-      }
-      submitBtn.addEventListener('click', runCheck);
-      inputs.forEach(function(inp){
-        inp.addEventListener('keydown', function(e){ if(e.key === 'Enter') runCheck(); });
-      });
-    });
-  });
-
-  ['1.2.1','1.2.2','1.2.3'].forEach(function(sub){
-    var container = document.getElementById('qb-q-links-' + sub.replace(/\./g,''));
-    if(container) container.insertAdjacentHTML('beforeend', linksBySubsub[sub]);
-    var count = TOPIC_1_2_QUESTIONS.filter(function(q){ return q.subsub === sub; }).length;
-    var countEl = document.querySelector('.qb-subsub[data-subsub="' + sub + '"] .qb-subsub-count');
-    if(countEl) countEl.textContent = count;
-  });
-
-  var subtopicCount12 = document.querySelector('.qb-subtopic[data-subtopic="1.2"] .qb-subtopic-count');
-  if(subtopicCount12) subtopicCount12.textContent = TOPIC_1_2_QUESTIONS.length;
-
-  var topicCountEl = document.querySelector('.topic-row[data-topic-id="1"] .topic-count');
-  if(topicCountEl) topicCountEl.textContent = document.querySelectorAll('.qcard[data-qid]').length + ' questions';
-})();
 
 // =====================================================================
 // Questions 59-85: Topic 1.3 (Sequences & Series) practice set —
@@ -1880,59 +1818,8 @@ var TOPIC_1_3_QUESTIONS = [
   { n:85, subsub:'1.3.5', topicTag:'HL 1.3 &middot; Compound Interest &amp; Depreciation', difficulty:'extreme', marks:6, calculator:true, stem:'$\\$10\\,000$ is invested under one of two options. Option A pays $5\\%$ p.a.\\ simple interest. Option B pays $4.5\\%$ p.a.\\ compounded annually.', partText:'Find the number of complete years after which Option B first exceeds Option A in value.', fields:[{ label:'Answer =', answer:6 }] }
 ];
 
-(function buildTopic13Questions(){
-  var linksBySubsub = { '1.3.1':'', '1.3.2':'', '1.3.3':'', '1.3.4':'', '1.3.5':'' };
-  var insertAfterEl = document.querySelector('.qcard[data-qid]:last-of-type') || document.getElementById('qlist').lastElementChild;
-  TOPIC_1_3_QUESTIONS.forEach(function(q){
-    insertAfterEl.insertAdjacentHTML('afterend', renderQuestion(q));
-    var card = document.getElementById('qcard-' + q.n);
-    insertAfterEl = card;
-    linksBySubsub[q.subsub] += '<a class="q-link" href="#qcard-' + q.n + '" data-target="qcard-' + q.n + '" data-difficulty="' + q.difficulty + '" data-qnum="' + q.n + '">' +
-      '<span class="q-link-dot"></span><span class="q-link-text">Q' + q.n + '(a)</span></a>';
+  insertQuestionSet(TOPIC_1_3_QUESTIONS, ['1.3.1','1.3.2','1.3.3','1.3.4','1.3.5']);
 
-    card.querySelectorAll('.qinput').forEach(function(block){
-      var inputs = block.querySelectorAll('.answer-field[data-answer]');
-      if(!inputs.length) return;
-      var feedback = block.querySelector('.qfeedback');
-      var submitBtn = block.querySelector('.submit-btn');
-      if(!submitBtn) return;
-      function runCheck(){
-        feedback.classList.remove('is-correct', 'is-wrong', 'is-warning');
-        var anyBlank = false, correctCount = 0;
-        inputs.forEach(function(inp){
-          var raw = inp.value.trim();
-          if(raw === ''){ anyBlank = true; return; }
-          var val = parseFloat(raw);
-          var expected = parseFloat(inp.getAttribute('data-answer'));
-          var tol = parseFloat(inp.getAttribute('data-tol')) || 0.01;
-          if(!isNaN(val) && Math.abs(val - expected) <= tol) correctCount++;
-        });
-        if(anyBlank){ feedback.textContent = 'Fill in every box first.'; feedback.classList.add('is-wrong'); return; }
-        if(correctCount === inputs.length){ feedback.textContent = 'Correct — well done!'; feedback.classList.add('is-correct'); }
-        else if(correctCount > 0){ feedback.textContent = correctCount + ' out of ' + inputs.length + ' correct — check your working and try again.'; feedback.classList.add('is-warning'); }
-        else { feedback.textContent = 'Not quite. Open the mark scheme (M/S) to see the working.'; feedback.classList.add('is-wrong'); }
-      }
-      submitBtn.addEventListener('click', runCheck);
-      inputs.forEach(function(inp){
-        inp.addEventListener('keydown', function(e){ if(e.key === 'Enter') runCheck(); });
-      });
-    });
-  });
-
-  ['1.3.1','1.3.2','1.3.3','1.3.4','1.3.5'].forEach(function(sub){
-    var container = document.getElementById('qb-q-links-' + sub.replace(/\./g,''));
-    if(container) container.insertAdjacentHTML('beforeend', linksBySubsub[sub]);
-    var count = TOPIC_1_3_QUESTIONS.filter(function(q){ return q.subsub === sub; }).length;
-    var countEl = document.querySelector('.qb-subsub[data-subsub="' + sub + '"] .qb-subsub-count');
-    if(countEl) countEl.textContent = count;
-  });
-
-  var subtopicCount13 = document.querySelector('.qb-subtopic[data-subtopic="1.3"] .qb-subtopic-count');
-  if(subtopicCount13) subtopicCount13.textContent = TOPIC_1_3_QUESTIONS.length;
-
-  var topicCountEl2 = document.querySelector('.topic-row[data-topic-id="1"] .topic-count');
-  if(topicCountEl2) topicCountEl2.textContent = document.querySelectorAll('.qcard[data-qid]').length + ' questions';
-})();
 
 // =====================================================================
 // Questions 86-95: Topic 1.4 (Simple Proof & Reasoning) practice set —
@@ -1953,59 +1840,8 @@ var TOPIC_1_4_QUESTIONS = [
   { n:95, subsub:'1.4.1', topicTag:'HL 1.4 &middot; Proof', difficulty:'extreme', marks:5, calculator:false, stem:'Consider the statement: "$2^{n} > n^{2}$ for every integer $n$ satisfying $5\\leq n\\leq8$."', partText:'Verify the statement is true by checking each case (proof by exhaustion), and hence state the smallest value of $n$ in this range for which $2^{n}-n^{2}>100$.', fields:[{ label:'n =', answer:8 }] }
 ];
 
-(function buildTopic14Questions(){
-  var linksBySubsub = { '1.4.1':'' };
-  var insertAfterEl = document.querySelector('.qcard[data-qid]:last-of-type') || document.getElementById('qlist').lastElementChild;
-  TOPIC_1_4_QUESTIONS.forEach(function(q){
-    insertAfterEl.insertAdjacentHTML('afterend', renderQuestion(q));
-    var card = document.getElementById('qcard-' + q.n);
-    insertAfterEl = card;
-    linksBySubsub[q.subsub] += '<a class="q-link" href="#qcard-' + q.n + '" data-target="qcard-' + q.n + '" data-difficulty="' + q.difficulty + '" data-qnum="' + q.n + '">' +
-      '<span class="q-link-dot"></span><span class="q-link-text">Q' + q.n + '(a)</span></a>';
+  insertQuestionSet(TOPIC_1_4_QUESTIONS, ['1.4.1']);
 
-    card.querySelectorAll('.qinput').forEach(function(block){
-      var inputs = block.querySelectorAll('.answer-field[data-answer]');
-      if(!inputs.length) return;
-      var feedback = block.querySelector('.qfeedback');
-      var submitBtn = block.querySelector('.submit-btn');
-      if(!submitBtn) return;
-      function runCheck(){
-        feedback.classList.remove('is-correct', 'is-wrong', 'is-warning');
-        var anyBlank = false, correctCount = 0;
-        inputs.forEach(function(inp){
-          var raw = inp.value.trim();
-          if(raw === ''){ anyBlank = true; return; }
-          var val = parseFloat(raw);
-          var expected = parseFloat(inp.getAttribute('data-answer'));
-          var tol = parseFloat(inp.getAttribute('data-tol')) || 0.01;
-          if(!isNaN(val) && Math.abs(val - expected) <= tol) correctCount++;
-        });
-        if(anyBlank){ feedback.textContent = 'Fill in every box first.'; feedback.classList.add('is-wrong'); return; }
-        if(correctCount === inputs.length){ feedback.textContent = 'Correct — well done!'; feedback.classList.add('is-correct'); }
-        else if(correctCount > 0){ feedback.textContent = correctCount + ' out of ' + inputs.length + ' correct — check your working and try again.'; feedback.classList.add('is-warning'); }
-        else { feedback.textContent = 'Not quite. Open the mark scheme (M/S) to see the working.'; feedback.classList.add('is-wrong'); }
-      }
-      submitBtn.addEventListener('click', runCheck);
-      inputs.forEach(function(inp){
-        inp.addEventListener('keydown', function(e){ if(e.key === 'Enter') runCheck(); });
-      });
-    });
-  });
-
-  ['1.4.1'].forEach(function(sub){
-    var container = document.getElementById('qb-q-links-' + sub.replace(/\./g,''));
-    if(container) container.insertAdjacentHTML('beforeend', linksBySubsub[sub]);
-    var count = TOPIC_1_4_QUESTIONS.filter(function(q){ return q.subsub === sub; }).length;
-    var countEl = document.querySelector('.qb-subsub[data-subsub="' + sub + '"] .qb-subsub-count');
-    if(countEl) countEl.textContent = count;
-  });
-
-  var subtopicCount14 = document.querySelector('.qb-subtopic[data-subtopic="1.4"] .qb-subtopic-count');
-  if(subtopicCount14) subtopicCount14.textContent = TOPIC_1_4_QUESTIONS.length;
-
-  var topicCountEl3 = document.querySelector('.topic-row[data-topic-id="1"] .topic-count');
-  if(topicCountEl3) topicCountEl3.textContent = document.querySelectorAll('.qcard[data-qid]').length + ' questions';
-})();
 
 // =====================================================================
 // Questions 96-105: Topic 1.5
@@ -2023,59 +1859,8 @@ var TOPIC_1_5_QUESTIONS = [
   { n:105, subsub:'1.5.2', topicTag:'HL 1.5 &middot; Proof by Contradiction', difficulty:'extreme', marks:6, calculator:false, stem:'It can be proven by contradiction that there are no positive integers $x$ and $y$ satisfying $x^{2}-y^{2}=2$ (factorise as $(x-y)(x+y)=2$, and show no pair of positive integer factors of 2 gives integer solutions for $x$ and $y$).', partText:'Using $x=6$ and $y=4$ (which do not satisfy the equation above), find the value of $x^{2}-y^{2}$, and confirm it is not equal to 2.', fields:[{ label:'Answer =', answer:20 }] }
 ];
 
-(function buildTopic15Questions(){
-  var linksBySubsub = { '1.5.1':'', '1.5.2':'' };
-  var insertAfterEl = document.querySelector('.qcard[data-qid]:last-of-type') || document.getElementById('qlist').lastElementChild;
-  TOPIC_1_5_QUESTIONS.forEach(function(q){
-    insertAfterEl.insertAdjacentHTML('afterend', renderQuestion(q));
-    var card = document.getElementById('qcard-' + q.n);
-    insertAfterEl = card;
-    linksBySubsub[q.subsub] += '<a class="q-link" href="#qcard-' + q.n + '" data-target="qcard-' + q.n + '" data-difficulty="' + q.difficulty + '" data-qnum="' + q.n + '">' +
-      '<span class="q-link-dot"></span><span class="q-link-text">Q' + q.n + '(a)</span></a>';
+  insertQuestionSet(TOPIC_1_5_QUESTIONS, ['1.5.1','1.5.2']);
 
-    card.querySelectorAll('.qinput').forEach(function(block){
-      var inputs = block.querySelectorAll('.answer-field[data-answer]');
-      if(!inputs.length) return;
-      var feedback = block.querySelector('.qfeedback');
-      var submitBtn = block.querySelector('.submit-btn');
-      if(!submitBtn) return;
-      function runCheck(){
-        feedback.classList.remove('is-correct', 'is-wrong', 'is-warning');
-        var anyBlank = false, correctCount = 0;
-        inputs.forEach(function(inp){
-          var raw = inp.value.trim();
-          if(raw === ''){ anyBlank = true; return; }
-          var val = parseFloat(raw);
-          var expected = parseFloat(inp.getAttribute('data-answer'));
-          var tol = parseFloat(inp.getAttribute('data-tol')) || 0.01;
-          if(!isNaN(val) && Math.abs(val - expected) <= tol) correctCount++;
-        });
-        if(anyBlank){ feedback.textContent = 'Fill in every box first.'; feedback.classList.add('is-wrong'); return; }
-        if(correctCount === inputs.length){ feedback.textContent = 'Correct — well done!'; feedback.classList.add('is-correct'); }
-        else if(correctCount > 0){ feedback.textContent = correctCount + ' out of ' + inputs.length + ' correct — check your working and try again.'; feedback.classList.add('is-warning'); }
-        else { feedback.textContent = 'Not quite. Open the mark scheme (M/S) to see the working.'; feedback.classList.add('is-wrong'); }
-      }
-      submitBtn.addEventListener('click', runCheck);
-      inputs.forEach(function(inp){
-        inp.addEventListener('keydown', function(e){ if(e.key === 'Enter') runCheck(); });
-      });
-    });
-  });
-
-  ['1.5.1','1.5.2'].forEach(function(sub){
-    var container = document.getElementById('qb-q-links-' + sub.replace(/\./g,''));
-    if(container) container.insertAdjacentHTML('beforeend', linksBySubsub[sub]);
-    var count = TOPIC_1_5_QUESTIONS.filter(function(q){ return q.subsub === sub; }).length;
-    var countEl = document.querySelector('.qb-subsub[data-subsub="' + sub + '"] .qb-subsub-count');
-    if(countEl) countEl.textContent = count;
-  });
-
-  var subtopicCountEl = document.querySelector('.qb-subtopic[data-subtopic="1.5"] .qb-subtopic-count');
-  if(subtopicCountEl) subtopicCountEl.textContent = TOPIC_1_5_QUESTIONS.length;
-
-  var topicCountEl = document.querySelector('.topic-row[data-topic-id="1"] .topic-count');
-  if(topicCountEl) topicCountEl.textContent = document.querySelectorAll('.qcard[data-qid]').length + ' questions';
-})();
 
 // =====================================================================
 // Questions 106-115: Topic 1.6
@@ -2093,59 +1878,8 @@ var TOPIC_1_6_QUESTIONS = [
   { n:115, subsub:'1.6.2', topicTag:'HL 1.6 &middot; Extension of The Binomial Theorem', difficulty:'extreme', marks:6, calculator:false, stem:'Consider the expansion of $(1+x)^{-1}(1+2x)^{\\frac12}$ in ascending powers of $x$, up to the term in $x^{2}$.', partText:'Find the coefficient of $x^{2}$.', fields:[{ label:'Answer =', answer:-0.5 }] }
 ];
 
-(function buildTopic16Questions(){
-  var linksBySubsub = { '1.6.1':'', '1.6.2':'' };
-  var insertAfterEl = document.querySelector('.qcard[data-qid]:last-of-type') || document.getElementById('qlist').lastElementChild;
-  TOPIC_1_6_QUESTIONS.forEach(function(q){
-    insertAfterEl.insertAdjacentHTML('afterend', renderQuestion(q));
-    var card = document.getElementById('qcard-' + q.n);
-    insertAfterEl = card;
-    linksBySubsub[q.subsub] += '<a class="q-link" href="#qcard-' + q.n + '" data-target="qcard-' + q.n + '" data-difficulty="' + q.difficulty + '" data-qnum="' + q.n + '">' +
-      '<span class="q-link-dot"></span><span class="q-link-text">Q' + q.n + '(a)</span></a>';
+  insertQuestionSet(TOPIC_1_6_QUESTIONS, ['1.6.1','1.6.2']);
 
-    card.querySelectorAll('.qinput').forEach(function(block){
-      var inputs = block.querySelectorAll('.answer-field[data-answer]');
-      if(!inputs.length) return;
-      var feedback = block.querySelector('.qfeedback');
-      var submitBtn = block.querySelector('.submit-btn');
-      if(!submitBtn) return;
-      function runCheck(){
-        feedback.classList.remove('is-correct', 'is-wrong', 'is-warning');
-        var anyBlank = false, correctCount = 0;
-        inputs.forEach(function(inp){
-          var raw = inp.value.trim();
-          if(raw === ''){ anyBlank = true; return; }
-          var val = parseFloat(raw);
-          var expected = parseFloat(inp.getAttribute('data-answer'));
-          var tol = parseFloat(inp.getAttribute('data-tol')) || 0.01;
-          if(!isNaN(val) && Math.abs(val - expected) <= tol) correctCount++;
-        });
-        if(anyBlank){ feedback.textContent = 'Fill in every box first.'; feedback.classList.add('is-wrong'); return; }
-        if(correctCount === inputs.length){ feedback.textContent = 'Correct — well done!'; feedback.classList.add('is-correct'); }
-        else if(correctCount > 0){ feedback.textContent = correctCount + ' out of ' + inputs.length + ' correct — check your working and try again.'; feedback.classList.add('is-warning'); }
-        else { feedback.textContent = 'Not quite. Open the mark scheme (M/S) to see the working.'; feedback.classList.add('is-wrong'); }
-      }
-      submitBtn.addEventListener('click', runCheck);
-      inputs.forEach(function(inp){
-        inp.addEventListener('keydown', function(e){ if(e.key === 'Enter') runCheck(); });
-      });
-    });
-  });
-
-  ['1.6.1','1.6.2'].forEach(function(sub){
-    var container = document.getElementById('qb-q-links-' + sub.replace(/\./g,''));
-    if(container) container.insertAdjacentHTML('beforeend', linksBySubsub[sub]);
-    var count = TOPIC_1_6_QUESTIONS.filter(function(q){ return q.subsub === sub; }).length;
-    var countEl = document.querySelector('.qb-subsub[data-subsub="' + sub + '"] .qb-subsub-count');
-    if(countEl) countEl.textContent = count;
-  });
-
-  var subtopicCountEl = document.querySelector('.qb-subtopic[data-subtopic="1.6"] .qb-subtopic-count');
-  if(subtopicCountEl) subtopicCountEl.textContent = TOPIC_1_6_QUESTIONS.length;
-
-  var topicCountEl = document.querySelector('.topic-row[data-topic-id="1"] .topic-count');
-  if(topicCountEl) topicCountEl.textContent = document.querySelectorAll('.qcard[data-qid]').length + ' questions';
-})();
 
 // =====================================================================
 // Questions 116-125: Topic 1.7
@@ -2163,59 +1897,8 @@ var TOPIC_1_7_QUESTIONS = [
   { n:125, subsub:'1.7.2', topicTag:'HL 1.7 &middot; Permutations &amp; Combinations', difficulty:'extreme', marks:5, calculator:false, stem:'8 people are to be seated around a round table. Rotations of the same arrangement are considered identical, but reflections (mirror images) are considered different.', partText:'Find the number of distinct seating arrangements.', fields:[{ label:'Answer =', answer:5040 }] }
 ];
 
-(function buildTopic17Questions(){
-  var linksBySubsub = { '1.7.1':'', '1.7.2':'' };
-  var insertAfterEl = document.querySelector('.qcard[data-qid]:last-of-type') || document.getElementById('qlist').lastElementChild;
-  TOPIC_1_7_QUESTIONS.forEach(function(q){
-    insertAfterEl.insertAdjacentHTML('afterend', renderQuestion(q));
-    var card = document.getElementById('qcard-' + q.n);
-    insertAfterEl = card;
-    linksBySubsub[q.subsub] += '<a class="q-link" href="#qcard-' + q.n + '" data-target="qcard-' + q.n + '" data-difficulty="' + q.difficulty + '" data-qnum="' + q.n + '">' +
-      '<span class="q-link-dot"></span><span class="q-link-text">Q' + q.n + '(a)</span></a>';
+  insertQuestionSet(TOPIC_1_7_QUESTIONS, ['1.7.1','1.7.2']);
 
-    card.querySelectorAll('.qinput').forEach(function(block){
-      var inputs = block.querySelectorAll('.answer-field[data-answer]');
-      if(!inputs.length) return;
-      var feedback = block.querySelector('.qfeedback');
-      var submitBtn = block.querySelector('.submit-btn');
-      if(!submitBtn) return;
-      function runCheck(){
-        feedback.classList.remove('is-correct', 'is-wrong', 'is-warning');
-        var anyBlank = false, correctCount = 0;
-        inputs.forEach(function(inp){
-          var raw = inp.value.trim();
-          if(raw === ''){ anyBlank = true; return; }
-          var val = parseFloat(raw);
-          var expected = parseFloat(inp.getAttribute('data-answer'));
-          var tol = parseFloat(inp.getAttribute('data-tol')) || 0.01;
-          if(!isNaN(val) && Math.abs(val - expected) <= tol) correctCount++;
-        });
-        if(anyBlank){ feedback.textContent = 'Fill in every box first.'; feedback.classList.add('is-wrong'); return; }
-        if(correctCount === inputs.length){ feedback.textContent = 'Correct — well done!'; feedback.classList.add('is-correct'); }
-        else if(correctCount > 0){ feedback.textContent = correctCount + ' out of ' + inputs.length + ' correct — check your working and try again.'; feedback.classList.add('is-warning'); }
-        else { feedback.textContent = 'Not quite. Open the mark scheme (M/S) to see the working.'; feedback.classList.add('is-wrong'); }
-      }
-      submitBtn.addEventListener('click', runCheck);
-      inputs.forEach(function(inp){
-        inp.addEventListener('keydown', function(e){ if(e.key === 'Enter') runCheck(); });
-      });
-    });
-  });
-
-  ['1.7.1','1.7.2'].forEach(function(sub){
-    var container = document.getElementById('qb-q-links-' + sub.replace(/\./g,''));
-    if(container) container.insertAdjacentHTML('beforeend', linksBySubsub[sub]);
-    var count = TOPIC_1_7_QUESTIONS.filter(function(q){ return q.subsub === sub; }).length;
-    var countEl = document.querySelector('.qb-subsub[data-subsub="' + sub + '"] .qb-subsub-count');
-    if(countEl) countEl.textContent = count;
-  });
-
-  var subtopicCountEl = document.querySelector('.qb-subtopic[data-subtopic="1.7"] .qb-subtopic-count');
-  if(subtopicCountEl) subtopicCountEl.textContent = TOPIC_1_7_QUESTIONS.length;
-
-  var topicCountEl = document.querySelector('.topic-row[data-topic-id="1"] .topic-count');
-  if(topicCountEl) topicCountEl.textContent = document.querySelectorAll('.qcard[data-qid]').length + ' questions';
-})();
 
 // =====================================================================
 // Questions 126-145: Topic 1.8
@@ -2243,59 +1926,8 @@ var TOPIC_1_8_QUESTIONS = [
   { n:145, subsub:'1.8.3', topicTag:'HL 1.8 &middot; Introduction to Argand Diagrams', difficulty:'extreme', marks:6, calculator:false, stem:'The locus $|z-4|=2|z-1|$ represents a circle (an Apollonius circle).', partText:'Find the coordinates of the centre and the radius of this circle.', fields:[{ label:'Centre Re =', answer:0 },{ label:'Centre Im =', answer:0 },{ label:'Radius =', answer:2 }] }
 ];
 
-(function buildTopic18Questions(){
-  var linksBySubsub = { '1.8.1':'', '1.8.2':'', '1.8.3':'' };
-  var insertAfterEl = document.querySelector('.qcard[data-qid]:last-of-type') || document.getElementById('qlist').lastElementChild;
-  TOPIC_1_8_QUESTIONS.forEach(function(q){
-    insertAfterEl.insertAdjacentHTML('afterend', renderQuestion(q));
-    var card = document.getElementById('qcard-' + q.n);
-    insertAfterEl = card;
-    linksBySubsub[q.subsub] += '<a class="q-link" href="#qcard-' + q.n + '" data-target="qcard-' + q.n + '" data-difficulty="' + q.difficulty + '" data-qnum="' + q.n + '">' +
-      '<span class="q-link-dot"></span><span class="q-link-text">Q' + q.n + '(a)</span></a>';
+  insertQuestionSet(TOPIC_1_8_QUESTIONS, ['1.8.1','1.8.2','1.8.3']);
 
-    card.querySelectorAll('.qinput').forEach(function(block){
-      var inputs = block.querySelectorAll('.answer-field[data-answer]');
-      if(!inputs.length) return;
-      var feedback = block.querySelector('.qfeedback');
-      var submitBtn = block.querySelector('.submit-btn');
-      if(!submitBtn) return;
-      function runCheck(){
-        feedback.classList.remove('is-correct', 'is-wrong', 'is-warning');
-        var anyBlank = false, correctCount = 0;
-        inputs.forEach(function(inp){
-          var raw = inp.value.trim();
-          if(raw === ''){ anyBlank = true; return; }
-          var val = parseFloat(raw);
-          var expected = parseFloat(inp.getAttribute('data-answer'));
-          var tol = parseFloat(inp.getAttribute('data-tol')) || 0.01;
-          if(!isNaN(val) && Math.abs(val - expected) <= tol) correctCount++;
-        });
-        if(anyBlank){ feedback.textContent = 'Fill in every box first.'; feedback.classList.add('is-wrong'); return; }
-        if(correctCount === inputs.length){ feedback.textContent = 'Correct — well done!'; feedback.classList.add('is-correct'); }
-        else if(correctCount > 0){ feedback.textContent = correctCount + ' out of ' + inputs.length + ' correct — check your working and try again.'; feedback.classList.add('is-warning'); }
-        else { feedback.textContent = 'Not quite. Open the mark scheme (M/S) to see the working.'; feedback.classList.add('is-wrong'); }
-      }
-      submitBtn.addEventListener('click', runCheck);
-      inputs.forEach(function(inp){
-        inp.addEventListener('keydown', function(e){ if(e.key === 'Enter') runCheck(); });
-      });
-    });
-  });
-
-  ['1.8.1','1.8.2','1.8.3'].forEach(function(sub){
-    var container = document.getElementById('qb-q-links-' + sub.replace(/\./g,''));
-    if(container) container.insertAdjacentHTML('beforeend', linksBySubsub[sub]);
-    var count = TOPIC_1_8_QUESTIONS.filter(function(q){ return q.subsub === sub; }).length;
-    var countEl = document.querySelector('.qb-subsub[data-subsub="' + sub + '"] .qb-subsub-count');
-    if(countEl) countEl.textContent = count;
-  });
-
-  var subtopicCountEl = document.querySelector('.qb-subtopic[data-subtopic="1.8"] .qb-subtopic-count');
-  if(subtopicCountEl) subtopicCountEl.textContent = TOPIC_1_8_QUESTIONS.length;
-
-  var topicCountEl = document.querySelector('.topic-row[data-topic-id="1"] .topic-count');
-  if(topicCountEl) topicCountEl.textContent = document.querySelectorAll('.qcard[data-qid]').length + ' questions';
-})();
 
 // =====================================================================
 // Questions 146-165: Topic 1.9
@@ -2323,59 +1955,8 @@ var TOPIC_1_9_QUESTIONS = [
   { n:165, subsub:'1.9.5', topicTag:'HL 1.9 &middot; Roots of Complex Numbers', difficulty:'extreme', marks:5, calculator:false, stem:'The five roots of $z^{5}=1$ are the 5th roots of unity.', partText:'Find the sum of all five roots, and hence find the sum of the four non-real roots.', fields:[{ label:'Sum all =', answer:0 },{ label:'Sum non-real =', answer:-1 }] }
 ];
 
-(function buildTopic19Questions(){
-  var linksBySubsub = { '1.9.1':'', '1.9.2':'', '1.9.3':'', '1.9.4':'', '1.9.5':'' };
-  var insertAfterEl = document.querySelector('.qcard[data-qid]:last-of-type') || document.getElementById('qlist').lastElementChild;
-  TOPIC_1_9_QUESTIONS.forEach(function(q){
-    insertAfterEl.insertAdjacentHTML('afterend', renderQuestion(q));
-    var card = document.getElementById('qcard-' + q.n);
-    insertAfterEl = card;
-    linksBySubsub[q.subsub] += '<a class="q-link" href="#qcard-' + q.n + '" data-target="qcard-' + q.n + '" data-difficulty="' + q.difficulty + '" data-qnum="' + q.n + '">' +
-      '<span class="q-link-dot"></span><span class="q-link-text">Q' + q.n + '(a)</span></a>';
+  insertQuestionSet(TOPIC_1_9_QUESTIONS, ['1.9.1','1.9.2','1.9.3','1.9.4','1.9.5']);
 
-    card.querySelectorAll('.qinput').forEach(function(block){
-      var inputs = block.querySelectorAll('.answer-field[data-answer]');
-      if(!inputs.length) return;
-      var feedback = block.querySelector('.qfeedback');
-      var submitBtn = block.querySelector('.submit-btn');
-      if(!submitBtn) return;
-      function runCheck(){
-        feedback.classList.remove('is-correct', 'is-wrong', 'is-warning');
-        var anyBlank = false, correctCount = 0;
-        inputs.forEach(function(inp){
-          var raw = inp.value.trim();
-          if(raw === ''){ anyBlank = true; return; }
-          var val = parseFloat(raw);
-          var expected = parseFloat(inp.getAttribute('data-answer'));
-          var tol = parseFloat(inp.getAttribute('data-tol')) || 0.01;
-          if(!isNaN(val) && Math.abs(val - expected) <= tol) correctCount++;
-        });
-        if(anyBlank){ feedback.textContent = 'Fill in every box first.'; feedback.classList.add('is-wrong'); return; }
-        if(correctCount === inputs.length){ feedback.textContent = 'Correct — well done!'; feedback.classList.add('is-correct'); }
-        else if(correctCount > 0){ feedback.textContent = correctCount + ' out of ' + inputs.length + ' correct — check your working and try again.'; feedback.classList.add('is-warning'); }
-        else { feedback.textContent = 'Not quite. Open the mark scheme (M/S) to see the working.'; feedback.classList.add('is-wrong'); }
-      }
-      submitBtn.addEventListener('click', runCheck);
-      inputs.forEach(function(inp){
-        inp.addEventListener('keydown', function(e){ if(e.key === 'Enter') runCheck(); });
-      });
-    });
-  });
-
-  ['1.9.1','1.9.2','1.9.3','1.9.4','1.9.5'].forEach(function(sub){
-    var container = document.getElementById('qb-q-links-' + sub.replace(/\./g,''));
-    if(container) container.insertAdjacentHTML('beforeend', linksBySubsub[sub]);
-    var count = TOPIC_1_9_QUESTIONS.filter(function(q){ return q.subsub === sub; }).length;
-    var countEl = document.querySelector('.qb-subsub[data-subsub="' + sub + '"] .qb-subsub-count');
-    if(countEl) countEl.textContent = count;
-  });
-
-  var subtopicCountEl = document.querySelector('.qb-subtopic[data-subtopic="1.9"] .qb-subtopic-count');
-  if(subtopicCountEl) subtopicCountEl.textContent = TOPIC_1_9_QUESTIONS.length;
-
-  var topicCountEl = document.querySelector('.topic-row[data-topic-id="1"] .topic-count');
-  if(topicCountEl) topicCountEl.textContent = document.querySelectorAll('.qcard[data-qid]').length + ' questions';
-})();
 
 // =====================================================================
 // Questions 166-175: Topic 1.10
@@ -2393,60 +1974,9 @@ var TOPIC_1_10_QUESTIONS = [
   { n:175, subsub:'1.10.2', topicTag:'HL 1.10 &middot; Algebraic Solutions', difficulty:'extreme', marks:7, calculator:true, stem:'Consider the system $x+y+z=6$, $2x-y+z=3$, $x+4y+kz=15$.', partText:'Find the value of $k$ for which this system does not have a unique solution.', fields:[{ label:'k =', answer:2 }], partB:{ marks:3, text:'Hence, using a value of $k$ for which the system does have a unique solution, find $x$, $y$ and $z$ when $k=0$.', fields:[{ label:'x =', answer:3 },{ label:'y =', answer:3 },{ label:'z =', answer:0 }] } }
 ];
 
-(function buildTopic110Questions(){
-  var linksBySubsub = { '1.10.1':'', '1.10.2':'' };
-  var insertAfterEl = document.querySelector('.qcard[data-qid]:last-of-type') || document.getElementById('qlist').lastElementChild;
-  TOPIC_1_10_QUESTIONS.forEach(function(q){
-    insertAfterEl.insertAdjacentHTML('afterend', renderQuestion(q));
-    var card = document.getElementById('qcard-' + q.n);
-    insertAfterEl = card;
-    linksBySubsub[q.subsub] += '<a class="q-link" href="#qcard-' + q.n + '" data-target="qcard-' + q.n + '" data-difficulty="' + q.difficulty + '" data-qnum="' + q.n + '">' +
-      '<span class="q-link-dot"></span><span class="q-link-text">Q' + q.n + '(a)</span></a>';
+  insertQuestionSet(TOPIC_1_10_QUESTIONS, ['1.10.1','1.10.2']);
 
-    card.querySelectorAll('.qinput').forEach(function(block){
-      var inputs = block.querySelectorAll('.answer-field[data-answer]');
-      if(!inputs.length) return;
-      var feedback = block.querySelector('.qfeedback');
-      var submitBtn = block.querySelector('.submit-btn');
-      if(!submitBtn) return;
-      function runCheck(){
-        feedback.classList.remove('is-correct', 'is-wrong', 'is-warning');
-        var anyBlank = false, correctCount = 0;
-        inputs.forEach(function(inp){
-          var raw = inp.value.trim();
-          if(raw === ''){ anyBlank = true; return; }
-          var val = parseFloat(raw);
-          var expected = parseFloat(inp.getAttribute('data-answer'));
-          var tol = parseFloat(inp.getAttribute('data-tol')) || 0.01;
-          if(!isNaN(val) && Math.abs(val - expected) <= tol) correctCount++;
-        });
-        if(anyBlank){ feedback.textContent = 'Fill in every box first.'; feedback.classList.add('is-wrong'); return; }
-        if(correctCount === inputs.length){ feedback.textContent = 'Correct — well done!'; feedback.classList.add('is-correct'); }
-        else if(correctCount > 0){ feedback.textContent = correctCount + ' out of ' + inputs.length + ' correct — check your working and try again.'; feedback.classList.add('is-warning'); }
-        else { feedback.textContent = 'Not quite. Open the mark scheme (M/S) to see the working.'; feedback.classList.add('is-wrong'); }
-      }
-      submitBtn.addEventListener('click', runCheck);
-      inputs.forEach(function(inp){
-        inp.addEventListener('keydown', function(e){ if(e.key === 'Enter') runCheck(); });
-      });
-    });
-  });
-
-  ['1.10.1','1.10.2'].forEach(function(sub){
-    var container = document.getElementById('qb-q-links-' + sub.replace(/\./g,''));
-    if(container) container.insertAdjacentHTML('beforeend', linksBySubsub[sub]);
-    var count = TOPIC_1_10_QUESTIONS.filter(function(q){ return q.subsub === sub; }).length;
-    var countEl = document.querySelector('.qb-subsub[data-subsub="' + sub + '"] .qb-subsub-count');
-    if(countEl) countEl.textContent = count;
-  });
-
-  var subtopicCountEl = document.querySelector('.qb-subtopic[data-subtopic="1.10"] .qb-subtopic-count');
-  if(subtopicCountEl) subtopicCountEl.textContent = TOPIC_1_10_QUESTIONS.length;
-
-  var topicCountEl = document.querySelector('.topic-row[data-topic-id="1"] .topic-count');
-  if(topicCountEl) topicCountEl.textContent = document.querySelectorAll('.qcard[data-qid]').length + ' questions';
-})();
-
+  recalcAllCounts();
 })();
 
 // =====================================================================
