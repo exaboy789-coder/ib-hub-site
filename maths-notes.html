@@ -448,9 +448,9 @@ var topics = [
                     { type:'steps', heading:'Worked Example', icon:'calculator', color:'amber', handwritten:true,
             question:'Given $a = 3.6\\times10^{4}$ and $b=1.2\\times10^{-2}$, write $\\dfrac{a^{2}}{b}$ in standard form.',
             steps:[
-              { title:'Square a', desc:'',
+              { title:'Square a', desc:'Square both the number part and the power of 10 separately',
                 formula:'$a^{2}=(3.6\\times10^{4})^{2}=12.96\\times10^{8}$' },
-              { title:'Divide by b', desc:'',
+              { title:'Divide by b', desc:'Divide the number parts, and subtract the powers of 10 ($8-(-2)=10$)',
                 formula:'$\\dfrac{12.96\\times10^{8}}{1.2\\times10^{-2}}=10.8\\times10^{10}$' },
               { title:'Adjust to standard form', desc:'$10.8$ is not between 1 and 10, so shift it',
                 formula:'<span class="np-highlight">$1.08\\times10^{11}$</span>' }
@@ -492,13 +492,13 @@ var topics = [
                     { type:'steps', heading:'Worked Example', icon:'calculator', color:'amber', handwritten:true,
             question:'Simplify $\\dfrac{(2x^{3}y^{-1})^{2}\\times\\sqrt{x}}{4x^{-2}y^{3}}$ to the form $x^{a}y^{b}$.',
             steps:[
-              { title:'Expand the bracket', desc:'',
+              { title:'Expand the bracket', desc:'Square every factor inside the bracket: the 2 becomes 4, and each power is multiplied by 2',
                 formula:'$(2x^{3}y^{-1})^{2}=4x^{6}y^{-2}$' },
               { title:'Multiply by the root', desc:'$\\sqrt{x}=x^{1/2}$',
                 formula:'$4x^{6}y^{-2}\\times x^{1/2}=4x^{6.5}y^{-2}$' },
-              { title:'Divide', desc:'',
+              { title:'Divide', desc:'Set up the fraction now that both the top and bottom are single terms',
                 formula:'$\\dfrac{4x^{6.5}y^{-2}}{4x^{-2}y^{3}}$' },
-              { title:'Subtract the powers', desc:'',
+              { title:'Subtract the powers', desc:'The 4’s cancel; subtract the power of x on the bottom from the top ($6.5-(-2)=8.5$), and do the same for y ($-2-3=-5$)',
                 formula:'<span class="np-highlight">$x^{8.5}y^{-5}$</span>' }
             ]
           },
@@ -599,14 +599,16 @@ var topics = [
                     { type:'steps', heading:'Worked Example', icon:'calculator', color:'amber', handwritten:true,
             question:'Solve $\\log_{x}(x+6)=2$ for $x$, given $x>0$.',
             steps:[
-              { title:'Rewrite in exponential form', desc:'',
+              { title:'Rewrite in exponential form', desc:'Using $\\log_a x = n \\iff a^{n}=x$, here the base is $x$, the argument is $x+6$, and the log value is 2',
                 formula:'$x^{2}=x+6$' },
-              { title:'Rearrange into a quadratic', desc:'',
+              { title:'Rearrange into a quadratic', desc:'Move every term to one side so the equation equals zero',
                 formula:'$x^{2}-x-6=0$' },
-              { title:'Factorise', desc:'',
+              { title:'Factorise', desc:'Look for two numbers that multiply to $-6$ and add to $-1$: these are $-3$ and $2$',
                 formula:'$(x-3)(x+2)=0 \\Rightarrow x=3$ or $x=-2$' },
-              { title:'Reject the invalid solution', desc:'the base of a logarithm must be positive',
-                formula:'<span class="np-highlight">$x=3$</span>' }
+              { title:'Reject the invalid solution', desc:'A logarithm’s base must be positive and not equal to 1, so $x=-2$ is impossible here — only $x=3$ satisfies this',
+                formula:'<span class="np-highlight">$x=3$</span>' },
+              { title:'Check the solution', desc:'Substitute $x=3$ back into the original equation to confirm it works',
+                formula:'$\\log_3(3+6)=\\log_3 9=2$, since $3^{2}=9$ &#10003;' }
             ]
           },
           { type:'remember', text:'A logarithm is just a power in disguise. If you get stuck, rewrite the log equation in exponential form $a^{n}=x$ — it is usually much easier to work with.' },
@@ -648,13 +650,13 @@ var topics = [
                     { type:'steps', heading:'Worked Example', icon:'calculator', color:'amber', handwritten:true,
             question:'Given that $\\log_2 5 = a$, express $\\log_4 320$ in terms of $a$.',
             steps:[
-              { title:'Write 320 using a factor of 2', desc:'',
+              { title:'Write 320 using a factor of 2', desc:'Break 320 into a power of 2 multiplied by another factor, so the given value of $\\log_2 5$ can be used later',
                 formula:'$320=2^{6}\\times5$' },
-              { title:'Apply the product law', desc:'',
+              { title:'Apply the product law', desc:'A log of a product splits into a sum of logs',
                 formula:'$\\log_2 320=\\log_2(2^{6})+\\log_2 5=6+a$' },
-              { title:'Change of base to base 4', desc:'',
+              { title:'Change of base to base 4', desc:'The question asks for base 4, so rewrite $\\log_4$ using base-2 logs (which are already known), noting that $\\log_2 4=2$',
                 formula:'$\\log_4 320=\\dfrac{\\log_2 320}{\\log_2 4}=\\dfrac{6+a}{2}$' },
-              { title:'Simplify', desc:'',
+              { title:'Simplify', desc:'Split the fraction into two separate terms',
                 formula:'<span class="np-highlight">$3+\\dfrac{a}{2}$</span>' }
             ]
           },
@@ -698,13 +700,13 @@ var topics = [
                     { type:'steps', heading:'Worked Example', icon:'calculator', color:'amber', handwritten:true,
             question:'Solve $2^{2x}-6(2^{x})+8=0$ for $x$.',
             steps:[
-              { title:'Substitute u = 2ˣ', desc:'',
+              { title:'Substitute u = 2ˣ', desc:'Since $2^{2x}=(2^{x})^{2}$, letting $u=2^{x}$ turns this into an ordinary quadratic in u',
                 formula:'$u^{2}-6u+8=0$' },
-              { title:'Factorise', desc:'',
+              { title:'Factorise', desc:'Find two numbers that multiply to 8 and add to $-6$: these are $-2$ and $-4$',
                 formula:'$(u-2)(u-4)=0 \\Rightarrow u=2$ or $u=4$' },
-              { title:'Convert back to x', desc:'',
+              { title:'Convert back to x', desc:'Remember u was standing in for $2^{x}$, so solve $2^{x}=u$ for each value found',
                 formula:'$2^{x}=2 \\Rightarrow x=1$; &nbsp; $2^{x}=4 \\Rightarrow x=2$' },
-              { title:'State both solutions', desc:'',
+              { title:'State both solutions', desc:'Since the substituted equation was quadratic, expect up to two solutions for x',
                 formula:'<span class="np-highlight">$x=1$ or $x=2$</span>' }
             ]
           },
@@ -750,11 +752,11 @@ var topics = [
                     { type:'steps', heading:'Worked Example', icon:'calculator', color:'amber', handwritten:true,
             question:'A sequence has $u_n=\\dfrac{n^{2}+n}{2}$. Find $u_7$, and determine whether 45 is a term of the sequence.',
             steps:[
-              { title:'Substitute n = 7', desc:'',
+              { title:'Substitute n = 7', desc:'Replace every n in the formula with 7 to find this specific term',
                 formula:'$u_7=\\dfrac{49+7}{2}=28$' },
-              { title:'Set uₙ = 45', desc:'',
+              { title:'Set uₙ = 45', desc:'To check if 45 appears in the sequence, set the formula equal to 45 and see if a whole-number solution for n exists',
                 formula:'$n^{2}+n=90 \\Rightarrow n^{2}+n-90=0$' },
-              { title:'Solve the quadratic', desc:'reject the negative root',
+              { title:'Solve the quadratic', desc:'Use the quadratic formula; reject the negative root since n must be a positive integer',
                 formula:'$n=\\dfrac{-1+\\sqrt{361}}{2}=9$' },
               { title:'Conclude', desc:'since $n=9$ is a positive integer',
                 formula:'<span class="np-highlight">45 is a term of the sequence ($u_9=45$)</span>' }
@@ -798,13 +800,13 @@ var topics = [
                     { type:'steps', heading:'Worked Example', icon:'calculator', color:'amber', handwritten:true,
             question:'The 4th term of an arithmetic sequence is 15 and the 11th term is 43. Find $u_1$, $d$, and $S_{25}$.',
             steps:[
-              { title:'Find d', desc:'$u_{11}-u_4=7d$',
+              { title:'Find d', desc:'Going from the 4th term to the 11th term takes 7 steps of size d, so the difference between the two given terms equals 7d',
                 formula:'$43-15=7d \\Rightarrow d=4$' },
-              { title:'Find u1', desc:'',
+              { title:'Find u1', desc:'Work backwards 3 steps of size d from u4 to reach u1',
                 formula:'$u_1=u_4-3d=15-12=3$' },
-              { title:'Substitute into the sum formula', desc:'',
+              { title:'Substitute into the sum formula', desc:'Use $S_n=\\dfrac{n}{2}(2u_1+(n-1)d)$ with $n=25$',
                 formula:'$S_{25}=\\dfrac{25}{2}\\big(2(3)+24(4)\\big)$' },
-              { title:'Evaluate', desc:'',
+              { title:'Evaluate', desc:'Simplify inside the brackets first, then multiply',
                 formula:'<span class="np-highlight">$S_{25}=1275$</span>' }
             ]
           },
@@ -846,13 +848,13 @@ var topics = [
                     { type:'steps', heading:'Worked Example', icon:'calculator', color:'amber', handwritten:true,
             question:'The sum of the first 3 terms of a geometric sequence is 26, and the sum of the first 6 terms is 728. Find $r$ and $u_1$.',
             steps:[
-              { title:'Divide S6 by S3', desc:'using $r^{6}-1=(r^{3}-1)(r^{3}+1)$',
+              { title:'Divide S6 by S3', desc:'This is a useful trick: dividing the two sum formulas cancels out $u_1$ and $(r-1)$, leaving an expression only in r',
                 formula:'$\\dfrac{S_6}{S_3}=r^{3}+1=\\dfrac{728}{26}=28$' },
-              { title:'Solve for r', desc:'',
+              { title:'Solve for r', desc:'Rearrange to isolate $r^{3}$, then take the cube root of both sides',
                 formula:'$r^{3}=27 \\Rightarrow r=3$' },
-              { title:'Substitute back into S3', desc:'',
+              { title:'Substitute back into S3', desc:'Now that r is known, substitute it into the original sum formula for $S_3$ to find $u_1$',
                 formula:'$26=u_1\\dfrac{(3^{3}-1)}{3-1}=13u_1$' },
-              { title:'Evaluate', desc:'',
+              { title:'Evaluate', desc:'Divide both sides by 13',
                 formula:'<span class="np-highlight">$u_1=2$</span>' }
             ]
           },
@@ -896,13 +898,13 @@ var topics = [
                     { type:'steps', heading:'Worked Example', icon:'calculator', color:'amber', handwritten:true,
             question:'A car worth \\$20\\,000 depreciates by 12% each year. A savings account starts at \\$5000 and grows by \\$800 each year. After how many complete years does the savings account first exceed the car’s value?',
             steps:[
-              { title:'Model each quantity', desc:'',
+              { title:'Model each quantity', desc:'The car loses a fixed percentage of its value each year, so it follows a geometric model; the savings account gains a fixed amount each year, so it follows an arithmetic model',
                 formula:'car: $20\\,000(0.88)^{n}$; savings: $5000+800n$' },
-              { title:'Test n = 5', desc:'',
+              { title:'Test n = 5', desc:'Substitute n=5 into both models to compare their values at that point',
                 formula:'car $\\approx\\$10\\,555$; savings $=\\$9000$ (savings still behind)' },
-              { title:'Test n = 6', desc:'',
+              { title:'Test n = 6', desc:'Since the savings account hasn’t caught up yet, try the next year',
                 formula:'car $\\approx\\$9288$; savings $=\\$9800$ (savings now ahead)' },
-              { title:'Conclude', desc:'',
+              { title:'Conclude', desc:'The savings account overtakes the car’s value somewhere between year 5 and year 6, so the first complete year it is ahead is year 6',
                 formula:'<span class="np-highlight">the savings account first exceeds the car after 6 years</span>' }
             ]
           },
@@ -944,13 +946,13 @@ var topics = [
                     { type:'steps', heading:'Worked Example', icon:'calculator', color:'amber', handwritten:true,
             question:'\\$8000 is invested at 3.5% p.a. compounded monthly. Find the value after 4 years, and the number of complete years for the investment to double.',
             steps:[
-              { title:'Substitute into the compound interest formula', desc:'',
+              { title:'Substitute into the compound interest formula', desc:'Since interest compounds monthly, divide the annual rate by 12 and multiply the number of years by 12 to get the total number of compounding periods',
                 formula:'$FV=8000\\left(1+\\dfrac{0.035}{12}\\right)^{48}\\approx\\$9200$' },
-              { title:'Set up the doubling equation', desc:'',
+              { title:'Set up the doubling equation', desc:'For the investment to double, the future value must equal twice the original amount',
                 formula:'$8000(1+\\tfrac{0.035}{12})^{12n}=16\\,000$' },
-              { title:'Solve for n', desc:'',
+              { title:'Solve for n', desc:'Take logarithms of both sides to bring the exponent down, then isolate n',
                 formula:'$12n=\\dfrac{\\ln2}{\\ln(1+\\frac{0.035}{12})}\\approx237.98$' },
-              { title:'Round up to complete years', desc:'since the value has not yet doubled at 19 years',
+              { title:'Round up to complete years', desc:'Since $237.98\\div12\\approx19.83$, the investment hasn’t doubled by year 19, so round up to the next whole year',
                 formula:'<span class="np-highlight">$n=20$ years</span>' }
             ]
           },
@@ -997,11 +999,11 @@ var topics = [
             steps:[
               { title:'Represent an odd integer algebraically', desc:'let the odd integer be $2k+1$, for integer $k$',
                 formula:'$(2k+1)^{2}=4k^{2}+4k+1$' },
-              { title:'Rewrite in the form 2m + 1', desc:'',
+              { title:'Rewrite in the form 2m + 1', desc:'Factor a 2 out of the first two terms, so the expression matches the definition of an odd number',
                 formula:'$=2(2k^{2}+2k)+1$' },
               { title:'Conclude the proof', desc:'since $2k^2+2k$ is an integer, this is odd',
                 formula:'$\\therefore$ the square of any odd integer is odd' },
-              { title:'Apply the result', desc:'57 is odd, so by the result above',
+              { title:'Apply the result', desc:'The general result proven above guarantees that since 57 is odd, $57^{2}$ must also be odd — without needing to calculate $57^{2}=3249$ directly',
                 formula:'<span class="np-highlight">$57^{2}$ is odd</span>' }
             ]
           },
@@ -1049,15 +1051,15 @@ var topics = [
                 { type:'steps', heading:'Worked Example', icon:'calculator', color:'amber', handwritten:true,
           question:'Prove by induction that $\\displaystyle\\sum_{r=1}^{n} r^{3} = \\left(\\dfrac{n(n+1)}{2}\\right)^{2}$ for every positive integer $n$. Hence find $\\displaystyle\\sum_{r=1}^{6} r^{3}$.',
           steps:[
-            { title:'Base case n = 1', desc:'',
+            { title:'Base case n = 1', desc:'Check that both sides of the formula agree when n=1',
               formula:'$LHS=1,\\ RHS=\\left(\\tfrac{1(2)}{2}\\right)^{2}=1$ &#10003;' },
-            { title:'Assume true for n = k', desc:'',
+            { title:'Assume true for n = k', desc:'This is the inductive hypothesis — assume (but don’t yet prove) that the formula holds when n=k',
               formula:'$\\displaystyle\\sum_{r=1}^{k} r^{3}=\\left(\\dfrac{k(k+1)}{2}\\right)^{2}$' },
-            { title:'Add the (k+1)th term', desc:'',
+            { title:'Add the (k+1)th term', desc:'Add $(k+1)^{3}$ to both sides, since this is the next term of the sum, then show it simplifies to match the formula with n=k+1 substituted in',
               formula:'$\\left(\\dfrac{k(k+1)}{2}\\right)^{2}+(k+1)^{3}=\\left(\\dfrac{(k+1)(k+2)}{2}\\right)^{2}$' },
             { title:'State the conclusion', desc:'true for $n=1$, and $n=k$ true $\\Rightarrow n=k+1$ true, so by induction it holds for all $n\\geq1$',
               formula:'' },
-            { title:'Evaluate at n = 6', desc:'',
+            { title:'Evaluate at n = 6', desc:'Substitute n=6 into the now-proven formula',
               formula:'<span class="np-highlight">$\\left(\\tfrac{6(7)}{2}\\right)^{2}=441$</span>' }
           ]
         },
@@ -1102,13 +1104,13 @@ var topics = [
                 { type:'steps', heading:'Worked Example', icon:'calculator', color:'amber', handwritten:true,
           question:'Prove by contradiction that if $p$ is a prime number and $p>2$, then $p$ is odd.',
           steps:[
-            { title:'Assume the opposite', desc:'suppose $p$ is even',
+            { title:'Assume the opposite', desc:'To prove by contradiction, start by assuming the statement is false',
               formula:'$p=2k$ for some integer $k$' },
             { title:'Consider the factors of p', desc:'since $p>2$, we have $k>1$',
               formula:'$1, 2, k,$ and $p$ are all factors of $p$' },
             { title:'Reach the contradiction', desc:'a prime number has exactly two factors, 1 and itself',
               formula:'this contradicts $p$ being prime' },
-            { title:'Conclude', desc:'',
+            { title:'Conclude', desc:'Since assuming p is even led to a contradiction, the original assumption must be false',
               formula:'<span class="np-highlight">$\\therefore$ if $p$ is prime and $p>2$, then $p$ is odd</span>' }
           ]
         },
@@ -1152,13 +1154,13 @@ var topics = [
                 { type:'steps', heading:'Worked Example', icon:'calculator', color:'amber', handwritten:true,
           question:'Find the coefficient of $x^{3}$ in the expansion of $(2+3x)^{6}$.',
           steps:[
-            { title:'Write the general term', desc:'',
+            { title:'Write the general term', desc:'Every term in the expansion has this form, where r runs from 0 to 6',
               formula:'$T_{r+1}=\\binom{6}{r}(2)^{6-r}(3x)^{r}$' },
             { title:'Identify r', desc:'need the term in $x^{3}$',
               formula:'$r=3$' },
-            { title:'Substitute', desc:'',
+            { title:'Substitute', desc:'Plug r=3 into the general term',
               formula:'$T_4=\\binom{6}{3}(2)^{3}(3)^{3}x^{3}$' },
-            { title:'Evaluate the coefficient', desc:'',
+            { title:'Evaluate the coefficient', desc:'Calculate each part separately: $\\binom{6}{3}=20$, $2^{3}=8$, and $3^{3}=27$, then multiply them together',
               formula:'<span class="np-highlight">$20\\times8\\times27=4320$</span>' }
           ]
         },
@@ -1200,13 +1202,13 @@ var topics = [
                 { type:'steps', heading:'Worked Example', icon:'calculator', color:'amber', handwritten:true,
           question:'Expand $(1+3x)^{-2}$ in ascending powers of $x$ up to the term in $x^{3}$, and state the range of validity.',
           steps:[
-            { title:'Use the general expansion with u = 3x', desc:'',
+            { title:'Use the general expansion with u = 3x', desc:'This is the standard expansion for a power of $-2$, valid whenever $|u|<1$',
               formula:'$(1+u)^{-2}=1-2u+3u^{2}-4u^{3}+\\ldots$' },
-            { title:'Substitute u = 3x', desc:'',
+            { title:'Substitute u = 3x', desc:'Replace every u with 3x',
               formula:'$1-2(3x)+3(3x)^{2}-4(3x)^{3}$' },
-            { title:'Simplify', desc:'',
+            { title:'Simplify', desc:'Multiply out each term carefully',
               formula:'<span class="np-highlight">$1-6x+27x^{2}-108x^{3}$</span>' },
-            { title:'State the validity', desc:'',
+            { title:'State the validity', desc:'The expansion only converges when the substituted value satisfies this condition',
               formula:'valid for $|3x|<1$, i.e. $|x|<\\dfrac13$' }
           ]
         },
@@ -1255,9 +1257,9 @@ var topics = [
               formula:'$25\\times26\\times26=16\\,900$' },
             { title:'Count the digit choices', desc:'last digit: 9 (not 0); other 2 digits: 10 each',
               formula:'$10\\times10\\times9=900$' },
-            { title:'Multiply the two stages', desc:'',
+            { title:'Multiply the two stages', desc:'Since the letters and digits are chosen independently, multiply the total number of ways for each',
               formula:'$16\\,900\\times900$' },
-            { title:'Evaluate', desc:'',
+            { title:'Evaluate', desc:'This is the total number of valid passwords',
               formula:'<span class="np-highlight">$15\\,210\\,000$</span>' }
           ]
         },
@@ -1299,13 +1301,13 @@ var topics = [
                 { type:'steps', heading:'Worked Example', icon:'calculator', color:'amber', handwritten:true,
           question:'A committee of 5 is chosen from 7 teachers and 6 students, with at least 3 teachers required. Find the number of possible committees.',
           steps:[
-            { title:'Exactly 3 teachers', desc:'',
+            { title:'Exactly 3 teachers', desc:'Choose 3 of the 7 teachers, and the remaining 2 spots from the 6 students',
               formula:'$\\binom{7}{3}\\binom{6}{2}=35\\times15=525$' },
-            { title:'Exactly 4 teachers', desc:'',
+            { title:'Exactly 4 teachers', desc:'Choose 4 of the 7 teachers, and the remaining 1 spot from the students',
               formula:'$\\binom{7}{4}\\binom{6}{1}=35\\times6=210$' },
-            { title:'Exactly 5 teachers', desc:'',
+            { title:'Exactly 5 teachers', desc:'Choose all 5 from the teachers, leaving none for the students',
               formula:'$\\binom{7}{5}\\binom{6}{0}=21\\times1=21$' },
-            { title:'Add the cases', desc:'',
+            { title:'Add the cases', desc:'Since these three cases are mutually exclusive (a committee can’t have exactly 3, 4 and 5 teachers at once), add them together',
               formula:'<span class="np-highlight">$525+210+21=756$</span>' }
           ]
         },
@@ -1348,13 +1350,13 @@ var topics = [
                 { type:'steps', heading:'Worked Example', icon:'calculator', color:'amber', handwritten:true,
           question:'Solve $z^{2}-6z+13=0$ for $z$, and verify your solutions by substitution.',
           steps:[
-            { title:'Apply the quadratic formula', desc:'',
+            { title:'Apply the quadratic formula', desc:'Use $z=\\dfrac{-b\\pm\\sqrt{b^{2}-4ac}}{2a}$ with $a=1,\\ b=-6,\\ c=13$',
               formula:'$z=\\dfrac{6\\pm\\sqrt{36-52}}{2}=\\dfrac{6\\pm\\sqrt{-16}}{2}$' },
-            { title:'Simplify the square root of a negative', desc:'',
+            { title:'Simplify the square root of a negative', desc:'Since $\\sqrt{-16}=\\sqrt{16}\\times\\sqrt{-1}=4i$',
               formula:'$z=\\dfrac{6\\pm4i}{2}=3\\pm2i$' },
             { title:'Verify by substitution', desc:'try $z=3+2i$',
               formula:'$(3+2i)^{2}-6(3+2i)+13=(5+12i)-(18+12i)+13$' },
-            { title:'Confirm it equals zero', desc:'',
+            { title:'Confirm it equals zero', desc:'Combine the real parts and the imaginary parts separately',
               formula:'<span class="np-highlight">$=0$ &#10003;</span>' }
           ]
         },
@@ -1396,13 +1398,13 @@ var topics = [
                 { type:'steps', heading:'Worked Example', icon:'calculator', color:'amber', handwritten:true,
           question:'Given $z_1=1+i\\sqrt3$ and $z_2=\\sqrt3-i$, find $|z_1z_2|$ and $\\arg(z_1z_2)$ without multiplying $z_1$ and $z_2$ out directly.',
           steps:[
-            { title:'Find the modulus and argument of each number', desc:'',
+            { title:'Find the modulus and argument of each number', desc:'Sketching each point on an Argand diagram helps identify the correct quadrant for its argument',
               formula:'$|z_1|=2,\\ \\arg z_1=\\tfrac{\\pi}{3}$; &nbsp; $|z_2|=2,\\ \\arg z_2=-\\tfrac{\\pi}{6}$' },
-            { title:'Multiply the moduli', desc:'',
+            { title:'Multiply the moduli', desc:'When multiplying complex numbers, their moduli multiply together',
               formula:'$|z_1z_2|=2\\times2=4$' },
-            { title:'Add the arguments', desc:'',
+            { title:'Add the arguments', desc:'When multiplying complex numbers, their arguments add together',
               formula:'$\\arg(z_1z_2)=\\tfrac{\\pi}{3}-\\tfrac{\\pi}{6}$' },
-            { title:'Simplify', desc:'',
+            { title:'Simplify', desc:'Subtract the fractions to leave a single angle',
               formula:'<span class="np-highlight">$\\arg(z_1z_2)=\\dfrac{\\pi}{6}$</span>' }
           ]
         },
@@ -1443,13 +1445,13 @@ var topics = [
                 { type:'steps', heading:'Worked Example', icon:'calculator', color:'amber', handwritten:true,
           question:'Find the Cartesian equation of the locus $|z-3|=|z+1-2i|$.',
           steps:[
-            { title:'Identify the two fixed points', desc:'',
+            { title:'Identify the two fixed points', desc:'The equation says z is equally distant from these two fixed complex numbers — the definition of a perpendicular bisector',
               formula:'the locus is the perpendicular bisector of $(3,0)$ and $(-1,2)$' },
-            { title:'Find the midpoint', desc:'',
+            { title:'Find the midpoint', desc:'The perpendicular bisector always passes through the midpoint of the two points',
               formula:'$\\left(1,1\\right)$' },
             { title:'Find the perpendicular gradient', desc:'gradient of the segment is $-\\tfrac12$',
               formula:'perpendicular gradient $=2$' },
-            { title:'Write the line equation', desc:'',
+            { title:'Write the line equation', desc:'Use $y-y_1=m(x-x_1)$ with the midpoint and the perpendicular gradient',
               formula:'<span class="np-highlight">$y=2x-1$</span>' }
           ]
         },
@@ -1491,13 +1493,13 @@ var topics = [
                 { type:'steps', heading:'Worked Example', icon:'calculator', color:'amber', handwritten:true,
           question:'Points $z_1=1+i$ and $z_3=7+i$ are two vertices of an equilateral triangle, with $z_2$ obtained by rotating $z_3$ about $z_1$ through $60°$. Find $z_2$.',
           steps:[
-            { title:'Find the vector from z1 to z3', desc:'',
+            { title:'Find the vector from z1 to z3', desc:'This represents the side of the triangle that will be rotated',
               formula:'$z_3-z_1=6$' },
-            { title:'Rotate this vector by 60°', desc:'multiply by $\\cos60°+i\\sin60°$',
+            { title:'Rotate this vector by 60°', desc:'Multiplying by $\\cos60°+i\\sin60°$ rotates a vector by 60° anticlockwise, without changing its length',
               formula:'$6(0.5+0.866i)=3+5.196i$' },
-            { title:'Add back to z1', desc:'',
+            { title:'Add back to z1', desc:'The rotated vector needs to be added back onto the point it was rotated about',
               formula:'$z_2=z_1+(3+5.196i)$' },
-            { title:'Simplify', desc:'',
+            { title:'Simplify', desc:'Add the real and imaginary parts separately',
               formula:'<span class="np-highlight">$z_2\\approx4+6.20i$</span>' }
           ]
         },
@@ -1539,13 +1541,13 @@ var topics = [
                 { type:'steps', heading:'Worked Example', icon:'calculator', color:'amber', handwritten:true,
           question:'Given $z=1-i$, find $z^{10}$ in the form $a+bi$, using exponential form.',
           steps:[
-            { title:'Convert to exponential form', desc:'',
+            { title:'Convert to exponential form', desc:'Find the modulus and argument of z first',
               formula:'$z=\\sqrt2\\,e^{-i\\pi/4}$' },
-            { title:'Raise to the power 10', desc:'',
+            { title:'Raise to the power 10', desc:'Raising to a power in exponential form is much simpler: raise the modulus to the power, and multiply the argument by the power',
               formula:'$z^{10}=(\\sqrt2)^{10}e^{-i10\\pi/4}=32e^{-i5\\pi/2}$' },
             { title:'Reduce the angle', desc:'subtract $2\\pi$',
               formula:'$-\\dfrac{5\\pi}{2}+2\\pi=-\\dfrac{\\pi}{2}$' },
-            { title:'Convert back to Cartesian form', desc:'',
+            { title:'Convert back to Cartesian form', desc:'Evaluate cos and sin at the simplified angle',
               formula:'<span class="np-highlight">$32\\left(\\cos\\left(-\\tfrac{\\pi}{2}\\right)+i\\sin\\left(-\\tfrac{\\pi}{2}\\right)\\right)=-32i$</span>' }
           ]
         },
@@ -1587,15 +1589,15 @@ var topics = [
                 { type:'steps', heading:'Worked Example', icon:'calculator', color:'amber', handwritten:true,
           question:'Given that $2i$ is a root of $x^{4}-3x^{3}+6x^{2}-12x+8=0$, find all four roots of the equation.',
           steps:[
-            { title:'State the conjugate root', desc:'since the coefficients are real',
+            { title:'State the conjugate root', desc:'The conjugate root theorem guarantees this, since the polynomial has real coefficients',
               formula:'$-2i$ is also a root' },
-            { title:'Form the quadratic factor', desc:'',
+            { title:'Form the quadratic factor', desc:'Multiplying a complex conjugate pair of roots always gives a quadratic with real coefficients',
               formula:'$(x-2i)(x+2i)=x^{2}+4$' },
-            { title:'Divide the quartic by this factor', desc:'',
+            { title:'Divide the quartic by this factor', desc:'Since $x^{2}+4$ is a factor of the quartic, dividing gives the remaining quadratic factor',
               formula:'$x^{4}-3x^{3}+6x^{2}-12x+8=(x^{2}+4)(x^{2}-3x+2)$' },
-            { title:'Factorise the quotient', desc:'',
+            { title:'Factorise the quotient', desc:'Look for two numbers that multiply to 2 and add to $-3$: these are $-1$ and $-2$',
               formula:'$x^{2}-3x+2=(x-1)(x-2)$' },
-            { title:'State all four roots', desc:'',
+            { title:'State all four roots', desc:'Combine the two real roots from the quotient with the two complex roots found earlier',
               formula:'<span class="np-highlight">$x=1,\\ 2,\\ 2i,\\ -2i$</span>' }
           ]
         },
@@ -1638,13 +1640,13 @@ var topics = [
                 { type:'steps', heading:'Worked Example', icon:'calculator', color:'amber', handwritten:true,
           question:'Use De Moivre’s theorem to show that $\\tan3\\theta=\\dfrac{3\\tan\\theta-\\tan^{3}\\theta}{1-3\\tan^{2}\\theta}$.',
           steps:[
-            { title:'Apply De Moivre’s theorem', desc:'',
+            { title:'Apply De Moivre’s theorem', desc:'This lets us expand $\\cos3\\theta+i\\sin3\\theta$ using ordinary algebra instead of trigonometric identities',
               formula:'$\\cos3\\theta+i\\sin3\\theta=(\\cos\\theta+i\\sin\\theta)^{3}$' },
             { title:'Expand using the binomial theorem', desc:'and equate real and imaginary parts',
               formula:'$\\cos3\\theta=\\cos^{3}\\theta-3\\cos\\theta\\sin^{2}\\theta,\\quad \\sin3\\theta=3\\cos^{2}\\theta\\sin\\theta-\\sin^{3}\\theta$' },
-            { title:'Form tan3θ', desc:'',
+            { title:'Form tan3θ', desc:'Since $\\tan3\\theta=\\dfrac{\\sin3\\theta}{\\cos3\\theta}$',
               formula:'$\\tan3\\theta=\\dfrac{3\\cos^{2}\\theta\\sin\\theta-\\sin^{3}\\theta}{\\cos^{3}\\theta-3\\cos\\theta\\sin^{2}\\theta}$' },
-            { title:'Divide top and bottom by cos³θ', desc:'',
+            { title:'Divide top and bottom by cos³θ', desc:'Dividing every term by $\\cos^{3}\\theta$ converts it into a power of $\\tan\\theta$, since $\\dfrac{\\sin\\theta}{\\cos\\theta}=\\tan\\theta$',
               formula:'<span class="np-highlight">$\\tan3\\theta=\\dfrac{3\\tan\\theta-\\tan^{3}\\theta}{1-3\\tan^{2}\\theta}$</span>' }
           ]
         },
@@ -1686,13 +1688,13 @@ var topics = [
                 { type:'steps', heading:'Worked Example', icon:'calculator', color:'amber', handwritten:true,
           question:'Solve $z^{3}+8=0$ for $z$, giving all roots in the form $a+bi$.',
           steps:[
-            { title:'Rewrite in polar form', desc:'',
+            { title:'Rewrite in polar form', desc:'Rearrange to $z^{3}=-8$ first, then convert $-8$ to polar form',
               formula:'$z^{3}=-8=8(\\cos180°+i\\sin180°)$' },
-            { title:'Apply the root formula', desc:'',
+            { title:'Apply the root formula', desc:'Adding multiples of $360°$ before dividing by 3 generates each of the three distinct roots',
               formula:'$w_k=2\\left[\\cos\\dfrac{180°+360°k}{3}+i\\sin\\dfrac{180°+360°k}{3}\\right]$' },
-            { title:'Substitute k = 0, 1, 2', desc:'',
+            { title:'Substitute k = 0, 1, 2', desc:'Each value of k gives one of the three cube roots',
               formula:'angles $60°, 180°, 300°$' },
-            { title:'State all three roots', desc:'',
+            { title:'State all three roots', desc:'Convert each angle back to Cartesian form $a+bi$, using $a=2\\cos\\theta$ and $b=2\\sin\\theta$',
               formula:'<span class="np-highlight">$z=1+1.73i,\\ -2,\\ 1-1.73i$</span>' }
           ]
         },
@@ -1738,11 +1740,11 @@ var topics = [
           steps:[
             { title:'Define the variables', desc:'let the smallest number be $x$',
               formula:'middle $=x+2$, largest $=3x$' },
-            { title:'Form the equation from the sum', desc:'',
+            { title:'Form the equation from the sum', desc:'Write the middle and largest numbers in terms of the smallest, using the given relationships, then set their total equal to 32',
               formula:'$x+(x+2)+3x=32$' },
-            { title:'Solve for x', desc:'',
+            { title:'Solve for x', desc:'Subtract 2 from both sides, then divide by 5',
               formula:'$5x+2=32 \\Rightarrow x=6$' },
-            { title:'State the three numbers', desc:'',
+            { title:'State the three numbers', desc:'Substitute x back into the expressions for the middle and largest numbers',
               formula:'<span class="np-highlight">$6,\\ 8,\\ 18$</span>' }
           ]
         },
@@ -1784,13 +1786,13 @@ var topics = [
                 { type:'steps', heading:'Worked Example', icon:'calculator', color:'amber', handwritten:true,
           question:'Solve the system $2x-y+z=5$, $x+3y-2z=-8$, $4x-y+3z=13$ for $x$, $y$ and $z$.',
           steps:[
-            { title:'Make z the subject of equation (1)', desc:'',
+            { title:'Make z the subject of equation (1)', desc:'Rearranging one equation to isolate a variable allows it to be substituted into the others',
               formula:'$z=5-2x+y$' },
-            { title:'Substitute into equation (2)', desc:'',
+            { title:'Substitute into equation (2)', desc:'Replace z with the expression just found, then simplify to get an equation in only x and y',
               formula:'$5x+y=2 \\Rightarrow y=2-5x$' },
-            { title:'Substitute both into equation (3)', desc:'',
+            { title:'Substitute both into equation (3)', desc:'Now substitute both the z-expression and the y-expression (in terms of x) into the final equation, leaving a single equation in x',
               formula:'$4x-(2-5x)+3(7-7x)=13 \\Rightarrow x=0.5$' },
-            { title:'Back-substitute', desc:'',
+            { title:'Back-substitute', desc:'Use the value of x to find y, then use both to find z',
               formula:'<span class="np-highlight">$x=0.5,\\ y=-0.5,\\ z=3.5$</span>' }
           ]
         },
