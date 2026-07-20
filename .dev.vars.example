@@ -1,0 +1,3 @@
+# Copy this file to .dev.vars for local `wrangler pages dev` testing.
+# Never commit .dev.vars — it's already in .gitignore.
+ANTHROPIC_API_KEY=sk-ant-...

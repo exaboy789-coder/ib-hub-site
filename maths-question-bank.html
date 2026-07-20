@@ -411,6 +411,15 @@
     transition:filter .2s ease;
   }
   .wb-submit-btn:hover{filter:brightness(1.08);}
+  .wb-submit-btn:disabled{opacity:.6; cursor:default; filter:none;}
+
+  .wb-feedback{
+    flex-shrink:0; margin-top:12px; max-height:180px; overflow-y:auto;
+    padding:14px 16px; background:var(--panel); border:1px solid var(--rule); border-radius:12px;
+    font-family:'IBM Plex Sans',sans-serif; font-size:13.5px; color:var(--ink); line-height:1.6;
+    white-space:pre-wrap;
+  }
+  .wb-feedback.is-error{border-color:var(--coral); color:var(--coral);}
 
   /* ---- fullscreen focus mode ---- */
   .fs-backdrop{position:fixed; inset:0; background:rgba(10,10,14,0.55); z-index:99; display:none;}
@@ -1249,7 +1258,7 @@
           </button>
           <span class="dock-label">Board</span>
 
-          <button class="dock-btn is-soon" data-name="AI Feedback" title="AI feedback" type="button">
+          <button class="dock-btn wb-open-btn" title="AI feedback — open whiteboard" type="button">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6L12 3z"></path><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8L19 15z"></path></svg>
           </button>
           <span class="dock-label">AI</span>
@@ -1312,8 +1321,10 @@
     </div>
 
     <div class="wb-actions">
-      <button class="wb-submit-btn trigger-soon" data-name="AI marking" type="button">Submit for AI marking</button>
+      <button class="wb-submit-btn" id="wb-submit-btn-1" type="button">Submit for AI marking</button>
     </div>
+
+    <div class="wb-feedback" id="wb-feedback-1" hidden></div>
   </div>
 </div>
 
@@ -1547,7 +1558,7 @@ var EXTRA_QUESTIONS = [
           '<span class="dock-divider"></span>' +
           '<a class="dock-btn" href="Mathematics_AA_Markscheme_Q' + q.n + '.pdf" target="_blank" rel="noopener" title="Mark scheme (PDF) &mdash; Question ' + q.n + '">' + msSvg + '</a><span class="dock-label">M/S</span>' +
           '<button class="dock-btn wb-open-btn" title="Open whiteboard" type="button">' + boardSvg + '</button><span class="dock-label">Board</span>' +
-          '<button class="dock-btn is-soon" data-name="AI Feedback" title="AI feedback" type="button">' + aiSvg + '</button><span class="dock-label">AI</span>' +
+          '<button class="dock-btn wb-open-btn" title="AI feedback &mdash; open whiteboard" type="button">' + aiSvg + '</button><span class="dock-label">AI</span>' +
           '<span class="dock-divider"></span>' +
           '<a class="dock-btn" href="maths-formula-booklet.html" target="_blank" rel="noopener" title="Formula booklet">' + fxSvg + '</a><span class="dock-label">Fx</span>' +
         '</div>' +
@@ -2156,13 +2167,19 @@ document.querySelectorAll('.dock-btn.is-soon, .trigger-soon').forEach(function(b
 });
 
 // ---------- whiteboard pop-up ----------
+var wbActiveQcardId = null;
 function openWhiteboard(qcardId){
+  wbActiveQcardId = qcardId;
   var qcard = document.getElementById(qcardId);
   var recap = document.getElementById('wb-modal-question');
   recap.innerHTML = qcard.querySelector('.qstem').outerHTML + qcard.querySelector('.qparts').outerHTML;
   if(window.renderMathInElement){
     renderMathInElement(recap, { delimiters:[{left:'$', right:'$', display:false}], throwOnError:false });
   }
+  var feedbackEl = document.getElementById('wb-feedback-1');
+  feedbackEl.hidden = true;
+  feedbackEl.textContent = '';
+  feedbackEl.classList.remove('is-error');
   document.getElementById('wb-modal-backdrop').classList.add('show');
   sizeWhiteboardOnce();
 }
@@ -2175,6 +2192,45 @@ document.querySelectorAll('.qcard .wb-open-btn').forEach(function(btn){
 document.getElementById('wb-close-btn').addEventListener('click', closeWhiteboard);
 document.getElementById('wb-modal-backdrop').addEventListener('click', function(e){
   if(e.target === this) closeWhiteboard();
+});
+
+// ---------- whiteboard: submit for AI marking ----------
+document.getElementById('wb-submit-btn-1').addEventListener('click', function(){
+  if(!wbActiveQcardId) return;
+  var questionId = wbActiveQcardId.replace('qcard-', '');
+  var qcard = document.getElementById(wbActiveQcardId);
+  var questionText = (qcard.querySelector('.qstem').textContent + '\n' + qcard.querySelector('.qparts').textContent).trim();
+  var canvas = document.getElementById('wb-canvas-1');
+  var imageDataUrl = canvas.toDataURL('image/png');
+  var btn = this;
+  var feedbackEl = document.getElementById('wb-feedback-1');
+
+  btn.disabled = true;
+  btn.textContent = 'Marking…';
+  feedbackEl.hidden = true;
+
+  fetch('/api/mark', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ questionId: questionId, questionText: questionText, imageDataUrl: imageDataUrl })
+  })
+    .then(function(resp){
+      return resp.json().then(function(data){ return { ok: resp.ok, data: data }; });
+    })
+    .then(function(result){
+      if(!result.ok) throw new Error((result.data && result.data.error) || 'Something went wrong');
+      feedbackEl.textContent = result.data.feedback;
+      feedbackEl.classList.remove('is-error');
+    })
+    .catch(function(err){
+      feedbackEl.textContent = err.message || 'AI marking failed — try again.';
+      feedbackEl.classList.add('is-error');
+    })
+    .finally(function(){
+      feedbackEl.hidden = false;
+      btn.disabled = false;
+      btn.textContent = 'Submit for AI marking';
+    });
 });
 
 // ---------- whiteboard drawing ----------
