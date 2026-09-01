@@ -1,4 +1,4 @@
-/* shared dark/light theme toggle — used by index.html, subject.html, maths-formula-booklet.html */
+/* shared dark/light theme toggle — used by every page (index.html, subject.html, maths-notes.html, maths-formula-booklet.html, maths-question-bank.html) */
 (function(){
   var themeToggle = document.getElementById('theme-toggle');
   var labelLight = document.getElementById('label-light');

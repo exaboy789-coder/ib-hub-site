@@ -11,7 +11,12 @@
     document.documentElement.setAttribute('data-theme', theme);
   })();
 </script>
-<title>IB Subjects Hub — Notes, Past Papers & Revision</title>
+<title>IB Subjects Hub — Notes, Practice Questions & Revision</title>
+<meta name="description" content="Free notes, practice question banks with worked mark schemes, and revision resources for the IB Diploma — starting with Mathematics AA/AI, more subjects in progress. Unofficial, student-made project, not affiliated with the IBO.">
+<meta property="og:title" content="IB Subjects Hub — Notes, Practice Questions & Revision">
+<meta property="og:description" content="Free notes, practice question banks with worked mark schemes, and revision resources for the IB Diploma — starting with Mathematics AA/AI, more subjects in progress.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%93%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
@@ -80,6 +85,8 @@
     background:var(--panel);
   }
   .topbar nav a:hover{border-color:var(--cyan); color:var(--cyan); box-shadow:0 0 0 4px rgba(var(--cyan-rgb),0.1);}
+  .topbar nav a[aria-disabled="true"]{opacity:.55; cursor:default;}
+  .topbar nav a[aria-disabled="true"]:hover{border-color:var(--rule); color:var(--ink); box-shadow:none;}
 
   /* ---- hero ---- */
   .hero{padding:64px 0 0; text-align:center; position:relative; overflow:hidden;}
@@ -168,6 +175,12 @@
     letter-spacing:0.02em; padding:5px 12px; color:var(--accent); border-radius:999px;
     background:rgba(var(--accent-rgb),0.1); display:inline-block; width:fit-content;
   }
+  .scard-badge{
+    position:absolute; top:18px; right:18px; font-family:'IBM Plex Sans', sans-serif;
+    font-size:10.5px; font-weight:700; padding:4px 10px; border-radius:999px; white-space:nowrap;
+  }
+  .scard-badge.is-live{color:var(--accent); background:rgba(var(--accent-rgb),0.14);}
+  .scard-badge.is-soon{color:var(--ink-soft); background:var(--bg-soft);}
   .sc-maths{--accent:var(--cyan); --accent-rgb:var(--cyan-rgb);}
   .sc-physics{--accent:var(--violet); --accent-rgb:var(--violet-rgb);}
   .sc-chem{--accent:var(--green); --accent-rgb:var(--green-rgb);}
@@ -194,6 +207,7 @@
 
   footer{padding:36px 0 56px; font-size:13px; color:var(--ink-soft); font-family:'IBM Plex Sans',sans-serif; text-align:center;}
   footer .heart{color:var(--coral);}
+  footer .disclaimer{font-size:11.5px; margin-top:8px; opacity:.75;}
 
   @media (max-width:680px){
     .hero h1{font-size:32px;}
@@ -218,7 +232,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
         <input type="text" id="subject-search" placeholder="Search subjects">
       </div>
-      <nav><a href="#">Login</a></nav>
+      <nav><a href="#" aria-disabled="true" title="Login — coming soon" onclick="return false;">Login</a></nav>
       <div class="theme-switch-wrap">
         <span class="theme-label" id="label-light">Light</span>
         <button class="theme-switch" id="theme-toggle" type="button" aria-label="Toggle dark mode">
@@ -240,26 +254,26 @@
     </div>
     <p class="hero-pill">👋 Built for every IB student</p>
     <h1>Everything you need for the <span class="accent-word">IB Diploma</span>, in one place</h1>
-    <p class="hero-sub">Clear notes, real past papers, and revision resources for every DP subject — organized so you actually want to use it.</p>
+    <p class="hero-sub">Clear notes, practice questions with worked mark schemes, and revision resources — starting with Mathematics, with more DP subjects being built out.</p>
     <a href="#subjects" class="btn btn-primary">Browse Subjects</a>
 
     <div class="stats-row">
-      <div class="stat-card"><div class="stat-num">7</div><div class="stat-label">Subjects covered</div></div>
-      <div class="stat-card"><div class="stat-num">100%</div><div class="stat-label">Syllabus aligned</div></div>
+      <div class="stat-card"><div class="stat-num">1</div><div class="stat-label">Subject live now</div></div>
+      <div class="stat-card"><div class="stat-num">7</div><div class="stat-label">Subjects planned</div></div>
       <div class="stat-card"><div class="stat-num">HL+SL</div><div class="stat-label">Every level</div></div>
-      <div class="stat-card"><div class="stat-num">TOK·EE·CAS</div><div class="stat-label">Core covered too</div></div>
+      <div class="stat-card"><div class="stat-num">TOK·EE·CAS</div><div class="stat-label">Core, coming soon</div></div>
     </div>
   </section>
 
   <div class="ticker">
     <div class="ticker-track">
-      <span>📚 <b>7</b> subjects indexed</span>
-      <span>🧭 TOK · EE · CAS linked</span>
-      <span>📄 Past papers organized</span>
+      <span>📚 Mathematics live now</span>
+      <span>🧭 TOK · EE · CAS coming soon</span>
+      <span>🎯 Practice question banks with worked mark schemes</span>
       <span>🔍 Fast subject search</span>
-      <span>📚 <b>7</b> subjects indexed</span>
-      <span>🧭 TOK · EE · CAS linked</span>
-      <span>📄 Past papers organized</span>
+      <span>📚 Mathematics live now</span>
+      <span>🧭 TOK · EE · CAS coming soon</span>
+      <span>🎯 Practice question banks with worked mark schemes</span>
       <span>🔍 Fast subject search</span>
     </div>
   </div>
@@ -273,6 +287,7 @@
 
     <div class="subject-grid" id="subject-grid">
       <a href="subject.html?s=maths" class="scard sc-maths" data-name="mathematics maths aa ai">
+        <span class="scard-badge is-live">Live</span>
         <div class="sicon">√x</div>
         <h3>Mathematics</h3>
         <p class="sdesc">Algebra, functions, calculus, statistics and more.</p>
@@ -280,6 +295,7 @@
       </a>
 
       <a href="subject.html?s=physics" class="scard sc-physics" data-name="physics">
+        <span class="scard-badge is-soon">Coming soon</span>
         <div class="sicon">F=ma</div>
         <h3>Physics</h3>
         <p class="sdesc">Mechanics, fields, waves, and modern physics.</p>
@@ -287,6 +303,7 @@
       </a>
 
       <a href="subject.html?s=chem" class="scard sc-chem" data-name="chemistry chem">
+        <span class="scard-badge is-soon">Coming soon</span>
         <div class="sicon">H₂O</div>
         <h3>Chemistry</h3>
         <p class="sdesc">Structure, bonding, equilibrium, and organic chem.</p>
@@ -294,6 +311,7 @@
       </a>
 
       <a href="subject.html?s=bio" class="scard sc-bio" data-name="biology bio">
+        <span class="scard-badge is-soon">Coming soon</span>
         <div class="sicon">DNA</div>
         <h3>Biology</h3>
         <p class="sdesc">Cells, genetics, ecology, and human physiology.</p>
@@ -301,6 +319,7 @@
       </a>
 
       <a href="subject.html?s=econ" class="scard sc-econ" data-name="economics econ">
+        <span class="scard-badge is-soon">Coming soon</span>
         <div class="sicon">£↗</div>
         <h3>Economics</h3>
         <p class="sdesc">Micro, macro, development, and the global economy.</p>
@@ -308,6 +327,7 @@
       </a>
 
       <a href="subject.html?s=geo" class="scard sc-geo" data-name="geography geo">
+        <span class="scard-badge is-soon">Coming soon</span>
         <div class="sicon">⊕</div>
         <h3>Geography</h3>
         <p class="sdesc">Patterns, processes, and global case studies.</p>
@@ -315,6 +335,7 @@
       </a>
 
       <a href="subject.html?s=cs" class="scard sc-cs" data-name="computer science cs">
+        <span class="scard-badge is-soon">Coming soon</span>
         <div class="sicon">&lt;/&gt;</div>
         <h3>Computer Science</h3>
         <p class="sdesc">Programming, systems, and computational thinking.</p>
@@ -330,14 +351,17 @@
       <div class="corehub-icon">🧭</div>
       <p class="eyebrow">Don't forget the core</p>
       <h2>TOK · EE · CAS Resources</h2>
-      <p>Guides and support for the Diploma's three core elements — because they count too.</p>
+      <p>Guides and support for the Diploma's three core elements — because they count too. <em>(Coming soon.)</em></p>
     </div>
   </section>
 
 </div>
 
 <footer>
-  <div class="wrap">Built for IB students, by IB students <span class="heart">♥</span> — notes &amp; past papers for every DP subject</div>
+  <div class="wrap">
+    Built for IB students, by IB students <span class="heart">♥</span> — notes &amp; practice resources for every DP subject
+    <div class="disclaimer">Unofficial, student-made project — not affiliated with or endorsed by the International Baccalaureate Organization (IBO). Practice questions and mark schemes are original materials written to match the syllabus, not official IB past papers.</div>
+  </div>
 </footer>
 
 <script src="theme.js"></script>

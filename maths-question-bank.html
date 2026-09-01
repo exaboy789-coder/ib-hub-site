@@ -12,12 +12,17 @@
   })();
 </script>
 <title>Question Bank — Mathematics AA — IB Subjects Hub</title>
+<meta name="description" content="Practice IB Mathematics AA question bank with worked mark schemes, an in-browser whiteboard, and AI-assisted marking.">
+<meta property="og:title" content="Question Bank — Mathematics AA — IB Subjects Hub">
+<meta property="og:description" content="Practice IB Mathematics AA question bank with worked mark schemes, an in-browser whiteboard, and AI-assisted marking.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%93%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="theme.css">
 <style>
   .term-panel,.search-box,.topbar,.quicknav a{transition:background-color .25s ease, border-color .25s ease, box-shadow .25s ease;}
@@ -47,6 +52,8 @@
   .search-box input::placeholder{color:#566182;}
   .topbar nav a{font-size:13px; text-decoration:none; color:var(--ink); font-weight:600; border:1.5px solid var(--rule); border-radius:999px; padding:9px 18px; transition:all .2s ease; background:var(--panel);}
   .topbar nav a:hover{border-color:var(--cyan); color:var(--cyan); box-shadow:0 0 0 4px rgba(var(--cyan-rgb),0.1);}
+  .topbar nav a[aria-disabled="true"]{opacity:.55; cursor:default;}
+  .topbar nav a[aria-disabled="true"]:hover{border-color:var(--rule); color:var(--ink); box-shadow:none;}
   .theme-switch{background:linear-gradient(135deg, var(--cyan), var(--pink));}
 
   /* ---- friendly card ---- */
@@ -446,6 +453,7 @@
 
   footer{padding:60px 0 56px; font-size:11px; color:var(--ink-soft); font-family:'IBM Plex Mono',monospace; text-align:center; letter-spacing:0.06em;}
   footer .status-dot{display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--cyan); box-shadow:0 0 8px var(--cyan); margin-right:8px; animation:pulse 2s ease-in-out infinite;}
+  footer .disclaimer{font-family:'IBM Plex Sans',sans-serif; font-size:11px; letter-spacing:normal; margin-top:10px; opacity:.7;}
   @keyframes pulse{0%,100%{opacity:1;} 50%{opacity:0.35;}}
 
   @media (max-width:720px){
@@ -479,7 +487,7 @@
         <input type="text" id="global-search" placeholder="search_" autocomplete="off">
         <div class="global-search-dropdown" id="global-search-dropdown"></div>
       </div>
-      <nav><a href="#">Login</a></nav>
+      <nav><a href="#" aria-disabled="true" title="Login — coming soon" onclick="return false;">Login</a></nav>
       <div class="theme-switch-wrap">
         <span class="theme-label" id="label-light">Light</span>
         <button class="theme-switch" id="theme-toggle" type="button" aria-label="Toggle dark mode">
@@ -1248,7 +1256,7 @@
 
           <span class="dock-divider"></span>
 
-          <a class="dock-btn" href="Mathematics_AA_Markscheme_Q1.pdf" target="_blank" rel="noopener" title="Mark scheme (PDF) — Question 1">
+          <a class="dock-btn" href="Mathematics_AA_Markscheme_Q1.pdf" target="_blank" rel="noopener" title="Practice mark scheme (PDF) — Question 1, original material written to match the syllabus">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"></rect><line x1="8" y1="8" x2="16" y2="8"></line><line x1="8" y1="12" x2="16" y2="12"></line><line x1="8" y1="16" x2="12" y2="16"></line></svg>
           </a>
           <span class="dock-label">M/S</span>
@@ -1329,7 +1337,10 @@
 </div>
 
 <footer>
-  <div class="wrap"><span class="status-dot"></span>SYSTEM ONLINE — IB SUBJECTS HUB, NOTES &amp; PAST PAPERS FOR EVERY DP SUBJECT</div>
+  <div class="wrap">
+    <span class="status-dot"></span>SYSTEM ONLINE — IB SUBJECTS HUB, NOTES &amp; PRACTICE RESOURCES FOR EVERY DP SUBJECT
+    <div class="disclaimer">Unofficial, student-made project — not affiliated with or endorsed by the International Baccalaureate Organization (IBO). Practice questions and mark schemes are original materials written to match the syllabus, not official IB past papers.</div>
+  </div>
 </footer>
 
 <script src="theme.js"></script>
@@ -1556,7 +1567,7 @@ var EXTRA_QUESTIONS = [
         '<div class="qdock">' +
           '<button class="dock-btn save-btn" title="Save" type="button">' + saveSvg + '</button><span class="dock-label">Save</span>' +
           '<span class="dock-divider"></span>' +
-          '<a class="dock-btn" href="Mathematics_AA_Markscheme_Q' + q.n + '.pdf" target="_blank" rel="noopener" title="Mark scheme (PDF) &mdash; Question ' + q.n + '">' + msSvg + '</a><span class="dock-label">M/S</span>' +
+          '<a class="dock-btn" href="Mathematics_AA_Markscheme_Q' + q.n + '.pdf" target="_blank" rel="noopener" title="Practice mark scheme (PDF) &mdash; Question ' + q.n + ', original material written to match the syllabus">' + msSvg + '</a><span class="dock-label">M/S</span>' +
           '<button class="dock-btn wb-open-btn" title="Open whiteboard" type="button">' + boardSvg + '</button><span class="dock-label">Board</span>' +
           '<button class="dock-btn wb-open-btn" title="AI feedback &mdash; open whiteboard" type="button">' + aiSvg + '</button><span class="dock-label">AI</span>' +
           '<span class="dock-divider"></span>' +
@@ -2168,7 +2179,22 @@ document.querySelectorAll('.dock-btn.is-soon, .trigger-soon').forEach(function(b
 
 // ---------- whiteboard pop-up ----------
 var wbActiveQcardId = null;
+var wbAbortController = null;
+var wbSubmissionToken = 0;
+
+function invalidatePendingSubmission(){
+  wbSubmissionToken++;
+  if(wbAbortController){
+    wbAbortController.abort();
+    wbAbortController = null;
+  }
+}
+
 function openWhiteboard(qcardId){
+  if(wbActiveQcardId !== qcardId){
+    invalidatePendingSubmission();
+    wbBoard.reset();
+  }
   wbActiveQcardId = qcardId;
   var qcard = document.getElementById(qcardId);
   var recap = document.getElementById('wb-modal-question');
@@ -2180,10 +2206,14 @@ function openWhiteboard(qcardId){
   feedbackEl.hidden = true;
   feedbackEl.textContent = '';
   feedbackEl.classList.remove('is-error');
+  var submitBtn = document.getElementById('wb-submit-btn-1');
+  submitBtn.disabled = false;
+  submitBtn.textContent = 'Submit for AI marking';
   document.getElementById('wb-modal-backdrop').classList.add('show');
-  sizeWhiteboardOnce();
+  wbBoard.size();
 }
 function closeWhiteboard(){
+  invalidatePendingSubmission();
   document.getElementById('wb-modal-backdrop').classList.remove('show');
 }
 document.querySelectorAll('.qcard .wb-open-btn').forEach(function(btn){
@@ -2197,13 +2227,24 @@ document.getElementById('wb-modal-backdrop').addEventListener('click', function(
 // ---------- whiteboard: submit for AI marking ----------
 document.getElementById('wb-submit-btn-1').addEventListener('click', function(){
   if(!wbActiveQcardId) return;
+  var feedbackEl = document.getElementById('wb-feedback-1');
+  if(!wbBoard.hasDrawing()){
+    feedbackEl.textContent = 'Draw your working on the board before submitting.';
+    feedbackEl.classList.add('is-error');
+    feedbackEl.hidden = false;
+    return;
+  }
+
   var questionId = wbActiveQcardId.replace('qcard-', '');
   var qcard = document.getElementById(wbActiveQcardId);
   var questionText = (qcard.querySelector('.qstem').textContent + '\n' + qcard.querySelector('.qparts').textContent).trim();
-  var canvas = document.getElementById('wb-canvas-1');
-  var imageDataUrl = canvas.toDataURL('image/png');
+  var imageDataUrl = document.getElementById('wb-canvas-1').toDataURL('image/png');
   var btn = this;
-  var feedbackEl = document.getElementById('wb-feedback-1');
+
+  invalidatePendingSubmission();
+  var myToken = wbSubmissionToken;
+  var controller = new AbortController();
+  wbAbortController = controller;
 
   btn.disabled = true;
   btn.textContent = 'Marking…';
@@ -2212,29 +2253,36 @@ document.getElementById('wb-submit-btn-1').addEventListener('click', function(){
   fetch('/api/mark', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ questionId: questionId, questionText: questionText, imageDataUrl: imageDataUrl })
+    body: JSON.stringify({ questionId: questionId, questionText: questionText, imageDataUrl: imageDataUrl }),
+    signal: controller.signal
   })
     .then(function(resp){
       return resp.json().then(function(data){ return { ok: resp.ok, data: data }; });
     })
     .then(function(result){
       if(!result.ok) throw new Error((result.data && result.data.error) || 'Something went wrong');
+      if(myToken !== wbSubmissionToken) return; // a newer question/submission has since taken over the shared UI
       feedbackEl.textContent = result.data.feedback;
       feedbackEl.classList.remove('is-error');
+      feedbackEl.hidden = false;
     })
     .catch(function(err){
+      if(err.name === 'AbortError') return; // cancelled by closing/switching — not a real failure
+      if(myToken !== wbSubmissionToken) return;
       feedbackEl.textContent = err.message || 'AI marking failed — try again.';
       feedbackEl.classList.add('is-error');
+      feedbackEl.hidden = false;
     })
     .finally(function(){
-      feedbackEl.hidden = false;
+      if(wbAbortController === controller) wbAbortController = null;
+      if(myToken !== wbSubmissionToken) return;
       btn.disabled = false;
       btn.textContent = 'Submit for AI marking';
     });
 });
 
 // ---------- whiteboard drawing ----------
-var sizeWhiteboardOnce = initWhiteboard('wb-canvas-1');
+var wbBoard = initWhiteboard('wb-canvas-1');
 function initWhiteboard(canvasId){
   var canvas = document.getElementById(canvasId);
   var ctx = canvas.getContext('2d');
@@ -2269,6 +2317,7 @@ function initWhiteboard(canvasId){
   var size = 4;
   var erasing = false;
   var undoStack = [];
+  var hasDrawing = false;
 
   function pushUndo(){
     undoStack.push(canvas.toDataURL());
@@ -2281,6 +2330,7 @@ function initWhiteboard(canvasId){
 
   canvas.addEventListener('pointerdown', function(e){
     drawing = true;
+    hasDrawing = true;
     pushUndo();
     var p = pos(e);
     ctx.beginPath();
@@ -2340,9 +2390,16 @@ function initWhiteboard(canvasId){
   section.querySelector('[id^="wb-clear-"]').addEventListener('click', function(){
     pushUndo();
     fillWhite();
+    hasDrawing = false;
   });
 
-  return sizeCanvas;
+  function reset(){
+    undoStack.length = 0;
+    if(sized) fillWhite();
+    hasDrawing = false;
+  }
+
+  return { size: sizeCanvas, reset: reset, hasDrawing: function(){ return hasDrawing; } };
 }
 
 // ---------- fullscreen focus mode ----------
